@@ -1,5 +1,3 @@
-//codigo js
-
 document.addEventListener('DOMContentLoaded', function () {
     const formPeca = document.getElementById('form-peca');
     const tabelaResultados = document.querySelector('#tabela-resultados tbody');
@@ -53,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const pesoTotalPecas = comprimentoM * pesoPorMetro * quantidade;
         const precoPorKgDaBitola = precosPorKg[bitola] || 0;
         const custoTotalPecas = pesoTotalPecas * precoPorKgDaBitola;
+
         const novaLinha = document.createElement('tr');
         novaLinha.innerHTML = `
             <td>${tipo}</td>
@@ -63,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <td>${pesoTotalPecas.toFixed(3)} kg</td>
             <td><button class="btn-excluir">Excluir</button></td>
         `;
+
         novaLinha.dataset.bitola = bitola;
         novaLinha.dataset.peso = pesoTotalPecas;
         novaLinha.dataset.custo = custoTotalPecas;
@@ -145,7 +145,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById("custo-total-geral").textContent = "R$ " + custoTotalGeral.toFixed(2);
     }
 
-    // NOVA FUNÇÃO: montarOrcamento() 
     function montarOrcamento() {
         const cliente = document.getElementById('cliente').value;
         const codCliente = document.getElementById('codCliente').value;
@@ -166,9 +165,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 recebeCaminhao,
                 dataDesejada
             },
-            itensPedido: linhasOrcamento, // Array de objetos de peças já adicionadas
-            resumoBitolas: resumoBitolas, // Objeto com resumo por bitola (peso)
-            resumoCustos: resumoCustos,   // Objeto com resumo por bitola (custo)
+            itensPedido: linhasOrcamento,
+            resumoBitolas: resumoBitolas,
+            resumoCustos: resumoCustos,
             resumoGeral: {
                 pesoTotalGeral: pesoTotalGeral,
                 custoTotalGeral: custoTotalGeral
@@ -176,10 +175,15 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 
+    // ✅ Envio para o backend
     document.getElementById("btnSalvarOrcamento").addEventListener("click", async () => {
-        const orcamentoCompleto = montarOrcamento(); // Monta dados do cliente + peças
+        const orcamentoCompleto = montarOrcamento();
+        const urlBase = window.location.hostname.includes('localhost')
+            ? 'http://localhost:3000'
+            : ''; // Render usa domínio já
+
         try {
-            const response = await fetch('http://192.168.10.11:3000/api/orcamentos', {
+            const response = await fetch(`${urlBase}/api/orcamentos`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -189,62 +193,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!response.ok) throw new Error("Erro ao salvar orçamento.");
             const resultado = await response.json();
-            alert("Orçamento salvo com sucesso!");
+            alert("Orçamento salvo com sucesso! ID: " + resultado.id);
         } catch (error) {
-            alert("Erro ao salvar orçamento.");
-            console.error(error);
-        }
-    });
+                        alert("Erro ao salvar orçamento.");
+                    }
+                });
+            
+            });
+        
 
-    document.getElementById("btnGerarPdf").addEventListener("click", () => {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-
-        const orcamento = montarOrcamento(); // Chama a função montarOrcamento()
-
-        let y = 10;
-
-        doc.setFontSize(14);
-        doc.text("Orçamento - Corte e Dobra", 10, y);
-        y += 10;
-
-        doc.setFontSize(11);
-        // Acessa as propriedades dentro de orcamento.clienteInfo
-        doc.text(`Cliente: ${orcamento.clienteInfo.cliente}`, 10, y); y += 6;
-        doc.text(`Código: ${orcamento.clienteInfo.codCliente}`, 10, y); y += 6;
-        doc.text(`Obra: ${orcamento.clienteInfo.obra}`, 10, y); y += 6;
-        doc.text(`Pedido nº: ${orcamento.clienteInfo.numPedido}`, 10, y); y += 6;
-        doc.text(`Recebe Caminhão: ${orcamento.clienteInfo.recebeCaminhao}`, 10, y); y += 6;
-        doc.text(`Data Desejada: ${orcamento.clienteInfo.dataDesejada}`, 10, y); y += 10;
-
-        doc.setFontSize(12);
-        doc.text("Peças:", 10, y);
-        y += 6;
-
-        doc.setFontSize(10);
-        // Itera sobre orcamento.itensPedido
-        orcamento.itensPedido.forEach((item, index) => {
-            doc.text(
-                `${index + 1}. ${item.tipo} - ${item.bitola}mm - ${item.medidas.a}/${item.medidas.b || 0}/${item.medidas.c || 0}cm - Qtde: ${item.quantidade} - Peso: ${item.pesoKg}kg - Custo: R$ ${item.custo}`,
-                10,
-                y
-            );
-            y += 6;
-            if (y > 270) {
-                doc.addPage();
-                y = 10;
-            }
-        });
-
-        y += 10;
-        // Pega os totais do objeto orcamento.resumoGeral
-        const pesoTotal = orcamento.resumoGeral.pesoTotalGeral;
-        const custoTotal = orcamento.resumoGeral.custoTotalGeral;
-
-        doc.setFontSize(12);
-        doc.text(`Peso Total: ${pesoTotal}`, 10, y); y += 6;
-        doc.text(`Custo Total: ${custoTotal}`, 10, y);
-
-        doc.save(`Orcamento_${orcamento.clienteInfo.cliente || "cliente"}.pdf`);
-    });
-});
+            

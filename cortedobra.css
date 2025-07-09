@@ -1,0 +1,235 @@
+/* cortedobra.css */
+
+/* General Body Styling for better readability */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f7f6; /* Light background for the page */
+    color: #333;
+}
+
+/* Header Styling */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    background-color: #007bff; /* Primary blue for header */
+    color: white;
+    padding: 20px 0;
+    border-radius: 8px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.5em;
+}
+
+header p {
+    margin: 5px 0 0;
+    font-size: 1.1em;
+}
+
+/* Main content areas */
+main {
+    max-width: 1200px; /* Limit content width */
+    margin: 0 auto; /* Center the content */
+    padding: 20px;
+    background-color: #ffffff; /* White background for main content */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Section headings */
+h2 {
+    color: #0056b3; /* Darker blue for section headings */
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+/* Client Info and Add Piece forms */
+.cliente-info form,
+.formulario form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive columns */
+    gap: 15px; /* Space between form elements */
+    align-items: center;
+}
+
+.cliente-info label,
+.formulario label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    grid-column: span 1; /* Each label takes one column */
+}
+
+.cliente-info input[type="text"],
+.cliente-info input[type="date"],
+.cliente-info select,
+.formulario input[type="number"],
+.formulario select {
+    width: 100%; /* Make inputs fill their grid space */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Include padding in width */
+}
+
+.formulario input[type="number"][placeholder="a"],
+.formulario input[type="number"][placeholder="b"],
+.formulario input[type="number"][placeholder="c"] {
+    width: calc(33.33% - 5px); /* Adjusted for 3 inputs on one line with small gap */
+    display: inline-block; /* Allow them to sit side-by-side */
+    margin-right: 5px; /* Small gap between 'a', 'b', 'c' */
+    /* Remove the last margin-right for 'c' to prevent extra space */
+    &:last-of-type {
+        margin-right: 0;
+    }
+}
+
+
+.formulario button[type="submit"] {
+    grid-column: span full; /* Button spans full width of its row */
+    padding: 12px 20px;
+    background-color: #28a745; /* Green for add button */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease;
+    margin-top: 15px; /* Space above the button */
+}
+
+.formulario button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+
+/* Horizontal Rule */
+hr {
+    border: 0;
+    height: 1px;
+    background-color: #ddd;
+    margin: 40px 0; /* More vertical space around the HR */
+}
+
+/* Tables Styling */
+.resultado table {
+    width: 100%;
+    border-collapse: collapse; /* Remove double borders */
+    margin-top: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow for tables */
+}
+
+.resultado th,
+.resultado td {
+    border: 1px solid #e0e0e0;
+    padding: 12px 15px; /* More padding inside cells */
+    text-align: left;
+}
+
+.resultado th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    color: #555;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+.resultado tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Zebra striping for readability */
+}
+
+.resultado tbody tr:hover {
+    background-color: #e9ecef; /* Highlight row on hover */
+}
+
+/* Action button in table */
+.btn-excluir {
+    background-color: #dc3545; /* Red for delete button */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+.btn-excluir:hover {
+    background-color: #c82333;
+}
+
+/* Specific styling for the summary sections */
+#resumo-bitolas {
+    margin-top: 40px; /* Increased space between main table and summary */
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0; /* A subtle line to separate visually */
+}
+
+#resumo-bitolas h3 {
+    color: #0056b3;
+    margin-bottom: 15px; /* Space below summary heading */
+}
+
+#resumo-bitolas table {
+    width: auto; /* Allow summary table to be narrower */
+    margin-left: 0;
+    margin-bottom: 20px; /* Space below summary table */
+}
+
+#resumo-bitolas p {
+    font-size: 1.2em; /* Slightly larger font for totals */
+    font-weight: bold;
+    margin-bottom: 8px; /* Slightly less space between total lines for tighter grouping */
+    display: flex; /* Use flexbox for alignment */
+    justify-content: space-between; /* Push text and value to opposite ends */
+    padding-right: 15px; /* Adjust padding if needed to align with table */
+    max-width: 450px; /* Limit width to align with summary table more naturally */
+}
+
+/* Specific styling for the total values (the numbers themselves) */
+#resumo-bitolas p span {
+    color: #007bff; /* Highlight total values with blue */
+    font-weight: bold; /* Make the numbers bold as well */
+    margin-left: 10px; /* Space between the label and the value */
+    text-align: right; /* Ensure the number is right-aligned */
+    flex-grow: 1; /* Allow the span to grow and push the value to the right */
+}
+
+#custo-total-geral p span { 
+    color: #007bff; /* Highlight total values with blue */
+    font-weight: bold; /* Make the numbers bold as well */
+    margin-left: 10px; /* Space between the label and the value */
+    text-align: right; /* Ensure the number is right-aligned */
+    flex-grow: 1; /* Allow the span to grow and push the value to the right */
+}
+#peso-total-geral p span { 
+    color: #007bff; /* Highlight total values with blue */
+    font-weight: bold; /* Make the numbers bold as well */
+    margin-left: 10px; /* Space between the label and the value */
+    text-align: right; /* Ensure the number is right-aligned */
+    flex-grow: 1; /* Allow the span to grow and push the value to the right */   
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .cliente-info form,
+    .formulario form {
+        grid-template-columns: 1fr; /* Single column layout on smaller screens */
+    }
+
+    .formulario input[type="number"][placeholder="a"],
+    .formulario input[type="number"][placeholder="b"],
+    .formulario input[type="number"][placeholder="c"] {
+        width: 100%; /* Full width on small screens */
+        margin-right: 0;
+        margin-bottom: 10px; /* Add some vertical space between them */
+    }
+
+    
+}

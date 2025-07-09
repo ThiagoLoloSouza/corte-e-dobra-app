@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CortaFácil - Corte e Dobra</title>
+    <link rel="stylesheet" href="cortedobra.css">
+</head>
+
+<body>
+    <header>
+        <h1>Corte Dobra</h1>
+        <p>Calculadora de Corte, Dobra e Peso de Vergalhões</p>
+    </header>
+
+    <main>
+        <section class="cliente-info">
+            <h2>Dados do Cliente</h2>
+            <form id="form-cliente">
+                <label>Cliente:</label>
+                <input type="text" id="cliente" required>
+
+                <label>Cód. Cliente:</label>
+                <input type="text" id="codCliente">
+
+                <label>Obra:</label>
+                <input type="text" id="obra">
+
+                <label>Nº do Pedido:</label>
+                <input type="text" id="numPedido">
+
+                <label>Recebe Caminhão?</label>
+                <select id="recebeCaminhao">
+                    <option value="Sim">Sim</option>
+                    <option value="Não">Não</option>
+                </select>
+
+                <label>Data Desejada:</label>
+                <input type="date" id="dataDesejada">
+            </form>
+        </section>
+
+        <hr>
+
+        <section class="formulario">
+            <h2>Adicionar Peça</h2>
+            <form id="form-peca">
+                <label for="tipo">Tipo de Peça:</label>
+                <select id="tipo" required>
+                    <option value="varaU">vara em U</option>
+                    <option value="estribo">Estribo</option>
+                    <option value="varaReta">Vara Reta</option>
+                    <option value="varaL">Vara em L</option>
+                </select>
+
+                <label for="bitola">Bitola (mm):</label>
+                <select id="bitola" required>
+                    <option value="4.2">4.2</option>
+                    <option value="5.0">5.0</option>
+                    <option value="6.3">6.3</option>
+                    <option value="8.0">8.0</option>
+                    <option value="10.0">10.0</option>
+                    <option value="12.5">12.5</option>
+                    <option value="16.0">16.0</option>
+                    <option value="20.0">20.0</option>
+                    <option value="25.0">25.0</option>
+                </select>
+
+                <label>Medidas (cm):</label>
+                <input type="number" placeholder="a" id="a" required>
+                <input type="number" placeholder="b" id="b">
+                <input type="number" placeholder="c" id="c">
+
+                <label for="quantidade">Quantidade de Peças:</label>
+                <input type="number" id="quantidade" required>
+
+                <button type="submit">Adicionar</button>
+            </form>
+        </section>
+
+
+        <section class="resultado">
+            <h2>Resumo do Pedido</h2>
+            <table id="tabela-resultados">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Bitola</th>
+                        <th>Medidas</th>
+                        <th>Qtd</th>
+                        <th>Comprimento</th>
+                        <th>Peso</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                </tbody>
+                <section id="resumo-bitolas" style="margin-top: 2rem;">
+                    <h3>Resumo por Bitola</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Bitola</th>
+                                <th>Peso Total (kg)</th>
+                                <th>Custo Total (R$)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-resumo-bitolas"></tbody>
+                    </table>
+
+                    <p style="margin-top: 1rem;"><strong>Peso Total Geral:</strong> <span
+                            id="peso-total-geral">0.00</span></p>
+                    <p><strong>Custo Total Geral:</strong> <span id="custo-total-geral">R$ 0.00</span></p>
+                </section>
+
+            </table>
+        </section>
+    </main>
+
+    <script src="cortedobra.js"></script>
+    <section style="margin-top: 30px; text-align: center;">
+        <button type="button" id="btnSalvarOrcamento"
+            style="padding: 12px 25px; background-color: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1.1em; margin-right: 15px; transition: background-color 0.3s ease;">Salvar
+            Orçamento</button>
+
+        <button type="button" id="btnGerarPdf"
+            style="padding: 12px 25px; background-color: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1.1em; transition: background-color 0.3s ease;">Gerar
+            PDF do Orçamento</button>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+
+</body>
+
+</html>

@@ -119,7 +119,7 @@
         </section>
     </main>
 
-    <script src="cortedobra.js"></script>
+   
     <section style="margin-top: 30px; text-align: center;">
         <button type="button" id="btnSalvarOrcamento"
             style="padding: 12px 25px; background-color: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1.1em; margin-right: 15px; transition: background-color 0.3s ease;">Salvar
@@ -130,9 +130,11 @@
             PDF do Orçamento</button>
     </section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="cortedobra.js"></script>
+    <!-- jsPDF deve vir primeiro -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+<!-- depois vem seu script -->
+<script src="cortedobra.js"></script>
 
 </body>
 

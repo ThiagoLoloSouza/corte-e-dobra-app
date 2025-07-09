@@ -200,6 +200,55 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             
             });
-        
+
+            
+         // ✅ Geração do PDF com jsPDF
+    document.getElementById("btnGerarPdf").addEventListener("click", () => {
+        // Certifique-se que jsPDF já foi carregado no HTML antes de rodar este script!
+        const { jsPDF } = window.jspdf;
+
+        const doc = new jsPDF();
+        const orcamento = montarOrcamento();
+        let y = 10;
+
+        doc.setFontSize(14);
+        doc.text("Orçamento - Corte e Dobra", 10, y);
+        y += 10;
+
+        doc.setFontSize(11);
+        doc.text(`Cliente: ${orcamento.clienteInfo.cliente}`, 10, y); y += 6;
+        doc.text(`Código: ${orcamento.clienteInfo.codCliente}`, 10, y); y += 6;
+        doc.text(`Obra: ${orcamento.clienteInfo.obra}`, 10, y); y += 6;
+        doc.text(`Pedido nº: ${orcamento.clienteInfo.numPedido}`, 10, y); y += 6;
+        doc.text(`Recebe Caminhão: ${orcamento.clienteInfo.recebeCaminhao}`, 10, y); y += 6;
+        doc.text(`Data Desejada: ${orcamento.clienteInfo.dataDesejada}`, 10, y); y += 10;
+
+        doc.setFontSize(12);
+        doc.text("Peças:", 10, y); y += 6;
+
+        doc.setFontSize(10);
+        orcamento.itensPedido.forEach((item, index) => {
+            doc.text(
+                `${index + 1}. ${item.tipo} - ${item.bitola}mm - ${item.medidas.a}/${item.medidas.b || 0}/${item.medidas.c || 0}cm - Qtde: ${item.quantidade} - Peso: ${item.pesoKg}kg - Custo: R$ ${item.custo}`,
+                10,
+                y
+            );
+            y += 6;
+            if (y > 270) {
+                doc.addPage();
+                y = 10;
+            }
+        });
+
+        y += 10;
+        doc.setFontSize(12);
+        doc.text(`Peso Total: ${orcamento.resumoGeral.pesoTotalGeral}`, 10, y); y += 6;
+        doc.text(`Custo Total: ${orcamento.resumoGeral.custoTotalGeral}`, 10, y);
+
+        doc.save(`Orcamento_${orcamento.clienteInfo.cliente || "cliente"}.pdf`);
+    });
+
+
+   
 
             

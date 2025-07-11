@@ -5,30 +5,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CortaFácil - Corte e Dobra</title>
+    <!-- Link para o seu arquivo CSS. Certifique-se de que 'cortedobra.css' existe e está no mesmo diretório. -->
     <link rel="stylesheet" href="cortedobra.css">
+    <!-- Opcional: Link para Font Awesome para ícones, se você for usar -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
     <header>
         <h1>Corte Dobra</h1>
         <p>Calculadora de Corte, Dobra e Peso de Vergalhões</p>
+        <!-- Botão para abrir a modal de cadastro de cliente, agora em destaque no cabeçalho -->
+        <button id="btnAbrirModalCadastroCliente" type="button" style="
+            padding: 12px 25px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        ">Cadastrar Novo Cliente</button>
     </header>
 
     <main>
         <section class="cliente-info">
             <h2>Dados do Cliente</h2>
+            <!-- Campo de Busca de Cliente Existente -->
+            <div class="form-group">
+                <label for="buscarCliente">Buscar Cliente Existente:</label>
+                <input type="text" id="buscarCliente" placeholder="Digite nome, código ou documento">
+                <button id="btnBuscarCliente" type="button" class="btn" style="
+                    padding: 8px 15px;
+                    background-color: #17a2b8; /* Azul claro para busca */
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-size: 0.9em;
+                    margin-left: 5px;
+                    transition: background-color 0.3s ease;
+                ">Buscar</button>
+            </div>
+            <div id="resultadosBuscaCliente" class="lista-resultados" style="max-height: 150px; overflow-y: auto; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 15px;">
+                <!-- Resultados da busca serão inseridos aqui pelo JavaScript -->
+            </div>
+
             <form id="form-cliente">
                 <label>Cliente:</label>
-                <input type="text" id="cliente" required>
+                <input type="text" id="cliente" readonly> <!-- Campo somente leitura -->
 
                 <label>Cód. Cliente:</label>
-                <input type="text" id="codCliente">
+                <input type="text" id="codCliente" readonly> <!-- Campo somente leitura -->
 
                 <label>Obra:</label>
                 <input type="text" id="obra">
 
                 <label>Nº do Pedido:</label>
-                <input type="text" id="numPedido">
+                <input type="text" id="numPedido"> <!-- Este será preenchido automaticamente ao salvar o orçamento -->
 
                 <label>Recebe Caminhão?</label>
                 <select id="recebeCaminhao">
@@ -48,7 +84,7 @@
             <form id="form-peca">
                 <label for="tipo">Tipo de Peça:</label>
                 <select id="tipo" required>
-                    <option value="varaU">vara em U</option>
+                    <option value="varaU">Vara em U</option>
                     <option value="estribo">Estribo</option>
                     <option value="varaReta">Vara Reta</option>
                     <option value="varaL">Vara em L</option>
@@ -79,7 +115,6 @@
             </form>
         </section>
 
-
         <section class="resultado">
             <h2>Resumo do Pedido</h2>
             <table id="tabela-resultados">
@@ -94,47 +129,129 @@
                         <th>Ações</th>
                     </tr>
                 </thead>
-
                 <tbody>
+                    <!-- As linhas da tabela serão inseridas aqui pelo JavaScript -->
                 </tbody>
-                <section id="resumo-bitolas" style="margin-top: 2rem;">
-                    <h3>Resumo por Bitola</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Bitola</th>
-                                <th>Peso Total (kg)</th>
-                                <th>Custo Total (R$)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabela-resumo-bitolas"></tbody>
-                    </table>
-
-                    <p style="margin-top: 1rem;"><strong>Peso Total Geral:</strong> <span
-                            id="peso-total-geral">0.00</span></p>
-                    <p><strong>Custo Total Geral:</strong> <span id="custo-total-geral">R$ 0.00</span></p>
-                </section>
-
             </table>
+            <section id="resumo-bitolas" style="margin-top: 2rem;">
+                <h3>Resumo por Bitola</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Bitola</th>
+                            <th>Peso Total (kg)</th>
+                            <th>Custo Total (R$)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-resumo-bitolas">
+                        <!-- O resumo por bitola será inserido aqui pelo JavaScript -->
+                    </tbody>
+                </table>
+
+                <p style="margin-top: 1rem;"><strong>Peso Total Geral:</strong> <span
+                        id="peso-total-geral">0.00 kg</span></p>
+                <p><strong>Custo Total Geral:</strong> <span id="custo-total-geral">R$ 0.00</span></p>
+            </section>
         </section>
     </main>
 
-   
     <section style="margin-top: 30px; text-align: center;">
         <button type="button" id="btnSalvarOrcamento"
             style="padding: 12px 25px; background-color: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1.1em; margin-right: 15px; transition: background-color 0.3s ease;">Salvar
             Orçamento</button>
 
         <button type="button" id="btnGerarPdf"
-            style="padding: 12px 25px; background-color: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1.1em; transition: background-color 0.3s ease;">Gerar
+            style="padding: 12px 25px; background-color: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1.1em; margin-right: 15px; transition: background-color 0.3s ease;">Gerar
             PDF do Orçamento</button>
+
+        <!-- NOVO BOTÃO: Visualizar Orçamentos -->
+        <button type="button" id="btnAbrirModalVisualizarOrcamentos"
+            style="padding: 12px 25px; background-color: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1.1em; transition: background-color 0.3s ease;">Visualizar Orçamentos</button>
     </section>
 
-    <!-- jsPDF deve vir primeiro -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Estrutura da Modal de Cadastro de Cliente -->
+    <div id="modalCadastroCliente" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeModalCadastroCliente">&times;</span>
+            <h2>Cadastrar Novo Cliente</h2>
+            <form id="formCadastroCliente">
+                <div class="form-group">
+                    <label for="nomeCliente">Nome/Razão Social:</label>
+                    <input type="text" id="nomeCliente" name="nomeCliente" required>
+                </div>
 
-<!-- depois vem seu script -->
-<script src="cortedobra.js"></script>
+                <!-- Botões de Rádio para Tipo de Pessoa -->
+                <div class="form-group">
+                    <label>Tipo de Pessoa:</label><br>
+                    <input type="radio" id="radioJuridica" name="tipoPessoa" value="juridica" checked>
+                    <label for="radioJuridica">Pessoa Jurídica (CNPJ)</label><br>
+                    <input type="radio" id="radioFisica" name="tipoPessoa" value="fisica">
+                    <label for="radioFisica">Pessoa Física (CPF)</label>
+                </div>
+
+                <!-- CAMPO CNPJ (Visível por padrão, oculto por JS se for CPF) -->
+                <div class="form-group" id="cnpjGroup">
+                    <label for="cnpjCliente">CNPJ:</label>
+                    <input type="text" id="cnpjCliente" name="cnpjCliente">
+                </div>
+
+                <!-- CAMPO CPF (Inicialmente oculto, visível por JS se for CPF) -->
+                <div class="form-group" id="cpfGroup" style="display: none;">
+                    <label for="cpfCliente">CPF:</label>
+                    <input type="text" id="cpfCliente" name="cpfCliente">
+                </div>
+
+                <div class="form-group">
+                    <label for="enderecoCliente">Endereço:</label>
+                    <input type="text" id="enderecoCliente" name="enderecoCliente" required>
+                </div>
+                <div class="form-group">
+                    <label for="telefoneCliente">Telefone:</label>
+                    <input type="text" id="telefoneCliente" name="telefoneCliente" required>
+                </div>
+                <div class="form-group">
+                    <label for="emailCliente">E-mail (opcional):</label>
+                    <input type="email" id="emailCliente" name="emailCliente">
+                </div>
+                <button type="submit">Salvar Cliente</button>
+            </form>
+            <div id="cadastroClienteFeedback" style="margin-top: 10px; color: green;"></div>
+        </div>
+    </div>
+
+    <!-- Estrutura da Modal de Visualização de Orçamentos -->
+    <div id="modalVisualizarOrcamentos" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeModalVisualizarOrcamentos">&times;</span>
+            <h2>Visualizar Orçamentos</h2>
+            <div class="form-group">
+                <label for="filtroOrcamento">Filtrar por Cliente/Pedido:</label>
+                <input type="text" id="filtroOrcamento" placeholder="Digite para filtrar" style="width: calc(100% - 80px);">
+                <button id="btnFiltrarOrcamentos" type="button" class="btn" style="
+                    padding: 8px 15px;
+                    background-color: #17a2b8; /* Azul claro para busca */
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-size: 0.9em;
+                    margin-left: 5px;
+                    transition: background-color 0.3s ease;
+                ">Filtrar</button>
+            </div>
+            <div id="listaOrcamentos" class="lista-resultados" style="max-height: 400px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px; margin-top: 10px;">
+                <!-- Orçamentos serão carregados aqui -->
+                <p style="text-align: center; color: gray;">Carregando orçamentos...</p>
+            </div>
+            <div id="visualizarOrcamentoFeedback" style="margin-top: 10px;"></div>
+        </div>
+    </div>
+
+    <!-- Scripts JavaScript -->
+    <!-- jsPDF deve vir primeiro, pois cortedobra.js depende dele -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Seu script principal -->
+    <script src="cortedobra.js"></script>
 
 </body>
 

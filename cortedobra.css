@@ -5,7 +5,8 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
-    background-color: #f4f7f6; /* Light background for the page */
+    background-color: #f4f7f6;
+    /* Light background for the page */
     color: #333;
 }
 
@@ -13,7 +14,8 @@ body {
 header {
     text-align: center;
     margin-bottom: 30px;
-    background-color: #007bff; /* Primary blue for header */
+    background-color: #007bff;
+    /* Primary blue for header */
     color: white;
     padding: 20px 0;
     border-radius: 8px;
@@ -31,17 +33,22 @@ header p {
 
 /* Main content areas */
 main {
-    max-width: 1200px; /* Limit content width */
-    margin: 0 auto; /* Center the content */
+    max-width: 1200px;
+    /* Limit content width */
+    margin: 0 auto;
+    /* Center the content */
     padding: 20px;
-    background-color: #ffffff; /* White background for main content */
+    background-color: #ffffff;
+    /* White background for main content */
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow */
 }
 
 /* Section headings */
 h2 {
-    color: #0056b3; /* Darker blue for section headings */
+    color: #0056b3;
+    /* Darker blue for section headings */
     border-bottom: 2px solid #e0e0e0;
     padding-bottom: 10px;
     margin-top: 30px;
@@ -52,8 +59,10 @@ h2 {
 .cliente-info form,
 .formulario form {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive columns */
-    gap: 15px; /* Space between form elements */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    /* Responsive columns */
+    gap: 15px;
+    /* Space between form elements */
     align-items: center;
 }
 
@@ -61,7 +70,8 @@ h2 {
 .formulario label {
     font-weight: bold;
     margin-bottom: 5px;
-    grid-column: span 1; /* Each label takes one column */
+    grid-column: span 1;
+    /* Each label takes one column */
 }
 
 .cliente-info input[type="text"],
@@ -69,19 +79,25 @@ h2 {
 .cliente-info select,
 .formulario input[type="number"],
 .formulario select {
-    width: 100%; /* Make inputs fill their grid space */
+    width: 100%;
+    /* Make inputs fill their grid space */
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box; /* Include padding in width */
+    box-sizing: border-box;
+    /* Include padding in width */
 }
 
 .formulario input[type="number"][placeholder="a"],
 .formulario input[type="number"][placeholder="b"],
 .formulario input[type="number"][placeholder="c"] {
-    width: calc(33.33% - 5px); /* Adjusted for 3 inputs on one line with small gap */
-    display: inline-block; /* Allow them to sit side-by-side */
-    margin-right: 5px; /* Small gap between 'a', 'b', 'c' */
+    width: calc(33.33% - 5px);
+    /* Adjusted for 3 inputs on one line with small gap */
+    display: inline-block;
+    /* Allow them to sit side-by-side */
+    margin-right: 5px;
+
+    /* Small gap between 'a', 'b', 'c' */
     /* Remove the last margin-right for 'c' to prevent extra space */
     &:last-of-type {
         margin-right: 0;
@@ -90,16 +106,19 @@ h2 {
 
 
 .formulario button[type="submit"] {
-    grid-column: span full; /* Button spans full width of its row */
+    grid-column: span full;
+    /* Button spans full width of its row */
     padding: 12px 20px;
-    background-color: #28a745; /* Green for add button */
+    background-color: #28a745;
+    /* Green for add button */
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1.1em;
     transition: background-color 0.3s ease;
-    margin-top: 15px; /* Space above the button */
+    margin-top: 15px;
+    /* Space above the button */
 }
 
 .formulario button[type="submit"]:hover {
@@ -112,22 +131,26 @@ hr {
     border: 0;
     height: 1px;
     background-color: #ddd;
-    margin: 40px 0; /* More vertical space around the HR */
+    margin: 40px 0;
+    /* More vertical space around the HR */
 }
 
 /* Tables Styling */
 .resultado table {
     width: 100%;
-    border-collapse: collapse; /* Remove double borders */
+    border-collapse: collapse;
+    /* Remove double borders */
     margin-top: 20px;
     background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow for tables */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    /* Subtle shadow for tables */
 }
 
 .resultado th,
 .resultado td {
     border: 1px solid #e0e0e0;
-    padding: 12px 15px; /* More padding inside cells */
+    padding: 12px 15px;
+    /* More padding inside cells */
     text-align: left;
 }
 
@@ -140,16 +163,19 @@ hr {
 }
 
 .resultado tbody tr:nth-child(even) {
-    background-color: #f9f9f9; /* Zebra striping for readability */
+    background-color: #f9f9f9;
+    /* Zebra striping for readability */
 }
 
 .resultado tbody tr:hover {
-    background-color: #e9ecef; /* Highlight row on hover */
+    background-color: #e9ecef;
+    /* Highlight row on hover */
 }
 
 /* Action button in table */
 .btn-excluir {
-    background-color: #dc3545; /* Red for delete button */
+    background-color: #dc3545;
+    /* Red for delete button */
     color: white;
     border: none;
     padding: 8px 12px;
@@ -165,71 +191,258 @@ hr {
 
 /* Specific styling for the summary sections */
 #resumo-bitolas {
-    margin-top: 40px; /* Increased space between main table and summary */
+    margin-top: 40px;
+    /* Increased space between main table and summary */
     padding-top: 20px;
-    border-top: 1px solid #e0e0e0; /* A subtle line to separate visually */
+    border-top: 1px solid #e0e0e0;
+    /* A subtle line to separate visually */
 }
 
 #resumo-bitolas h3 {
     color: #0056b3;
-    margin-bottom: 15px; /* Space below summary heading */
+    margin-bottom: 15px;
+    /* Space below summary heading */
 }
 
 #resumo-bitolas table {
-    width: auto; /* Allow summary table to be narrower */
+    width: auto;
+    /* Allow summary table to be narrower */
     margin-left: 0;
-    margin-bottom: 20px; /* Space below summary table */
+    margin-bottom: 20px;
+    /* Space below summary table */
 }
 
 #resumo-bitolas p {
-    font-size: 1.2em; /* Slightly larger font for totals */
+    font-size: 1.2em;
+    /* Slightly larger font for totals */
     font-weight: bold;
-    margin-bottom: 8px; /* Slightly less space between total lines for tighter grouping */
-    display: flex; /* Use flexbox for alignment */
-    justify-content: space-between; /* Push text and value to opposite ends */
-    padding-right: 15px; /* Adjust padding if needed to align with table */
-    max-width: 450px; /* Limit width to align with summary table more naturally */
+    margin-bottom: 8px;
+    /* Slightly less space between total lines for tighter grouping */
+    display: flex;
+    /* Use flexbox for alignment */
+    justify-content: space-between;
+    /* Push text and value to opposite ends */
+    padding-right: 15px;
+    /* Adjust padding if needed to align with table */
+    max-width: 450px;
+    /* Limit width to align with summary table more naturally */
 }
 
 /* Specific styling for the total values (the numbers themselves) */
 #resumo-bitolas p span {
-    color: #007bff; /* Highlight total values with blue */
-    font-weight: bold; /* Make the numbers bold as well */
-    margin-left: 10px; /* Space between the label and the value */
-    text-align: right; /* Ensure the number is right-aligned */
-    flex-grow: 1; /* Allow the span to grow and push the value to the right */
+    color: #007bff;
+    /* Highlight total values with blue */
+    font-weight: bold;
+    /* Make the numbers bold as well */
+    margin-left: 10px;
+    /* Space between the label and the value */
+    text-align: right;
+    /* Ensure the number is right-aligned */
+    flex-grow: 1;
+    /* Allow the span to grow and push the value to the right */
 }
 
-#custo-total-geral p span { 
-    color: #007bff; /* Highlight total values with blue */
-    font-weight: bold; /* Make the numbers bold as well */
-    margin-left: 10px; /* Space between the label and the value */
-    text-align: right; /* Ensure the number is right-aligned */
-    flex-grow: 1; /* Allow the span to grow and push the value to the right */
+#custo-total-geral p span {
+    color: #007bff;
+    /* Highlight total values with blue */
+    font-weight: bold;
+    /* Make the numbers bold as well */
+    margin-left: 10px;
+    /* Space between the label and the value */
+    text-align: right;
+    /* Ensure the number is right-aligned */
+    flex-grow: 1;
+    /* Allow the span to grow and push the value to the right */
 }
-#peso-total-geral p span { 
-    color: #007bff; /* Highlight total values with blue */
-    font-weight: bold; /* Make the numbers bold as well */
-    margin-left: 10px; /* Space between the label and the value */
-    text-align: right; /* Ensure the number is right-aligned */
-    flex-grow: 1; /* Allow the span to grow and push the value to the right */   
+
+#peso-total-geral p span {
+    color: #007bff;
+    /* Highlight total values with blue */
+    font-weight: bold;
+    /* Make the numbers bold as well */
+    margin-left: 10px;
+    /* Space between the label and the value */
+    text-align: right;
+    /* Ensure the number is right-aligned */
+    flex-grow: 1;
+    /* Allow the span to grow and push the value to the right */
 }
 
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+
     .cliente-info form,
     .formulario form {
-        grid-template-columns: 1fr; /* Single column layout on smaller screens */
+        grid-template-columns: 1fr;
+        /* Single column layout on smaller screens */
     }
 
     .formulario input[type="number"][placeholder="a"],
     .formulario input[type="number"][placeholder="b"],
     .formulario input[type="number"][placeholder="c"] {
-        width: 100%; /* Full width on small screens */
+        width: 100%;
+        /* Full width on small screens */
         margin-right: 0;
-        margin-bottom: 10px; /* Add some vertical space between them */
+        margin-bottom: 10px;
+        /* Add some vertical space between them */
+    }
+}
+
+
+
+/* Estilos para o botão "Cadastrar Novo Cliente" */
+#btnAbrirModalCadastroCliente {
+    background-color: #007bff; /* Azul padrão, comum para botões de ação */
+    color: white; /* Texto branco */
+    padding: 10px 15px; /* Preenchimento interno */
+    border: none; /* Sem borda */
+    border-radius: 5px; /* Bordas levemente arredondadas */
+    cursor: pointer; /* Muda o cursor para indicar clicável */
+    font-size: 20px;/*Tamanho da fonte */
+    transition: background-color 0.3s ease; /* Transição suave na cor de fundo ao passar o mouse */
+    margin: left 3px;
+justify-content: center;
+    /* Centraliza horizontalmente */
+    align-items: center;
+    /* Centraliza verticalmente *
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave para profundidade */
+}
+
+#btnAbrirModalCadastroCliente:hover {
+    background-color: #29f50e; /* Azul mais escuro ao passar o mouse */
+}
+
+#btnAbrirModalCadastroCliente:active {
+    background-color: #41f71d; /* Azul ainda mais escuro ao clicar */
+    transform: translateY(1px); /* Pequeno efeito de "pressionar" */
+}
+
+/* Se você quiser que o botão ocupe a largura total, use: */
+#btnAbrirModalCadastroCliente {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 10px;
+}
+
+
+/* CSS para a Modal */
+.modal {
+    display: none;
+    /* Escondido por padrão */
+    position: fixed;
+    /* Fica por cima de todo o conteúdo */
+    z-index: 1000;
+    /* Alto z-index para garantir que esteja na frente */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Largura total */
+    height: 100%;
+    /* Altura total */
+    overflow: auto;
+    /* Habilita rolagem se o conteúdo for muito grande */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Fundo semi-transparente */
+    justify-content: center;
+    /* Centraliza horizontalmente */
+    align-items: center;
+    /* Centraliza verticalmente */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    /* 15% do topo e centralizado */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    /* Largura do conteúdo da modal */
+    max-width: 500px;
+    /* Largura máxima para não ficar muito grande em telas grandes */
+    border-radius: 8px;
+    position: relative;
+    /* Para posicionar o botão de fechar */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+}
+
+/* Animação para a modal aparecer */
+@keyframes animatetop {
+    from {
+        top: -300px;
+        opacity: 0
     }
 
-    
+    to {
+        top: 0;
+        opacity: 1
+    }
 }
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block; /* Mantém labels de input block para quebrar linha */
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input[type="radio"] + label { /* Seleciona o label que vem imediatamente após um input radio */
+    display: inline-block; /* Faz o label se comportar como um elemento em linha */
+    margin-right: 15px; /* Espaçamento entre os labels dos rádios */
+    font-weight: normal; /* Opcional: para que o label do radio não seja negrito se a regra .form-group label for muito genérica */
+}
+
+/* Opcional: Ajusta o tamanho da bolinha se necessário */
+.form-group input[type="radio"] {
+    margin-right: 5px; /* Espaço entre a bolinha e o texto */
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"] {
+    width: calc(100% - 20px);
+    /* 100% menos o padding */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    /* Inclui padding na largura total */
+}
+
+.modal-content button[type="submit"] {
+    background-color: #4CAF50;
+    /* Verde */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.modal-content button[type="submit"]:hover {
+    background-color: #45a049;
+}
+

@@ -558,7 +558,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (obraInput) obraInput.value = (orcamentoDetalhes.obraInfo?.nome || '').toUpperCase();
             if (numPedidoInput) numPedidoInput.value = (orcamentoDetalhes.obraInfo?.numPedido || orcamentoDetalhes.id || '').toUpperCase();
             if (orcamentoIdInput) orcamentoIdInput.value = orcamentoDetalhes.id; // Define o ID do orçamento para edição
-            if (recebeCaminhaoSelect) recebeCaminhaoSelect.value = (orcamentoDetalhes.obraInfo?.recebeCaminhao || 'Sim').toUpperCase();
+            if (recebeCaminhaoSelect) recebeCaminhaoSelect.value = (orcamentoDetalhes.obraInfo?.recebeCaminhao || 'SIM').toUpperCase();
             if (dataDesejadaInput) dataDesejadaInput.value = (orcamentoDetalhes.obraInfo?.dataDesejada || '').toUpperCase();
             // Exibe o botão de editar cliente
             if (btnEditarCliente) btnEditarCliente.style.display = 'inline-block';
@@ -688,7 +688,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (event.target === modalVisualizarOrcamentos) {
                 modalVisualizarOrcamentos.style.display = 'none';
                 filtroOrcamentoInput.value = '';
-                listaOrcamentosDiv.innerHTML = '';
+                listaOrcamentos.innerHTML = ''; // Corrigido para listaOrcamentos
                 visualizarOrcamentoFeedback.textContent = '';
             }
         });
@@ -1064,12 +1064,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 doc.setFont(options.font || 'helvetica');
                 doc.setFontSize(options.fontSize || 10);
                 doc.setTextColor(options.textColor || 0, 0, 0); // Preto padrão
-                doc.text(text.toUpperCase(), x, y, options.align ? { align: options.align } : {}); // CONVERTE PARA MAIÚSCULAS
+                doc.text(String(text).toUpperCase(), x, y, options.align ? { align: options.align } : {}); // CONVERTE PARA MAIÚSCULAS DE FORMA SEGURA
             };
 
             // --- IMAGENS (AGORA COM AS URLS CORRETAS) ---
-            // As URLs abaixo são as que a plataforma fornece para as imagens que você carregou.
-            // Elas são resolvidas em tempo de execução.
+            // AS URLS ABAIXO SÃO AS REFERÊNCIAS INTERNAS PARA AS IMAGENS QUE VOCÊ CARREGOU.
+            // ELAS SÃO RESOLVIDAS AUTOMATICAMENTE PELO AMBIENTE.
             const dafelLogoSuperior = "uploaded:logo_grupo-dafel_8KDzHg.png-1b243712-8c99-4052-998d-065a76e45a90";
             const dafelSiteLogo = "uploaded:ve7afy0h8caia2elqjwo.webp-b46de274-c89f-4f23-92cd-8bd782e70eea";
             const dafelMainLogo = "uploaded:411878334_914510800158541_3475139305395707762_n.jpg-af57b59b-3b46-49e2-bd70-6a39aedbf9ca";
@@ -1162,8 +1162,8 @@ document.addEventListener('DOMContentLoaded', function () {
             let clienteNomeText = orcamento.clienteInfo?.cliente || '';
             let codClienteText = orcamento.clienteInfo?.codCliente || '';
             // Se o nome for muito longo, trunca e adiciona "..."
-            if (doc.getStringUnitWidth(clienteNomeText) * doc.internal.getFontSize() / doc.internal.scaleFactor > 60) { // Max 60mm para o nome
-                clienteNomeText = doc.splitTextToSize(clienteNomeText, 60)[0] + "...";
+            if (doc.getStringUnitWidth(String(clienteNomeText).toUpperCase()) * doc.internal.getFontSize() / doc.internal.scaleFactor > 60) { // Max 60mm para o nome
+                clienteNomeText = doc.splitTextToSize(String(clienteNomeText).toUpperCase(), 60)[0] + "...";
             }
             addText(clienteNomeText, clientColumnX + 2, clientDataY, { fontSize: 9, textColor: 0, fontStyle: 'bold' });
             addText(codClienteText, clientColumnX + 70, clientDataY, { fontSize: 9, textColor: 0 });
@@ -1184,8 +1184,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const principal = clienteDetalhes.enderecos[0];
                 // Ajuste de largura para a rua para evitar embolamento
                 let ruaText = principal.rua || '';
-                if (doc.getStringUnitWidth(ruaText) * doc.internal.getFontSize() / doc.internal.scaleFactor > 65) { // Largura máxima para a rua
-                    ruaText = doc.splitTextToSize(ruaText, 65)[0] + "..."; // Trunca se for muito longo
+                if (doc.getStringUnitWidth(String(ruaText).toUpperCase()) * doc.internal.getFontSize() / doc.internal.scaleFactor > 65) { // Largura máxima para a rua
+                    ruaText = doc.splitTextToSize(String(ruaText).toUpperCase(), 65)[0] + "..."; // Trunca se for muito longo
                 }
                 addText(ruaText, clientColumnX + 2, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
                 addText(`${principal.numero || ''}`, clientColumnX + 70, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
@@ -1251,7 +1251,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 addText(produtoDesc, marginX + 2, currentY + 4.5);
                 addText("PC", marginX + 90, currentY + 4.5); // Unidade de medida
-                addText(item.quantidade?.toString() || '', marginX + 120, currentY + 4.5);
+                addText(String(item.quantidade || ''), marginX + 120, currentY + 4.5); // Converte para string
                 addText(`${parseFloat(item.pesoKg).toFixed(3)}`, marginX + 170, currentY + 4.5, { align: 'right' }); // Peso
                 addText(`R$ ${precoPorKgItem.toFixed(2)}`, marginX + 210, currentY + 4.5, { align: 'right' }); // Preço/KG
                 addText(`R$ ${parseFloat(item.custo).toFixed(2)}`, pageWidth - marginX - 2, currentY + 4.5, { align: 'right' }); // Total da linha
@@ -1306,10 +1306,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const leftColX = marginX;
 
             addText("ENDEREÇO ENTREGA", leftColX + 2, currentY + 5, { fontSize: 8, textColor: 0 });
-            addText(orcamento.obraInfo?.nome || 'N/A', leftColX + 2, currentY + 10, { fontSize: 9, textColor: 0, fontStyle: 'bold' });
+            addText(String(orcamento.obraInfo?.nome || 'N/A'), leftColX + 2, currentY + 10, { fontSize: 9, textColor: 0, fontStyle: 'bold' }); // Converte para string
             // Endereço de entrega da obra (usando o primeiro endereço do cliente como exemplo, ou da obra se existir)
             const enderecoEntrega = clienteDetalhes.enderecos?.[0] || {};
-            addText(`${enderecoEntrega.rua || ''}, ${enderecoEntrega.numero || ''} - ${enderecoEntrega.bairro || ''}, ${enderecoEntrega.cidade || ''}/${enderecoEntrega.estado || ''}`, leftColX + 2, currentY + 15, { fontSize: 8, textColor: 0 });
+            addText(`${String(enderecoEntrega.rua || '')}, ${String(enderecoEntrega.numero || '')} - ${String(enderecoEntrega.bairro || '')}, ${String(enderecoEntrega.cidade || '')}/${String(enderecoEntrega.estado || '')}`, leftColX + 2, currentY + 15, { fontSize: 8, textColor: 0 });
 
 
             // Coluna direita da seção inferior
@@ -1336,7 +1336,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
             // Salva o PDF
-            doc.save(`ORCAMENTO_${orcamento.clienteInfo?.cliente?.replace(/[^A-Z0-9]/G, '_') || "CLIENTE"}_${orcamento.obraInfo?.numPedido || 'SEM_PEDIDO'}.PDF`);
+            doc.save(`ORCAMENTO_${String(orcamento.clienteInfo?.cliente || '').replace(/[^A-Z0-9]/G, '_') || "CLIENTE"}_${String(orcamento.obraInfo?.numPedido || 'SEM_PEDIDO').toUpperCase()}.PDF`);
         });
     }
 

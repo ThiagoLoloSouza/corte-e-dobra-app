@@ -1077,8 +1077,7 @@ document.addEventListener('DOMContentLoaded', function () {
             addText("WWW.DAFEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, align: 'right' });
             addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, align: 'right' });
             addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, align: 'right' });
-            doc.setTextColor('#f4f8f8ff'); // Volta para preto padrão
-
+            doc.setTextColor('#FFFFFF'); // ficar branco
             currentY = 25; // Posição Y inicial após o cabeçalho superior
 
             // --- BLOCO DE DADOS DO CLIENTE ---

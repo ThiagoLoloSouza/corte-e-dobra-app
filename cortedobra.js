@@ -504,7 +504,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         spanText.addEventListener('click', () => carregarOrcamentoNaTela(orcamento.id));
                         btnExcluir.addEventListener('click', (e) => {
                             e.stopPropagation(); // Impede que o clique no botão ative o clique no item pai
-                            const idParaExcluir = e.target.dataset.orcamentoId || e.target.closest('button').dataset.orcamentoId; // Pega o ID do botão ou do pai
                             if (confirm(`TEM CERTEZA QUE DESEJA EXCLUIR O ORÇAMENTO PEDIDO Nº: ${String(numPedidoDisplay).toUpperCase()}?`)) {
                                 excluirOrcamento(idParaExcluir);
                             }
@@ -1144,9 +1143,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 addText(ruaText, clientColumnX + 2, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
                 addText(`${String(principal.numero || '')}`, clientColumnX + 70, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
                 addText(`${String(principal.bairro || '')}`, clientColumnX + 90, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
-                // Ajusta o posicionamento da cidade e estado para evitar embolamento
+                // Declaração e uso de cidadeText e estadoText
+                let cidadeText = String(principal.cidade || ''); // DECLARADO AQUI
+                let estadoText = String(principal.estado || ''); // DECLARADO AQUI
                 addText(cidadeText, clientColumnX + 130, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
-                addText(estadoText, clientColumnX + 180, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 }); // POSIÇÃO AJUSTADA AINDA MAIS PARA A DIREITA
+                addText(estadoText, clientColumnX + 180, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
             } else {
                 addText("NENHUM ENDEREÇO PRINCIPAL.", clientColumnX + 2, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
             }

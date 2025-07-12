@@ -92,7 +92,7 @@
                     <option value="varaL">Vara em L</option>
                 </select>
 
-                <!-- CAMPO DA BITOLA (REINSERIDO) -->
+                <!-- CAMPO DA BITOLA -->
                 <label for="bitola">Bitola (mm):</label>
                 <select id="bitola" required>
                     <option value="4.2">4.2</option>
@@ -107,9 +107,12 @@
                 </select>
 
                 <label>Medidas (cm):</label>
-                <input type="number" placeholder="a" id="a" required>
-                <input type="number" placeholder="b" id="b">
-                <input type="number" placeholder="c" id="c">
+                <!-- NOVO DIV PARA AGRUPAR AS MEDIDAS -->
+                <div class="medidas-group">
+                    <input type="number" placeholder="a" id="a" required>
+                    <input type="number" placeholder="b" id="b">
+                    <input type="number" placeholder="c" id="c">
+                </div>
 
                 <label for="quantidade">Quantidade de Peças:</label>
                 <input type="number" id="quantidade" required>
@@ -186,13 +189,19 @@
                     <input type="text" id="nomeCliente" name="nomeCliente" required>
                 </div>
 
-                <!-- Botões de Rádio para Tipo de Pessoa -->
-                <div class="form-group">
-                    <label>Tipo de Pessoa:</label><br>
-                    <input type="radio" id="radioJuridica" name="tipoPessoa" value="juridica" checked>
-                    <label for="radioJuridica">Pessoa Jurídica (CNPJ)</label><br>
-                    <input type="radio" id="radioFisica" name="tipoPessoa" value="fisica">
-                    <label for="radioFisica">Pessoa Física (CPF)</label>
+                <!-- Botões de Rádio para Tipo de Pessoa - ESTRUTURA MODIFICADA AQUI -->
+                <div class="form-group radio-group-tipo-pessoa">
+                    <label>Tipo de Pessoa:</label>
+                    <div class="radio-options">
+                        <div>
+                            <input type="radio" id="radioJuridica" name="tipoPessoa" value="juridica" checked>
+                            <label for="radioJuridica">Pessoa Jurídica (CNPJ)</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="radioFisica" name="tipoPessoa" value="fisica">
+                            <label for="radioFisica">Pessoa Física (CPF)</label>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- CAMPO CNPJ (Visível por padrão, oculto por JS se for CPF) -->

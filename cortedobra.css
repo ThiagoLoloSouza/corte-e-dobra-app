@@ -231,21 +231,22 @@ tr:hover {
     background-color: #fff;
 }
 
-.resultado-cliente-item,
+/* Corrigido: orcamento-item agora é uma div com flexbox */
 .orcamento-item {
     padding: 10px;
     border-bottom: 1px solid #eee;
     cursor: pointer;
     transition: background-color 0.2s ease;
-    font-size: 0.95em; /* Ajuste de fonte para lista */
+    font-size: 0.95em;
+    display: flex; /* Adicionado flexbox */
+    justify-content: space-between; /* Espaço entre texto e botão */
+    align-items: center; /* Alinhar verticalmente */
 }
 
-.resultado-cliente-item:last-child,
 .orcamento-item:last-child {
     border-bottom: none;
 }
 
-.resultado-cliente-item:hover,
 .orcamento-item:hover {
     background-color: #f0f0f0;
 }
@@ -286,6 +287,7 @@ tr:hover {
     font-size: 0.8em;
     margin-left: 10px; /* Espaçamento do texto */
     transition: background-color 0.3s ease;
+    flex-shrink: 0; /* Impede que o botão encolha */
 }
 
 .btn-excluir-orcamento:hover {
@@ -305,17 +307,35 @@ tr:hover {
         grid-template-columns: repeat(2, 1fr); /* Duas colunas */
     }
     #form-peca label:nth-of-type(1), /* Tipo de Peça */
+    #form-peca select#tipo,
     #form-peca label:nth-of-type(2), /* Bitola */
-    #form-peca label:nth-of-type(3), /* Medidas */
-    #form-peca label:nth-of-type(4) { /* Quantidade */
-        grid-column: span 1; /* Cada label ocupa 1 coluna */
+    #form-peca select#bitola,
+    #form-peca label:nth-of-type(4), /* Quantidade */
+    #form-peca input#quantidade {
+        grid-column: span 1; /* Cada label e input/select ocupa 1 coluna */
     }
+    /* Medidas (a, b, c) agora em uma única linha/coluna para melhor agrupamento */
+    #form-peca label:nth-of-type(3) { /* Label "Medidas (cm):" */
+        grid-column: span 2; /* Ocupa as duas colunas */
+    }
+    #form-peca .medidas-group { /* Novo div para agrupar inputs de medida */
+        grid-column: span 2; /* Ocupa as duas colunas */
+        display: flex;
+        gap: 10px; /* Espaçamento entre os campos a, b, c */
+    }
+    #form-peca .medidas-group input {
+        flex: 1; /* Faz com que os inputs de medida ocupem o espaço igualmente */
+        margin-bottom: 0; /* Remove margem inferior padrão */
+        padding: 8px 10px; /* Torna os inputs de medida menores */
+        font-size: 0.9em; /* Torna a fonte menor */
+    }
+
     #form-peca button[type="submit"] {
         grid-column: span 2; /* Botão ocupa as duas colunas */
     }
 }
 
-/* Para telas ainda maiores, usar 3 colunas para medidas */
+/* Para telas ainda maiores, ajustar layout do form-peca */
 @media (min-width: 900px) {
     #form-peca {
         grid-template-columns: repeat(4, 1fr); /* Quatro colunas */
@@ -326,10 +346,10 @@ tr:hover {
     #form-peca label:nth-of-type(2) { grid-column: span 1; } /* Bitola */
     #form-peca select#bitola { grid-column: span 1; }
 
-    #form-peca label:nth-of-type(3) { grid-column: span 3; } /* Medidas (a, b, c) */
-    #form-peca input#a { grid-column: span 1; }
-    #form-peca input#b { grid-column: span 1; }
-    #form-peca input#c { grid-column: span 1; }
+    #form-peca label:nth-of-type(3) { grid-column: span 2; } /* Label "Medidas (cm):" */
+    #form-peca .medidas-group { /* Novo div para agrupar inputs de medida */
+        grid-column: span 2; /* Ocupa duas colunas */
+    }
 
     #form-peca label:nth-of-type(4) { grid-column: span 1; } /* Quantidade */
     #form-peca input#quantidade { grid-column: span 1; }
@@ -444,6 +464,27 @@ section:last-of-type button {
     }
 }
 
+/* NOVO: Estilos para o grupo de rádio botões na modal de cadastro de cliente */
+.form-group.radio-group-tipo-pessoa {
+    display: flex;
+    flex-direction: column; /* Empilha a label "Tipo de Pessoa" e as opções */
+    align-items: flex-start; /* Alinha a label à esquerda */
+}
+
+.radio-group-tipo-pessoa .radio-options {
+    display: flex;
+    flex-wrap: wrap; /* Permite que as opções quebrem linha em telas menores */
+    gap: 20px; /* Espaçamento entre as opções Jurídica e Física */
+    margin-top: 5px; /* Espaçamento da label */
+}
+
+.radio-group-tipo-pessoa .radio-options > div {
+    display: flex;
+    align-items: center; /* Alinha o rádio e a label na mesma linha */
+    gap: 5px; /* Espaçamento entre o rádio e o texto da label */
+}
+
+
 /* Ajuste para o campo de busca de cliente */
 .cliente-info .form-group:first-child {
     display: flex;
@@ -478,17 +519,14 @@ section:last-of-type button {
 
 /* Ajuste para o texto clicável na lista de orçamentos */
 .orcamento-item .orcamento-text-clickable {
-    display: block; /* Garante que o span ocupe toda a largura disponível */
-    margin-right: 60px; /* Espaço para o botão de excluir */
+    flex-grow: 1; /* Permite que o texto ocupe o espaço disponível */
+    margin-right: 10px; /* Espaçamento entre o texto e o botão */
     white-space: normal; /* Permite que o texto quebre linha */
     word-wrap: break-word; /* Garante que palavras longas quebrem */
 }
 
 /* Ajuste para o botão de exclusão flutuante na lista de orçamentos */
+/* Removido position: absolute, top, transform para usar flexbox no orcamento-item */
 .orcamento-item .btn-excluir-orcamento {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    margin-left: 0; /* Remove margem extra */
+    margin-left: auto; /* Empurra o botão para a direita em flexbox */
 }

@@ -276,39 +276,43 @@ document.addEventListener('DOMContentLoaded', function () {
                 listaOrcamentosDiv.innerHTML = '<p style="text-align: center; color: orange; font-weight: bold;">Nenhum orçamento encontrado.</p>';
             } else {
                 orcamentos.forEach(orcamento => {
-                    const p = document.createElement('p');
+                    // Crie uma div para cada item do orçamento para melhor controle de layout
+                    const divItem = document.createElement('div');
+                    divItem.classList.add('orcamento-item'); // Classe para estilização
+                    divItem.dataset.orcamentoId = orcamento.id; // Armazena o ID do orçamento
+
                     const clienteNome = orcamento.clienteInfo?.cliente || 'Cliente Desconhecido';
                     const obraNome = orcamento.obraInfo?.nome || 'Obra Desconhecida';
                     const numPedidoDisplay = orcamento.numPedido || orcamento.id || 'N/A';
                     const dataDisplay = orcamento.dataOrcamento || 'Data Desconhecida';
 
-                    p.innerHTML = `
-                        <span class="orcamento-text-clickable">
-                            Pedido Nº: ${numPedidoDisplay} - Cliente: ${clienteNome} - Obra: ${obraNome} - Data: ${dataDisplay}
-                        </span>
-                        <button class="btn-excluir-orcamento" data-orcamento-id="${orcamento.id}">Excluir</button>
-                    `;
-                    p.classList.add('orcamento-item');
-                    p.dataset.orcamentoId = orcamento.id;
-                    p.style.cursor = 'pointer';
-                    p.style.borderBottom = '1px solid #eee';
-                    p.style.padding = '8px';
-                    p.style.backgroundColor = '#fefefe';
-                    p.addEventListener('mouseover', () => p.style.backgroundColor = '#e9ecef');
-                    p.addEventListener('mouseout', () => p.style.backgroundColor = '#fefefe');
-
-                    // Event listener para carregar o orçamento (clicando no span com o texto)
-                    p.querySelector('.orcamento-text-clickable').addEventListener('click', () => carregarOrcamentoNaTela(orcamento.id));
+                    // Crie um span para o texto clicável
+                    const spanText = document.createElement('span');
+                    spanText.classList.add('orcamento-text-clickable');
+                    spanText.textContent = `Pedido Nº: ${numPedidoDisplay} - Cliente: ${clienteNome} - Obra: ${obraNome} - Data: ${dataDisplay}`;
                     
-                    // Event listener para o botão de excluir
-                    p.querySelector('.btn-excluir-orcamento').addEventListener('click', (e) => {
-                        e.stopPropagation(); // Impede que o clique no botão ative o clique no parágrafo pai
+                    // Crie o botão de excluir
+                    const btnExcluir = document.createElement('button');
+                    btnExcluir.classList.add('btn-excluir-orcamento');
+                    btnExcluir.dataset.orcamentoId = orcamento.id;
+                    btnExcluir.textContent = 'Excluir';
+
+                    // Anexe os event listeners
+                    spanText.addEventListener('click', () => carregarOrcamentoNaTela(orcamento.id));
+                    btnExcluir.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Impede que o clique no botão ative o clique no item pai
                         const idParaExcluir = e.target.dataset.orcamentoId;
                         if (confirm(`Tem certeza que deseja excluir o orçamento Pedido Nº: ${numPedidoDisplay}?`)) {
                             excluirOrcamento(idParaExcluir);
                         }
                     });
-                    listaOrcamentosDiv.appendChild(p);
+
+                    // Adicione o texto e o botão à div do item
+                    divItem.appendChild(spanText);
+                    divItem.appendChild(btnExcluir);
+                    
+                    // Adicione a div do item à lista de orçamentos
+                    listaOrcamentosDiv.appendChild(divItem);
                 });
             }
         } catch (error) {
@@ -613,7 +617,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const comprimentoM = comprimentoCm / 100;
             const pesoPorMetro = pesosPorMetro[bitola];
-            const pesoTotalPecas = pesoPorMetro * comprimentoM * quantidade; // Corrigido a ordem da multiplicação
+            const pesoTotalPecas = pesoPorMetro * comprimentoM * quantidade;
             const precoPorKgDaBitola = precosPorKg[bitola] || 0;
             const custoTotalPecas = pesoTotalPecas * precoPorKgDaBitola;
 
@@ -883,7 +887,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             for (const bitola in orcamento.resumoBitolas) {
                 const resumo = orcamento.resumoBitolas[bitola];
-                doc.text(`Bitola ${bitola}mm: Peso ${resumo.toFixed(3) || '0.000'} kg - Custo R$ ${orcamento.resumoCustos[bitola]?.toFixed(2) || '0.00'}`, 10, y); // Corrigido para usar resumoCustos[bitola]
+                doc.text(`Bitola ${bitola}mm: Peso ${resumo.toFixed(3) || '0.000'} kg - Custo R$ ${orcamento.resumoCustos[bitola]?.toFixed(2) || '0.00'}`, 10, y);
                 y += lineHeight;
                 if (y > 280) { doc.addPage(); y = 10; }
             }

@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const tabelaResultados = document.querySelector('#tabela-resultados tbody');
     const resumoBitolasDisplay = document.getElementById("tabela-resumo-bitolas");
     const pesoTotalGeralElement = document.getElementById("peso-total-geral");
-    const custoTotalGeralElement = document.getElementById("custo-total-geral");
+    const custoTotalGeralElement = document.getElementById("custo-total-geral"); // CORRIGIDO AQUI
     const btnSalvarOrcamento = document.getElementById("btnSalvarOrcamento");
     const btnGerarPdf = document.getElementById("btnGerarPdf");
     const btnNovoOrcamento = document.getElementById("btnNovoOrcamento");
@@ -20,8 +20,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Campos de medida da peça
     const tipoPecaSelect = document.getElementById('tipo');
     const medidaAInput = document.getElementById('a');
-    const medidaBInput = document('b');
-    const medidaCInput = document.getElementById('c');
+    const medidaBInput = document.getElementById('b'); // CORRIGIDO AQUI
+    const medidaCInput = document.getElementById('c'); // CORRIGIDO AQUI
     const bitolaSelect = document.getElementById('bitola'); // Referência para o select da bitola
 
     // Referência para o botão "Cadastrar Novo Cliente"
@@ -1120,11 +1120,6 @@ document.addEventListener('DOMContentLoaded', function () {
             // Retângulo principal que engloba as duas colunas
             addRect(marginX, currentY, pageWidth - (2 * marginX), 45, '#FFFFFF'); // Fundo branco
 
-            // Coluna da esquerda: (REMOVIDA)
-            // addRect(marginX, currentY, (pageWidth - (2 * marginX)) * 0.45, 45, '#007bff'); // Fundo azul para a coluna da esquerda (45% da largura disponível)
-            // addText("UNIDADE DAFEL", marginX + 2, currentY + 5, { fontSize: 8, textColor: 255 });
-            // ... (restante do texto da unidade DAFEL)
-
             // Coluna da direita: DADOS DO CLIENTE (Agora ocupa a largura total do bloco)
             const clientColumnX = marginX; // Começa na margem esquerda
             const clientColumnWidth = pageWidth - (2 * marginX);
@@ -1207,7 +1202,6 @@ document.addEventListener('DOMContentLoaded', function () {
             addText("PRODUTO", marginX + 2, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
             addText("UND", marginX + 100, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
             addText("QTD", marginX + 135, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
-            // addText("VALOR", marginX + 155, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' }); // REMOVIDO
             addText("TOTAL", marginX + 215, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
 
             currentY += 8; // Posição Y após o cabeçalho da tabela
@@ -1229,7 +1223,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 addText(produtoDesc, marginX + 2, currentY + 4.5);
                 addText("PC", marginX + 100, currentY + 4.5); // Unidade de medida
                 addText(item.quantidade?.toString() || '', marginX + 135, currentY + 4.5);
-                // addText(`R$ ${(parseFloat(item.custo) / item.quantidade).toFixed(2)}`, marginX + 155, currentY + 4.5); // REMOVIDO
                 addText(`R$ ${parseFloat(item.custo).toFixed(2)}`, marginX + 215, currentY + 4.5); // Total da linha
 
                 currentY += 7; // Altura da linha
@@ -1260,7 +1253,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Coluna esquerda da seção inferior
             const leftColX = marginX;
-            // const leftColWidth = (pageWidth - (2 * marginX)) * 0.45; // Não usado diretamente
 
             addText("ENDEREÇO ENTREGA", leftColX + 2, currentY + 5, { fontSize: 8, textColor: 0 });
             addText(orcamento.obraInfo?.nome || 'N/A', leftColX + 2, currentY + 10, { fontSize: 9, textColor: 0, fontStyle: 'bold' });
@@ -1271,7 +1263,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Coluna direita da seção inferior
             const rightColX = marginX + (pageWidth - (2 * marginX)) * 0.45 + 5; // Posição X para a coluna da direita
-            // const rightColWidth = (pageWidth - (2 * marginX)) * 0.55 - 5; // Não usado diretamente
 
             // Previsão de Entrega (mock data)
             const previsaoEntregaData = new Date();
@@ -1290,7 +1281,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // --- RODAPÉ (Exemplo simples) ---
             doc.setFontSize(7);
             doc.setTextColor(100, 100, 100);
-            addText("Documento gerado por CortaFácil - Todos os direitos reservados.", pageWidth / 2, pageHeight - 5, { align: 'center' });
+            doc.text("Documento gerado por CortaFácil - Todos os direitos reservados.", pageWidth / 2, pageHeight - 5, { align: 'center' });
 
 
             // Salva o PDF

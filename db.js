@@ -1,9 +1,8 @@
-// db.js - Temporário para corrigir e adicionar a coluna enderecos (Versão 2)
+// db.js - Temporário para corrigir e adicionar a coluna enderecos (Versão 3)
 
 const { Pool } = require('pg');
 
 const pool = new Pool({
-    // Corrigido: 'connection' para 'connectionString'
     connectionString: process.env.DATABASE_URL,
     ssl: {
         rejectUnauthorized: false // Necessário para Render/Heroku SSL
@@ -35,12 +34,12 @@ async function connectDbAndAlterTable() {
 
         // 3. Migra dados da antiga coluna 'endereco' (se existir) para a nova 'enderecos'.
         // Verifica se 'endereco' existe e não é nulo, e se 'enderecos' ainda não foi preenchido.
-        // Converte o 'endereco' existente para JSONB e o coloca dentro de um array.
+        // Usa array_length para verificar o comprimento do array JSONB[].
         const migrateOldEnderecoDataQuery = `
             UPDATE clientes
             SET enderecos = ARRAY[endereco::jsonb]
             WHERE endereco IS NOT NULL
-            AND (enderecos IS NULL OR jsonb_array_length(enderecos) = 0);
+            AND (enderecos IS NULL OR array_length(enderecos, 1) IS NULL);
         `;
         await pool.query(migrateOldEnderecoDataQuery);
         console.log('Dados da antiga coluna "endereco" migrados para "enderecos" (se aplicável).');

@@ -678,7 +678,7 @@ document.addEventListener('DOMContentLoaded', function () {
         closeModalVisualizarOrcamentos.addEventListener('click', function() {
             modalVisualizarOrcamentos.style.display = 'none';
             filtroOrcamentoInput.value = '';
-            listaOrcamentosDiv.innerHTML = '';
+            listaOrcamentosDiv.innerHTML = ''; // Corrigido para listaOrcamentosDiv
             visualizarOrcamentoFeedback.textContent = '';
         });
     }
@@ -688,7 +688,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (event.target === modalVisualizarOrcamentos) {
                 modalVisualizarOrcamentos.style.display = 'none';
                 filtroOrcamentoInput.value = '';
-                listaOrcamentos.innerHTML = ''; // Corrigido para listaOrcamentos
+                listaOrcamentosDiv.innerHTML = ''; // Corrigido para listaOrcamentosDiv
                 visualizarOrcamentoFeedback.textContent = '';
             }
         });
@@ -710,7 +710,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (numPedidoInput) numPedidoInput.value = '';
         if (orcamentoIdInput) orcamentoIdInput.value = ''; // Limpa o ID do orçamento atual
         if (recebeCaminhaoSelect) recebeCaminhaoSelect.value = 'Sim'; // Valor padrão
-        if (dataDesejadaInput) dataDesejadaInput.value = '';
+        if (dataDesejadaInput) dataDasejadaInput.value = '';
         if (buscarClienteInput) buscarClienteInput.value = ''; // Limpa o campo de busca de cliente
         if (resultadosBuscaClienteDiv) resultadosBuscaClienteDiv.innerHTML = ''; // Limpa resultados da busca
         if (btnEditarCliente) btnEditarCliente.style.display = 'none'; // Esconde o botão de editar cliente
@@ -844,8 +844,8 @@ document.addEventListener('DOMContentLoaded', function () {
             novaLinhaTabela.innerHTML = `
                 <td data-label="Tipo">${tipo.toUpperCase()}</td>
                 <td data-label="Bitola">${bitola.toUpperCase()} MM</td>
-                <td data-label="Medidas">${a.toString().toUpperCase()}${b ? '/' + b.toString().toUpperCase() : ''}${c ? '/' + c.toString().toUpperCase() : ''}</td>
-                <td data-label="Qtd">${quantidade.toString().toUpperCase()}</td>
+                <td data-label="Medidas">${String(a).toUpperCase()}${b ? '/' + String(b).toUpperCase() : ''}${c ? '/' + String(c).toUpperCase() : ''}</td>
+                <td data-label="Qtd">${String(quantidade).toUpperCase()}</td>
                 <td data-label="Comprimento">${comprimentoCm.toFixed(2).toUpperCase()} CM</td>
                 <td data-label="Peso">${pesoTotalPecas.toFixed(3).toUpperCase()} KG</td>
                 <td data-label="Ações"><button class="btn btn-danger btn-excluir"><i class="fas fa-trash-alt"></i> EXCLUIR</button></td>
@@ -1162,8 +1162,8 @@ document.addEventListener('DOMContentLoaded', function () {
             let clienteNomeText = orcamento.clienteInfo?.cliente || '';
             let codClienteText = orcamento.clienteInfo?.codCliente || '';
             // Se o nome for muito longo, trunca e adiciona "..."
-            if (doc.getStringUnitWidth(String(clienteNomeText).toUpperCase()) * doc.internal.getFontSize() / doc.internal.scaleFactor > 60) { // Max 60mm para o nome
-                clienteNomeText = doc.splitTextToSize(String(clienteNomeText).toUpperCase(), 60)[0] + "...";
+            if (doc.getStringUnitWidth(String(clienteNomeText)) * doc.internal.getFontSize() / doc.internal.scaleFactor > 60) { // Max 60mm para o nome
+                clienteNomeText = doc.splitTextToSize(String(clienteNomeText), 60)[0] + "...";
             }
             addText(clienteNomeText, clientColumnX + 2, clientDataY, { fontSize: 9, textColor: 0, fontStyle: 'bold' });
             addText(codClienteText, clientColumnX + 70, clientDataY, { fontSize: 9, textColor: 0 });
@@ -1184,8 +1184,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const principal = clienteDetalhes.enderecos[0];
                 // Ajuste de largura para a rua para evitar embolamento
                 let ruaText = principal.rua || '';
-                if (doc.getStringUnitWidth(String(ruaText).toUpperCase()) * doc.internal.getFontSize() / doc.internal.scaleFactor > 65) { // Largura máxima para a rua
-                    ruaText = doc.splitTextToSize(String(ruaText).toUpperCase(), 65)[0] + "..."; // Trunca se for muito longo
+                if (doc.getStringUnitWidth(String(ruaText)) * doc.internal.getFontSize() / doc.internal.scaleFactor > 65) { // Largura máxima para a rua
+                    ruaText = doc.splitTextToSize(String(ruaText), 65)[0] + "..."; // Trunca se for muito longo
                 }
                 addText(ruaText, clientColumnX + 2, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
                 addText(`${principal.numero || ''}`, clientColumnX + 70, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
@@ -1336,7 +1336,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
             // Salva o PDF
-            doc.save(`ORCAMENTO_${String(orcamento.clienteInfo?.cliente || '').replace(/[^A-Z0-9]/G, '_') || "CLIENTE"}_${String(orcamento.obraInfo?.numPedido || 'SEM_PEDIDO').toUpperCase()}.PDF`);
+            doc.save(`ORCAMENTO_${String(orcamento.clienteInfo?.cliente || '').replace(/[^A-Z0-9]/g, '_') || "CLIENTE"}_${String(orcamento.obraInfo?.numPedido || 'SEM_PEDIDO').toUpperCase()}.PDF`);
         });
     }
 

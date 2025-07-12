@@ -70,7 +70,8 @@ app.post('/api/clientes', async (req, res) => {
         const result = await db.query(
             `INSERT INTO clientes (id, nome, tipo_pessoa, documento, enderecos, telefone, email)
              VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, nome`,
-            [newClientData.id, newClientData.nome, newClientData.tipo_pessoa, newClientData.documento, JSON.stringify(newClientData.enderecos), newClientData.telefone, newClientData.email]
+            // CORREÇÃO AQUI: Removido JSON.stringify(newClientData.enderecos)
+            [newClientData.id, newClientData.nome, newClientData.tipo_pessoa, newClientData.documento, newClientData.enderecos, newClientData.telefone, newClientData.email]
         );
         console.log('Cliente salvo no banco de dados:', result.rows[0]);
         res.status(201).json(result.rows[0]);
@@ -114,7 +115,8 @@ app.put('/api/clientes/:id', async (req, res) => {
             `UPDATE clientes
              SET nome = $1, tipo_pessoa = $2, documento = $3, enderecos = $4, telefone = $5, email = $6
              WHERE id = $7 RETURNING id, nome`,
-            [updatedClientData.nome, updatedClientData.tipo_pessoa, updatedClientData.documento, JSON.stringify(updatedClientData.enderecos), updatedClientData.telefone, updatedClientData.email, clientId]
+            // CORREÇÃO AQUI: Removido JSON.stringify(updatedClientData.enderecos)
+            [updatedClientData.nome, updatedClientData.tipo_pessoa, updatedClientData.documento, updatedClientData.enderecos, updatedClientData.telefone, updatedClientData.email, clientId]
         );
 
         if (result.rows.length === 0) {

@@ -143,19 +143,15 @@ document.addEventListener('DOMContentLoaded', function () {
             const telefoneCliente = telefoneClienteInput?.value;
             const emailCliente = emailClienteInput?.value;
 
+            // Concatena os campos de endereço em uma única string
+            const enderecoCompleto = `${ruaCliente}, ${numeroCliente}, ${bairroCliente}, ${cidadeCliente}, ${cepCliente}`;
 
             const clientData = {
                 nomeCliente,
                 tipoPessoa,
                 cnpjCliente: tipoPessoa === 'juridica' ? cnpjCliente : null,
                 cpfCliente: tipoPessoa === 'fisica' ? cpfCliente : null,
-                endereco: {
-                    rua: ruaCliente,
-                    numero: numeroCliente,
-                    bairro: bairroCliente,
-                    cidade: cidadeCliente,
-                    cep: cepCliente
-                },
+                endereco: enderecoCompleto, // Envia o endereço como uma única string
                 telefoneCliente,
                 emailCliente
             };
@@ -250,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             if (numPedidoInput) numPedidoInput.value = '';
                             if (orcamentoIdInput) orcamentoIdInput.value = ''; // Limpa o ID do orçamento atual
                             if (recebeCaminhaoSelect) recebeCaminhaoSelect.value = 'Sim';
-                            if (dataDesejadaInput) dataDesejadaInput.value = '';
+                            if (dataDesejadaInput) dataDetaDesejadaInput.value = '';
                             
                             // Limpa a tabela de peças e resumo para um novo orçamento
                             tabelaResultados.innerHTML = '';

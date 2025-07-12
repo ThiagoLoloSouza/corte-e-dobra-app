@@ -24,6 +24,13 @@ app.use(bodyParser.json());
 // Isso é útil se você quiser servir seu frontend diretamente do backend em produção.
 app.use(express.static(path.join(__dirname, '')));
 
+// --- VARIÁVEIS EM MEMÓRIA (PARA GERAÇÃO TEMPORÁRIA DE IDs SE NÃO HOUVER DB) ---
+// Estas variáveis são usadas para gerar IDs únicos (CLI-0001)
+// quando o salvamento no banco de dados ainda não está totalmente implementado ou testado.
+// Uma vez que o salvamento no DB esteja funcionando e retornando IDs reais do DB,
+// a lógica de geração de ID pode ser simplificada para usar apenas os IDs do banco.
+let nextClientIdInMemory = 1; // Contador simples para gerar IDs de cliente em memória
+
 // --- ROTAS DA API ---
 
 // Rota GET de exemplo: Verifica se o backend está funcionando
@@ -33,55 +40,53 @@ app.get('/', (req, res) => {
 
 // ROTA: POST /api/clientes - Para cadastrar um novo cliente
 app.post('/api/clientes', async (req, res) => {
-    const { nomeCliente, tipoPessoa, cnpjCliente, cpfCliente, enderecoCliente, telefoneCliente, emailCliente } = req.body;
+    // Desestrutura os dados do corpo da requisição
+    // CORREÇÃO AQUI: Mudar 'enderecoCliente' para 'endereco'
+    const { nomeCliente, tipoPessoa, cnpjCliente, cpfCliente, endereco, telefoneCliente, emailCliente } = req.body;
     console.log('Recebendo requisição POST para /api/clientes. Dados:', req.body);
 
-    if (!nomeCliente || !enderecoCliente || !telefoneCliente || (!cnpjCliente && !cpfCliente)) {
+    // Validação básica dos dados recebidos
+    // CORREÇÃO AQUI: Mudar 'enderecoCliente' para 'endereco' na validação
+    if (!nomeCliente || !endereco || !telefoneCliente || (!cnpjCliente && !cpfCliente)) {
         console.log('Dados do cliente incompletos.');
         return res.status(400).json({ message: 'Dados do cliente incompletos. Nome, endereço, telefone e CNPJ/CPF são obrigatórios.' });
     }
 
     // Gera um código único para o cliente (ex: CLI-0001, CLI-0002)
-    // O ideal é que este ID venha do banco de dados ou seja gerado de forma mais robusta.
-    // Por enquanto, mantemos uma geração simples em memória para o exemplo.
-    // Em um sistema real, você pode ter uma sequência no DB ou UUIDs.
-    let nextClientIdInMemory = 1; // Esta variável deveria ser persistente ou vir de um contador no DB
-    try {
-        const checkCount = await db.query(`SELECT COUNT(*) FROM clientes`);
-        nextClientIdInMemory = checkCount.rows[0].count ? parseInt(checkCount.rows[0].count) + 1 : 1;
-    } catch (countErr) {
-        console.warn('Não foi possível obter a contagem de clientes do DB para gerar ID. Usando contador em memória padrão.', countErr.message);
-    }
-    const newClientId = `CLI-${String(nextClientIdInMemory).padStart(4, '0')}`;
+    // Este ID será usado como PRIMARY KEY na tabela 'clientes' do PostgreSQL.
+    // Usamos um contador em memória para gerar um ID no formato desejado antes de inserir no DB.
+    const newClientId = `CLI-${String(nextClientIdInMemory++).padStart(4, '0')}`;
 
-
+    // Cria o objeto do novo cliente no formato que será salvo no DB
     const newClientData = {
         id: newClientId,
         nome: nomeCliente,
         tipo_pessoa: tipoPessoa,
         documento: tipoPessoa === 'juridica' ? cnpjCliente : cpfCliente,
-        endereco: enderecoCliente,
+        endereco: endereco, // CORREÇÃO AQUI: Usar a variável 'endereco' desestruturada
         telefone: telefoneCliente,
         email: emailCliente || null
     };
 
     try {
+        // Insere o novo cliente na tabela 'clientes' do PostgreSQL
         const result = await db.query(
             `INSERT INTO clientes (id, nome, tipo_pessoa, documento, endereco, telefone, email)
-             VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, nome`,
+             VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, nome`, // Retorna ID e nome do cliente salvo
             [newClientData.id, newClientData.nome, newClientData.tipo_pessoa, newClientData.documento, newClientData.endereco, newClientData.telefone, newClientData.email]
         );
         console.log('Cliente salvo no banco de dados:', result.rows[0]);
-        res.status(201).json(result.rows[0]);
+        res.status(201).json(result.rows[0]); // Envia o cliente salvo do banco (com o ID gerado/confirmado)
     } catch (err) {
         console.error('Erro ao salvar cliente no banco de dados:', err);
+        // Se houver um erro, envia uma resposta de erro para o frontend
         return res.status(500).json({ error: 'Erro interno do servidor ao cadastrar cliente.', details: err.message });
     }
 });
 
 // ROTA: GET /api/clientes/buscar - Para buscar clientes existentes no banco de dados
 app.get('/api/clientes/buscar', async (req, res) => {
-    const searchTerm = req.query.q;
+    const searchTerm = req.query.q; // O termo de busca (nome, id, cpf, cnpj)
     console.log('Recebendo requisição GET para /api/clientes/buscar. Termo:', searchTerm);
 
     if (!searchTerm) {
@@ -89,15 +94,17 @@ app.get('/api/clientes/buscar', async (req, res) => {
     }
 
     try {
+        // Adapta a query SQL para buscar por nome, ID ou documento (CNPJ/CPF)
+        // ILIKE para busca case-insensitive, % para wildcards (busca por qualquer parte do termo)
         const result = await db.query(
             `SELECT id, nome, documento, endereco, telefone, email, tipo_pessoa
              FROM clientes
              WHERE nome ILIKE $1 OR id ILIKE $1 OR documento ILIKE $1
              ORDER BY nome
-             LIMIT 10`,
+             LIMIT 10`, // Limita os resultados para não sobrecarregar
             [`%${searchTerm}%`]
         );
-        res.json(result.rows);
+        res.json(result.rows); // Retorna os clientes encontrados
     } catch (err) {
         console.error('Erro ao buscar clientes:', err);
         res.status(500).json({ error: 'Erro ao buscar clientes.', details: err.message });
@@ -105,18 +112,24 @@ app.get('/api/clientes/buscar', async (req, res) => {
 });
 
 
-// ROTA: POST /api/orcamentos - Para salvar um novo orçamento
+// ROTA: POST /api/orcamentos - Para salvar um orçamento
 app.post('/api/orcamentos', async (req, res) => {
     console.log('\n--- Requisição POST /api/orcamentos recebida ---');
     console.log('req.body:', req.body);
 
+    // Desestrutura os dados do orçamento enviados pelo frontend
     const { clienteInfo, itensPedido, resumoBitolas, resumoCustos, resumoGeral, obraInfo } = req.body;
 
+    // Validação básica dos dados do orçamento
     if (!clienteInfo || !itensPedido || !resumoGeral || !obraInfo) {
         return res.status(400).json({ error: 'Dados do orçamento incompletos.' });
     }
 
     try {
+        // Insere o orçamento na tabela 'orcamentos' do PostgreSQL.
+        // O 'id' será gerado automaticamente pelo PostgreSQL (SERIAL PRIMARY KEY).
+        // 'RETURNING id' faz com que o ID gerado seja retornado na resposta.
+        // Certifique-se que a coluna 'obra_info' existe na sua tabela 'orcamentos' (tipo JSONB).
         const result = await db.query(
             `INSERT INTO orcamentos (cliente_info, itens_pedido, resumo_bitolas, resumo_custos, resumo_geral, obra_info)
              VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
@@ -126,16 +139,17 @@ app.post('/api/orcamentos', async (req, res) => {
                 JSON.stringify(resumoBitolas),
                 JSON.stringify(resumoCustos),
                 JSON.stringify(resumoGeral),
-                JSON.stringify(obraInfo)
+                JSON.stringify(obraInfo) // Salva as informações da obra como JSONB
             ]
         );
 
-        const novoIdOrcamento = result.rows[0].id;
+        const novoIdOrcamento = result.rows[0].id; // Pega o ID gerado pelo banco de dados
 
+        // Retorna o ID gerado e um número de pedido formatado para o frontend
         res.status(201).json({
             message: 'Orçamento salvo com sucesso!',
-            id: novoIdOrcamento,
-            numPedido: `PED-${String(novoIdOrcamento).padStart(4, '0')}`
+            id: novoIdOrcamento, // ID real do orçamento no banco de dados
+            numPedido: `PED-${String(novoIdOrcamento).padStart(4, '0')}` // Ex: PED-0001, PED-0002
         });
     } catch (err) {
         console.error('Erro ao salvar orçamento:', err);
@@ -146,54 +160,8 @@ app.post('/api/orcamentos', async (req, res) => {
     }
 });
 
-// NOVA ROTA: PUT /api/orcamentos/:id - Para atualizar um orçamento existente
-app.put('/api/orcamentos/:id', async (req, res) => {
-    const orcamentoId = req.params.id;
-    console.log(`\n--- Requisição PUT /api/orcamentos/${orcamentoId} recebida ---`);
-    console.log('req.body:', req.body);
-
-    const { clienteInfo, itensPedido, resumoBitolas, resumoCustos, resumoGeral, obraInfo } = req.body;
-
-    if (!clienteInfo || !itensPedido || !resumoGeral || !obraInfo) {
-        return res.status(400).json({ error: 'Dados do orçamento incompletos para atualização.' });
-    }
-
-    try {
-        const result = await db.query(
-            `UPDATE orcamentos
-             SET cliente_info = $1, itens_pedido = $2, resumo_bitolas = $3, resumo_custos = $4, resumo_geral = $5, obra_info = $6, created_at = CURRENT_TIMESTAMP
-             WHERE id = $7 RETURNING id`, // Atualiza created_at para a data/hora da última modificação
-            [
-                JSON.stringify(clienteInfo),
-                JSON.stringify(itensPedido),
-                JSON.stringify(resumoBitolas),
-                JSON.stringify(resumoCustos),
-                JSON.stringify(resumoGeral),
-                JSON.stringify(obraInfo),
-                orcamentoId
-            ]
-        );
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({ message: 'Orçamento não encontrado para atualização.' });
-        }
-
-        res.status(200).json({
-            message: 'Orçamento atualizado com sucesso!',
-            id: result.rows[0].id,
-            numPedido: obraInfo && obraInfo.numPedido ? obraInfo.numPedido : `PED-${String(result.rows[0].id).padStart(4, '0')}`
-        });
-    } catch (err) {
-        console.error('Erro ao atualizar orçamento:', err);
-        res.status(500).json({
-            error: 'Erro ao atualizar orçamento.',
-            details: err.message
-        });
-    }
-});
-
-
-// ROTA: GET /api/orcamentos - Para listar todos os orçamentos (com filtro opcional)
+// NOVA ROTA: GET /api/orcamentos - Para listar todos os orçamentos (com filtro opcional)
+// Esta é a rota que estava dando 404. Verifique se ela está exatamente assim no seu arquivo.
 app.get('/api/orcamentos', async (req, res) => {
     const searchTerm = req.query.q;
     console.log('Recebendo requisição GET para /api/orcamentos. Termo de filtro:', searchTerm);
@@ -224,7 +192,7 @@ app.get('/api/orcamentos', async (req, res) => {
     }
 });
 
-// ROTA: GET /api/orcamentos/:id - Para obter detalhes de um orçamento específico
+// NOVA ROTA: GET /api/orcamentos/:id - Para obter detalhes de um orçamento específico
 app.get('/api/orcamentos/:id', async (req, res) => {
     const orcamentoId = req.params.id;
     console.log('Recebendo requisição GET para /api/orcamentos/:id. ID:', orcamentoId);
@@ -253,25 +221,6 @@ app.get('/api/orcamentos/:id', async (req, res) => {
     } catch (err) {
         console.error('Erro ao buscar detalhes do orçamento:', err);
         res.status(500).json({ error: 'Erro ao buscar detalhes do orçamento.', details: err.message });
-    }
-});
-
-// NOVA ROTA: DELETE /api/orcamentos/:id - Para excluir um orçamento
-app.delete('/api/orcamentos/:id', async (req, res) => {
-    const orcamentoId = req.params.id;
-    console.log(`\n--- Requisição DELETE /api/orcamentos/${orcamentoId} recebida ---`);
-
-    try {
-        const result = await db.query(`DELETE FROM orcamentos WHERE id = $1 RETURNING id`, [orcamentoId]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({ message: 'Orçamento não encontrado para exclusão.' });
-        }
-
-        res.status(200).json({ message: 'Orçamento excluído com sucesso!', id: orcamentoId });
-    } catch (err) {
-        console.error('Erro ao excluir orçamento:', err);
-        res.status(500).json({ error: 'Erro ao excluir orçamento.', details: err.message });
     }
 });
 

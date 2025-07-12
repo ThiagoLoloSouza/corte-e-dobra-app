@@ -72,19 +72,12 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     function toggleCpfCnpjFields() {
         const tipoPessoaSelecionado = document.querySelector('input[name="tipoPessoa"]:checked')?.value || 'juridica';
-        if (tipoPessoaSelecionado === 'juridica') {
-            if (cnpjGroup) cnpjGroup.style.display = 'block';
-            if (cpfGroup) cpfGroup.style.display = 'none';
-            if (cnpjClienteInput) cnpjClienteInput.required = true;
-            if (cpfClienteInput) cpfClienteInput.required = false;
-            if (cpfClienteInput) cpfClienteInput.value = '';
-        } else {
-            if (cnpjGroup) cnpjGroup.style.display = 'none';
-            if (cpfGroup) cpfGroup.style.display = 'block';
-            if (cnpjClienteInput) cnpjClienteInput.required = false;
-            if (cpfClienteInput) cpfClienteInput.required = true;
-            if (cnpjClienteInput) cnpjClienteInput.value = '';
-        }
+        if (cnpjGroup) cnpjGroup.style.display = (tipoPessoaSelecionado === 'juridica') ? 'block' : 'none';
+        if (cpfGroup) cpfGroup.style.display = (tipoPessoaSelecionado === 'fisica') ? 'block' : 'none';
+        if (cnpjClienteInput) cnpjClienteInput.required = (tipoPessoaSelecionado === 'juridica');
+        if (cpfClienteInput) cpfClienteInput.required = (tipoPessoaSelecionado === 'fisica');
+        if (tipoPessoaSelecionado === 'juridica' && cpfClienteInput) cpfClienteInput.value = '';
+        if (tipoPessoaSelecionado === 'fisica' && cnpjClienteInput) cnpjClienteInput.value = '';
     }
 
     /**
@@ -553,13 +546,13 @@ document.addEventListener('DOMContentLoaded', function () {
             const orcamentoDetalhes = await response.json();
 
             // Preenche os campos do formulário principal com verificações de segurança
-            if (clienteInputPrincipal) clienteInputPrincipal.value = (orcamentoDetalhes.clienteInfo?.cliente || '').toUpperCase();
-            if (codClienteInputPrincipal) codClienteInputPrincipal.value = (orcamentoDetalhes.clienteInfo?.codCliente || '').toUpperCase();
-            if (obraInput) obraInput.value = (orcamentoDetalhes.obraInfo?.nome || '').toUpperCase();
-            if (numPedidoInput) numPedidoInput.value = (orcamentoDetalhes.obraInfo?.numPedido || orcamentoDetalhes.id || '').toUpperCase();
+            if (clienteInputPrincipal) clienteInputPrincipal.value = (String(orcamentoDetalhes.clienteInfo?.cliente || '')).toUpperCase();
+            if (codClienteInputPrincipal) codClienteInputPrincipal.value = (String(orcamentoDetalhes.clienteInfo?.codCliente || '')).toUpperCase();
+            if (obraInput) obraInput.value = (String(orcamentoDetalhes.obraInfo?.nome || '')).toUpperCase();
+            if (numPedidoInput) numPedidoInput.value = (String(orcamentoDetalhes.obraInfo?.numPedido || orcamentoDetalhes.id || '')).toUpperCase();
             if (orcamentoIdInput) orcamentoIdInput.value = orcamentoDetalhes.id; // Define o ID do orçamento para edição
-            if (recebeCaminhaoSelect) recebeCaminhaoSelect.value = (orcamentoDetalhes.obraInfo?.recebeCaminhao || 'SIM').toUpperCase();
-            if (dataDesejadaInput) dataDesejadaInput.value = (orcamentoDetalhes.obraInfo?.dataDesejada || '').toUpperCase();
+            if (recebeCaminhaoSelect) recebeCaminhaoSelect.value = (String(orcamentoDetalhes.obraInfo?.recebeCaminhao || 'SIM')).toUpperCase();
+            if (dataDesejadaInput) dataDesejadaInput.value = (String(orcamentoDetalhes.obraInfo?.dataDesejada || '')).toUpperCase();
             // Exibe o botão de editar cliente
             if (btnEditarCliente) btnEditarCliente.style.display = 'inline-block';
 
@@ -574,12 +567,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 orcamentoDetalhes.itensPedido.forEach(item => {
                     const novaLinhaTabela = document.createElement('tr');
                     novaLinhaTabela.innerHTML = `
-                        <td data-label="Tipo">${(item.tipo || '').toUpperCase()}</td>
-                        <td data-label="Bitola">${(item.bitola || '').toUpperCase()} MM</td>
-                        <td data-label="Medidas">${(item.medidas?.a || '').toUpperCase()}${(item.medidas?.b ? '/' + item.medidas.b : '').toUpperCase()}${(item.medidas?.c ? '/' + item.medidas.c : '').toUpperCase()}</td>
-                        <td data-label="Qtd">${(item.quantidade || '').toString().toUpperCase()}</td>
-                        <td data-label="Comprimento">${(item.comprimentoCm || '').toUpperCase()} CM</td>
-                        <td data-label="Peso">${(item.pesoKg || '').toUpperCase()} KG</td>
+                        <td data-label="Tipo">${(String(item.tipo || '')).toUpperCase()}</td>
+                        <td data-label="Bitola">${(String(item.bitola || '')).toUpperCase()} MM</td>
+                        <td data-label="Medidas">${(String(item.medidas?.a || '')).toUpperCase()}${(item.medidas?.b ? '/' + String(item.medidas.b) : '').toUpperCase()}${(item.medidas?.c ? '/' + String(item.medidas.c) : '').toUpperCase()}</td>
+                        <td data-label="Qtd">${(String(item.quantidade || '')).toUpperCase()}</td>
+                        <td data-label="Comprimento">${(String(item.comprimentoCm || '')).toUpperCase()} CM</td>
+                        <td data-label="Peso">${(String(item.pesoKg || '')).toUpperCase()} KG</td>
                         <td data-label="Ações"><button class="btn btn-danger btn-excluir"><i class="fas fa-trash-alt"></i> EXCLUIR</button></td>
                     `;
                     novaLinhaTabela.dataset.bitola = item.bitola || '';
@@ -626,7 +619,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } catch (error) {
             console.error('ERRO AO CARREGAR ORÇAMENTO NA TELA:', error);
             if(visualizarOrcamentoFeedback) {
-                visualizarOrcamentoFeedback.textContent = `ERRO AO CARREGAR ORÇAMENTO: ${error.message.toUpperCase()}`;
+                visualizarOrcamentoFeedback.textContent = `ERRO AO CARREGAR ORÇAMENTO: ${String(error.message).toUpperCase()}`;
                 visualizarOrcamentoFeedback.style.color = 'red';
             }
         }
@@ -658,7 +651,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Usar uma modal customizada em vez de alert
                 const feedbackDiv = document.getElementById('visualizarOrcamentoFeedback');
                 if (feedbackDiv) {
-                    feedbackDiv.textContent = `ERRO AO EXCLUIR ORÇAMENTO: ${error.message.toUpperCase()}`;
+                    feedbackDiv.textContent = `ERRO AO EXCLUIR ORÇAMENTO: ${String(error.message).toUpperCase()}`;
                     feedbackDiv.style.color = 'red';
                     setTimeout(() => feedbackDiv.textContent = '', 5000);
                 }
@@ -678,7 +671,7 @@ document.addEventListener('DOMContentLoaded', function () {
         closeModalVisualizarOrcamentos.addEventListener('click', function() {
             modalVisualizarOrcamentos.style.display = 'none';
             filtroOrcamentoInput.value = '';
-            listaOrcamentosDiv.innerHTML = ''; // Corrigido para listaOrcamentosDiv
+            listaOrcamentosDiv.innerHTML = '';
             visualizarOrcamentoFeedback.textContent = '';
         });
     }
@@ -688,7 +681,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (event.target === modalVisualizarOrcamentos) {
                 modalVisualizarOrcamentos.style.display = 'none';
                 filtroOrcamentoInput.value = '';
-                listaOrcamentosDiv.innerHTML = ''; // Corrigido para listaOrcamentosDiv
+                listaOrcamentosDiv.innerHTML = '';
                 visualizarOrcamentoFeedback.textContent = '';
             }
         });
@@ -710,7 +703,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (numPedidoInput) numPedidoInput.value = '';
         if (orcamentoIdInput) orcamentoIdInput.value = ''; // Limpa o ID do orçamento atual
         if (recebeCaminhaoSelect) recebeCaminhaoSelect.value = 'Sim'; // Valor padrão
-        if (dataDesejadaInput) dataDasejadaInput.value = '';
+        if (dataDesejadaInput) dataDesejadaInput.value = ''; // Corrigido para dataDesejadaInput
         if (buscarClienteInput) buscarClienteInput.value = ''; // Limpa o campo de busca de cliente
         if (resultadosBuscaClienteDiv) resultadosBuscaClienteDiv.innerHTML = ''; // Limpa resultados da busca
         if (btnEditarCliente) btnEditarCliente.style.display = 'none'; // Esconde o botão de editar cliente
@@ -861,7 +854,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 pesoKg: pesoTotalPecas.toFixed(3),
                 custo: custoTotalPecas.toFixed(2)
             };
-            novaLinhaTabela.orcamentoData = dadosPeca; // Associa os dados à linha HTML
             linhasOrcamento.push(dadosPeca); // Adiciona ao array global de peças
 
             novaLinhaTabela.querySelector(".btn-excluir").addEventListener("click", function () {
@@ -872,11 +864,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (resumoBitolasCalculo[bitolaExcluir]) { resumoBitolasCalculo[bitolaExcluir] -= pesoExcluir; if (resumoBitolasCalculo[bitolaExcluir] < 0.001) { delete resumoBitolasCalculo[bitolaExcluir]; } }
                 if (resumoCustosCalculo[bitolaExcluir]) { resumoCustosCalculo[bitolaExcluir] -= custoExcluir; if (resumoCustosCalculo[bitolaExcluir] < 0.001) { delete resumoCustosCalculo[bitolaExcluir]; } }
 
+                // Encontra e remove a peça do array linhasOrcamento
                 const index = linhasOrcamento.findIndex(item =>
-                    item.tipo === novaLinhaTabela.orcamentoData.tipo &&
-                    item.bitola === novaLinhaTabela.orcamentoData.bitola &&
-                    item.comprimentoCm === novaLinhaTabela.orcamentoData.comprimentoCm &&
-                    item.quantidade === novaLinhaTabela.orcamentoData.quantidade
+                    item.tipo === dadosPeca.tipo && // Use dadosPeca aqui para se referir à peça original desta linha
+                    item.bitola === dadosPeca.bitola &&
+                    item.comprimentoCm === dadosPeca.comprimentoCm &&
+                    item.quantidade === dadosPeca.quantidade
                 );
                 if (index > -1) { linhasOrcamento.splice(index, 1); }
 
@@ -1004,7 +997,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert(`ORÇAMENTO ${method === 'POST' ? 'SALVO' : 'ATUALIZADO'} COM SUCESSO! PEDIDO Nº: ${resultado.numPedido || resultado.id}`);
 
                 if (numPedidoInput) {
-                    numPedidoInput.value = resultado.numPedido || resultado.id;
+                    numPedidoInput.value = String(resultado.numPedido || resultado.id).toUpperCase();
                 }
                 if (orcamentoIdInput && method === 'POST') {
                     orcamentoIdInput.value = resultado.id; // Define o ID para o novo orçamento salvo
@@ -1018,7 +1011,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             } catch (error) {
                 console.error("ERRO AO SALVAR/ATUALIZAR ORÇAMENTO:", error);
-                alert("ERRO AO SALVAR/ATUALIZAR ORÇAMENTO. DETALHES: " + error.message.toUpperCase());
+                alert("ERRO AO SALVAR/ATUALIZAR ORÇAMENTO. DETALHES: " + String(error.message).toUpperCase());
             }
         });
     }
@@ -1067,14 +1060,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 doc.text(String(text).toUpperCase(), x, y, options.align ? { align: options.align } : {}); // CONVERTE PARA MAIÚSCULAS DE FORMA SEGURA
             };
 
-            // --- IMAGENS (AGORA COM AS URLS CORRETAS) ---
-            // AS URLS ABAIXO SÃO AS REFERÊNCIAS INTERNAS PARA AS IMAGENS QUE VOCÊ CARREGOU.
-            // ELAS SÃO RESOLVIDAS AUTOMATICAMENTE PELO AMBIENTE.
-            const dafelLogoSuperior = "uploaded:logo_grupo-dafel_8KDzHg.png-1b243712-8c99-4052-998d-065a76e45a90";
-            const dafelSiteLogo = "uploaded:ve7afy0h8caia2elqjwo.webp-b46de274-c89f-4f23-92cd-8bd782e70eea";
-            const dafelMainLogo = "uploaded:411878334_914510800158541_3475139305395707762_n.jpg-af57b59b-3b46-49e2-bd70-6a39aedbf9ca";
-            const dafelSocialMediaLogo = "uploaded:288802433_329085279378732_7698072396463611572_n.jpg-69f491a9-8af0-48e1-8c6b-02154d64f67f";
-            const qrCodePlaceholder = "https://placehold.co/50x50/FFFFFF/000000?text=QR"; // Placeholder para QR Code
+            // --- IMAGENS (AGORA COM PLACEHOLDERS PARA EVITAR ERROS DE CARREGAMENTO) ---
+            // As URLs "uploaded:" não são diretamente acessíveis pelo jsPDF.
+            // Para garantir que o PDF seja gerado sem erros, usaremos placeholders.
+            // Se você precisar das imagens reais no PDF, será necessário um servidor para
+            // converter as imagens "uploaded:" para base64 ou URLs públicas.
+            const dafelLogoSuperior = "https://placehold.co/40x15/333333/FFFFFF?text=LOGO";
+            const dafelSiteLogo = "https://placehold.co/20x15/333333/FFFFFF?text=SITE";
+            const dafelMainLogo = "https://placehold.co/100x30/F0F0F0/000000?text=LOGO_PRINCIPAL";
+            const dafelSocialMediaLogo = "https://placehold.co/20x15/333333/FFFFFF?text=SOCIAL";
+            const qrCodePlaceholder = "https://placehold.co/12x12/FFFFFF/000000?text=QR";
 
             // Função para adicionar imagem (com tratamento de erro básico)
             const addImageToPdf = (imgUrl, x, y, width, height, callback) => {
@@ -1086,10 +1081,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (imgUrl.toLowerCase().endsWith('.jpg') || imgUrl.toLowerCase().endsWith('.jpeg')) {
                         format = 'JPEG';
                     } else if (imgUrl.toLowerCase().endsWith('.webp')) {
-                        // jsPDF não suporta WEBP nativamente, converter para PNG/JPEG ou usar uma alternativa
-                        // Para simplificar, vamos tentar PNG, mas pode falhar para WEBP.
-                        // O ideal seria converter no backend ou usar uma lib que suporte.
-                        // Por enquanto, vamos assumir que as imagens fornecidas são PNG/JPG.
                         format = 'PNG'; // Fallback, pode não funcionar
                         console.warn("WEBP IMAGES MIGHT NOT BE FULLY SUPPORTED BY JSPDF DIRECTLY. CONSIDER CONVERTING THEM TO PNG/JPEG FOR BETTER COMPATIBILITY.");
                     }
@@ -1159,18 +1150,18 @@ document.addEventListener('DOMContentLoaded', function () {
             const clientDataLineHeight = 5; // Linha de altura para os dados do cliente
 
             // Nome do Cliente e Código (ajuste de largura para evitar embolamento)
-            let clienteNomeText = orcamento.clienteInfo?.cliente || '';
-            let codClienteText = orcamento.clienteInfo?.codCliente || '';
+            let clienteNomeText = String(orcamento.clienteInfo?.cliente || '');
+            let codClienteText = String(orcamento.clienteInfo?.codCliente || '');
             // Se o nome for muito longo, trunca e adiciona "..."
-            if (doc.getStringUnitWidth(String(clienteNomeText)) * doc.internal.getFontSize() / doc.internal.scaleFactor > 60) { // Max 60mm para o nome
-                clienteNomeText = doc.splitTextToSize(String(clienteNomeText), 60)[0] + "...";
+            if (doc.getStringUnitWidth(clienteNomeText.toUpperCase()) * doc.internal.getFontSize() / doc.internal.scaleFactor > 60) { // Max 60mm para o nome
+                clienteNomeText = doc.splitTextToSize(clienteNomeText.toUpperCase(), 60)[0] + "...";
             }
             addText(clienteNomeText, clientColumnX + 2, clientDataY, { fontSize: 9, textColor: 0, fontStyle: 'bold' });
             addText(codClienteText, clientColumnX + 70, clientDataY, { fontSize: 9, textColor: 0 });
 
-            addText(clienteDetalhes.documento || 'N/A', clientColumnX + 110, clientDataY, { fontSize: 9, textColor: 0 });
-            addText(clienteDetalhes.telefone || 'N/A', clientColumnX + 150, clientDataY, { fontSize: 9, textColor: 0 });
-            addText(clienteDetalhes.enderecos?.[0]?.cep || 'N/A', clientColumnX + 190, clientDataY, { fontSize: 9, textColor: 0 });
+            addText(String(clienteDetalhes.documento || 'N/A'), clientColumnX + 110, clientDataY, { fontSize: 9, textColor: 0 });
+            addText(String(clienteDetalhes.telefone || 'N/A'), clientColumnX + 150, clientDataY, { fontSize: 9, textColor: 0 });
+            addText(String(clienteDetalhes.enderecos?.[0]?.cep || 'N/A'), clientColumnX + 190, clientDataY, { fontSize: 9, textColor: 0 });
 
             // Endereço Principal do Cliente (ajuste de posição para evitar embolamento)
             const addressY = clientDataY + clientDataLineHeight * 2; // Pula duas linhas para o endereço
@@ -1183,16 +1174,16 @@ document.addEventListener('DOMContentLoaded', function () {
             if (clienteDetalhes.enderecos && clienteDetalhes.enderecos.length > 0) {
                 const principal = clienteDetalhes.enderecos[0];
                 // Ajuste de largura para a rua para evitar embolamento
-                let ruaText = principal.rua || '';
-                if (doc.getStringUnitWidth(String(ruaText)) * doc.internal.getFontSize() / doc.internal.scaleFactor > 65) { // Largura máxima para a rua
-                    ruaText = doc.splitTextToSize(String(ruaText), 65)[0] + "..."; // Trunca se for muito longo
+                let ruaText = String(principal.rua || '');
+                if (doc.getStringUnitWidth(ruaText.toUpperCase()) * doc.internal.getFontSize() / doc.internal.scaleFactor > 65) { // Largura máxima para a rua
+                    ruaText = doc.splitTextToSize(ruaText.toUpperCase(), 65)[0] + "..."; // Trunca se for muito longo
                 }
                 addText(ruaText, clientColumnX + 2, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
-                addText(`${principal.numero || ''}`, clientColumnX + 70, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
-                addText(`${principal.bairro || ''}`, clientColumnX + 90, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
+                addText(`${String(principal.numero || '')}`, clientColumnX + 70, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
+                addText(`${String(principal.bairro || '')}`, clientColumnX + 90, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
                 // Ajuste de largura para a cidade e estado
-                let cidadeText = principal.cidade || '';
-                let estadoText = principal.estado || '';
+                let cidadeText = String(principal.cidade || '');
+                let estadoText = String(principal.estado || '');
                 // Ajusta o posicionamento da cidade e estado para evitar embolamento
                 addText(cidadeText, clientColumnX + 130, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
                 addText(estadoText, clientColumnX + 165, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 }); // POSIÇÃO AJUSTADA
@@ -1244,8 +1235,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 doc.setDrawColor(0); // Cor da borda preta
                 doc.rect(marginX, currentY, pageWidth - (2 * marginX), 7, 'S'); // Borda para a linha do item
 
-                const medidasStr = `${item.medidas?.a || ''}${item.medidas?.b ? '/' + item.medidas.b : ''}${item.medidas?.c ? '/' + item.medidas.c : ''}`;
-                const produtoDesc = `${item.tipo} ${item.bitola}MM (${medidasStr} CM)`; // Descrição mais completa
+                const medidasStr = `${String(item.medidas?.a || '')}${item.medidas?.b ? '/' + String(item.medidas.b) : ''}${item.medidas?.c ? '/' + String(item.medidas.c) : ''}`;
+                const produtoDesc = `${String(item.tipo)} ${String(item.bitola)}MM (${medidasStr} CM)`; // Descrição mais completa
 
                 const precoPorKgItem = (parseFloat(item.pesoKg) > 0) ? (parseFloat(item.custo) / parseFloat(item.pesoKg)) : 0;
 

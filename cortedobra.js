@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Campos de medida da peça
     const tipoPecaSelect = document.getElementById('tipo');
     const medidaAInput = document.getElementById('a');
-    const medidaBInput = document.getElementById('b');
+    const medidaBInput = document('b');
     const medidaCInput = document.getElementById('c');
     const bitolaSelect = document.getElementById('bitola'); // Referência para o select da bitola
 
@@ -484,52 +484,52 @@ document.addEventListener('DOMContentLoaded', function () {
             listaOrcamentosDiv.innerHTML = '';
             if (orcamentos.length === 0) {
                 listaOrcamentosDiv.innerHTML = '<p class="loading-message" style="color: orange; font-weight: bold;">Nenhum orçamento encontrado.</p>';
-            } else {
-                orcamentos.forEach(orcamento => {
-                    // Crie uma div para cada item do orçamento para melhor controle de layout
-                    const divItem = document.createElement('div');
-                    divItem.classList.add('orcamento-item'); // Classe para estilização
-                    divItem.dataset.orcamentoId = orcamento.id; // Armazena o ID do orçamento
+                } else {
+                    orcamentos.forEach(orcamento => {
+                        // Crie uma div para cada item do orçamento para melhor controle de layout
+                        const divItem = document.createElement('div');
+                        divItem.classList.add('orcamento-item'); // Classe para estilização
+                        divItem.dataset.orcamentoId = orcamento.id; // Armazena o ID do orçamento
 
-                    const clienteNome = orcamento.clienteInfo?.cliente || 'Cliente Desconhecido';
-                    const obraNome = orcamento.obraInfo?.nome || 'Obra Desconhecida';
-                    const numPedidoDisplay = orcamento.numPedido || orcamento.id || 'N/A';
-                    const dataDisplay = orcamento.dataOrcamento || 'Data Desconhecida';
+                        const clienteNome = orcamento.clienteInfo?.cliente || 'Cliente Desconhecido';
+                        const obraNome = orcamento.obraInfo?.nome || 'Obra Desconhecida';
+                        const numPedidoDisplay = orcamento.numPedido || orcamento.id || 'N/A';
+                        const dataDisplay = orcamento.dataOrcamento || 'Data Desconhecida';
 
-                    // Crie um span para o texto clicável
-                    const spanText = document.createElement('span');
-                    spanText.classList.add('orcamento-text-clickable');
-                    spanText.textContent = `Pedido Nº: ${numPedidoDisplay} - Cliente: ${clienteNome} - Obra: ${obraNome} - Data: ${dataDisplay}`;
-                    
-                    // Crie o botão de excluir
-                    const btnExcluir = document.createElement('button');
-                    btnExcluir.classList.add('btn', 'btn-danger', 'btn-excluir-orcamento');
-                    btnExcluir.dataset.orcamentoId = orcamento.id;
-                    btnExcluir.innerHTML = '<i class="fas fa-trash-alt"></i> Excluir';
+                        // Crie um span para o texto clicável
+                        const spanText = document.createElement('span');
+                        spanText.classList.add('orcamento-text-clickable');
+                        spanText.textContent = `Pedido Nº: ${numPedidoDisplay} - Cliente: ${clienteNome} - Obra: ${obraNome} - Data: ${dataDisplay}`;
+                        
+                        // Crie o botão de excluir
+                        const btnExcluir = document.createElement('button');
+                        btnExcluir.classList.add('btn', 'btn-danger', 'btn-excluir-orcamento');
+                        btnExcluir.dataset.orcamentoId = orcamento.id;
+                        btnExcluir.innerHTML = '<i class="fas fa-trash-alt"></i> Excluir';
 
-                    // Anexe os event listeners
-                    spanText.addEventListener('click', () => carregarOrcamentoNaTela(orcamento.id));
-                    btnExcluir.addEventListener('click', (e) => {
-                        e.stopPropagation(); // Impede que o clique no botão ative o clique no item pai
-                        const idParaExcluir = e.target.dataset.orcamentoId || e.target.closest('button').dataset.orcamentoId; // Pega o ID do botão ou do pai
-                        if (confirm(`Tem certeza que deseja excluir o orçamento Pedido Nº: ${numPedidoDisplay}?`)) {
-                            excluirOrcamento(idParaExcluir);
-                        }
+                        // Anexe os event listeners
+                        spanText.addEventListener('click', () => carregarOrcamentoNaTela(orcamento.id));
+                        btnExcluir.addEventListener('click', (e) => {
+                            e.stopPropagation(); // Impede que o clique no botão ative o clique no item pai
+                            const idParaExcluir = e.target.dataset.orcamentoId || e.target.closest('button').dataset.orcamentoId; // Pega o ID do botão ou do pai
+                            if (confirm(`Tem certeza que deseja excluir o orçamento Pedido Nº: ${numPedidoDisplay}?`)) {
+                                excluirOrcamento(idParaExcluir);
+                            }
+                        });
+
+                        // Adicione o texto e o botão à div do item
+                        divItem.appendChild(spanText);
+                        divItem.appendChild(btnExcluir);
+                        
+                        // Adicione a div do item à lista de orçamentos
+                        listaOrcamentosDiv.appendChild(divItem);
                     });
-
-                    // Adicione o texto e o botão à div do item
-                    divItem.appendChild(spanText);
-                    divItem.appendChild(btnExcluir);
-                    
-                    // Adicione a div do item à lista de orçamentos
-                    listaOrcamentosDiv.appendChild(divItem);
-                });
+                }
+            } catch (error) {
+                console.error('Erro ao carregar orçamentos:', error);
+                listaOrcamentosDiv.innerHTML = `<p class="loading-message" style="color: red; text-align: center;">Erro ao carregar orçamentos: ${error.message}</p>`;
             }
-        } catch (error) {
-            console.error('Erro ao carregar orçamentos:', error);
-            listaOrcamentosDiv.innerHTML = `<p class="loading-message" style="color: red; text-align: center;">Erro ao carregar orçamentos: ${error.message}</p>`;
         }
-    }
 
     /**
      * Carrega um orçamento específico na tela principal para visualização/edição.
@@ -996,8 +996,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ message: 'Erro desconhecido ao salvar/atualizar orçamento.' }));
-                    throw new Error(errorData.message || "Erro ao salvar/atualizar orçamento.");
+                    const errorData = await response.json().catch(() => ({ message: 'Erro desconhecido ao cadastrar/atualizar orçamento.' }));
+                    throw new Error(errorData.message || "Erro ao cadastrar/atualizar orçamento.");
                 }
 
                 const resultado = await response.json();
@@ -1067,12 +1067,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 doc.text(text, x, y, options.align ? { align: options.align } : {});
             };
 
-            // --- IMAGENS (PLACEHOLDERS) ---
-            // Substitua estas URLs pelas suas imagens reais (Base64 ou URLs acessíveis publicamente)
-            // Para imagens Base64: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
-            const dafelLogoUrl = "https://placehold.co/120x40/FF8C00/FFFFFF?text=DAFEL+LOGO"; // Exemplo de placeholder
-            // const thiagoImage = "https://placehold.co/50x50/007bff/FFFFFF?text=THIAGO"; // Removido
-            // const caminhaoImage = "https://placehold.co/30x30/FFC107/333333?text=CAM"; // Removido
+            // --- IMAGENS ---
+            const dafelLogoSuperior = "https://lh3.googleusercontent.com/file_content/10"; // logo_grupo-dafel_8KDzHg.png
+            const dafelSiteLogo = "https://lh3.googleusercontent.com/file_content/9"; // ve7afy0h8caia2elqjwo.webp
+            const dafelMainLogo = "https://lh3.googleusercontent.com/file_content/7"; // 411878334_914510800158541_3475139305395707762_n.jpg
+            const dafelSocialMediaLogo = "https://lh3.googleusercontent.com/file_content/8"; // 288802433_329085279378732_7698072396463611572_n.jpg
+            const dafelWebsiteLogo = "https://lh3.googleusercontent.com/file_content/6"; // client-4.png
+            const qrCodePlaceholder = "https://placehold.co/50x50/FFFFFF/000000?text=QR"; // Placeholder para QR Code
 
             // Função para adicionar imagem (com tratamento de erro básico)
             const addImageToPdf = (imgUrl, x, y, width, height, callback) => {
@@ -1101,47 +1102,38 @@ document.addEventListener('DOMContentLoaded', function () {
             addText("ORÇAMENTO", marginX, 13, { fontSize: 16, textColor: 255, fontStyle: 'bold' });
             addText("VENDA", marginX + 60, 13, { fontSize: 9, textColor: 255 });
 
-            // Logo DAFEL (posicionado no centro superior)
-            addImageToPdf(dafelLogoUrl, pageWidth / 2 - 20, 3, 40, 15); // Centralizado
+            // Logos no cabeçalho
+            addImageToPdf(dafelLogoSuperior, pageWidth / 2 - 20, 3, 40, 15); // Logo DAFEL centralizado
+            addImageToPdf(dafelSiteLogo, pageWidth - marginX - 70, 3, 20, 15); // Logo do site
+            addImageToPdf(dafelSocialMediaLogo, pageWidth - marginX - 45, 3, 20, 15); // Logo redes sociais
+            addImageToPdf(qrCodePlaceholder, pageWidth - marginX - 15, 3, 12, 12); // QR Code
 
             // Informações do site e redes sociais (lado direito)
-            addText("acesse nosso site", pageWidth - marginX - 40, 7, { fontSize: 7, textColor: 255, align: 'right' });
-            addText("www.dtel.com.br", pageWidth - marginX - 40, 10, { fontSize: 9, textColor: 255, align: 'right' });
-            addText("redes sociais", pageWidth - marginX - 40, 14, { fontSize: 7, textColor: 255, align: 'right' });
-            addText("dafeloficial", pageWidth - marginX - 40, 17, { fontSize: 9, textColor: 255, align: 'right' });
-
-            // QR Code (placeholder)
-            addRect(pageWidth - marginX - 15, 3, 12, 12, '#FFFFFF'); // Quadrado branco para QR Code
-            addText("QR", pageWidth - marginX - 9, 10, { fontSize: 8, textColor: 0, align: 'center' }); // Placeholder "QR"
+            addText("acesse nosso site", pageWidth - marginX - 70, 7, { fontSize: 7, textColor: 255, align: 'right' });
+            addText("www.dtel.com.br", pageWidth - marginX - 70, 10, { fontSize: 9, textColor: 255, align: 'right' });
+            addText("redes sociais", pageWidth - marginX - 45, 14, { fontSize: 7, textColor: 255, align: 'right' });
+            addText("dafeloficial", pageWidth - marginX - 45, 17, { fontSize: 9, textColor: 255, align: 'right' });
 
             currentY = 25; // Posição Y inicial após o cabeçalho superior
 
-            // --- BLOCO DE INFORMAÇÕES DA EMPRESA (UNIDADE DAFEL) E CLIENTE ---
+            // --- BLOCO DE DADOS DO CLIENTE ---
             // Retângulo principal que engloba as duas colunas
             addRect(marginX, currentY, pageWidth - (2 * marginX), 45, '#FFFFFF'); // Fundo branco
 
-            // Coluna da esquerda: UNIDADE DAFEL
-            addRect(marginX, currentY, (pageWidth - (2 * marginX)) * 0.45, 45, '#007bff'); // Fundo azul para a coluna da esquerda (45% da largura disponível)
-            addText("UNIDADE DAFEL", marginX + 2, currentY + 5, { fontSize: 8, textColor: 255 });
-            addText("EXPRESS DO VALE", marginX + 2, currentY + 10, { fontSize: 10, textColor: 255, fontStyle: 'bold' });
-            addText("SILVEIRA DA HORTA - KM 24", marginX + 2, currentY + 15, { fontSize: 8, textColor: 255 });
-            addText("AGUAS CLARAS - SÃO JOSE DO VALE DO RIO PRETO - RJ", marginX + 2, currentY + 20, { fontSize: 8, textColor: 255 });
-            addText("TEL: 2421036333", marginX + 2, currentY + 25, { fontSize: 8, textColor: 255 });
+            // Coluna da esquerda: (REMOVIDA)
+            // addRect(marginX, currentY, (pageWidth - (2 * marginX)) * 0.45, 45, '#007bff'); // Fundo azul para a coluna da esquerda (45% da largura disponível)
+            // addText("UNIDADE DAFEL", marginX + 2, currentY + 5, { fontSize: 8, textColor: 255 });
+            // ... (restante do texto da unidade DAFEL)
 
-            // Números de telefone no topo da coluna da esquerda (como na amostra)
-            addText("3303725", marginX + 2, currentY + 35, { fontSize: 9, textColor: 255 });
-            addText("2587490", marginX + 40, currentY + 35, { fontSize: 9, textColor: 255 });
-
-
-            // Coluna da direita: DADOS DO CLIENTE
-            const clientColumnX = marginX + (pageWidth - (2 * marginX)) * 0.45 + 5; // Posição X para a coluna do cliente
-            // const clientColumnWidth = (pageWidth - (2 * marginX)) * 0.55 - 5; // Não usado diretamente no addRect
+            // Coluna da direita: DADOS DO CLIENTE (Agora ocupa a largura total do bloco)
+            const clientColumnX = marginX; // Começa na margem esquerda
+            const clientColumnWidth = pageWidth - (2 * marginX);
 
             addText("DADOS DO CLIENTE", clientColumnX, currentY + 5, { fontSize: 8, textColor: 0 });
-            addText("CÓDIGO", clientColumnX + 40, currentY + 5, { fontSize: 8, textColor: 0 });
-            addText("CNPJ/CPF", clientColumnX + 70, currentY + 5, { fontSize: 8, textColor: 0 });
-            addText("TELEFONE", clientColumnX + 100, currentY + 5, { fontSize: 8, textColor: 0 });
-            addText("CEP", clientColumnX + 130, currentY + 5, { fontSize: 8, textColor: 0 });
+            addText("CÓDIGO", clientColumnX + 70, currentY + 5, { fontSize: 8, textColor: 0 }); // Ajustado X
+            addText("CNPJ/CPF", clientColumnX + 110, currentY + 5, { fontSize: 8, textColor: 0 }); // Ajustado X
+            addText("TELEFONE", clientColumnX + 150, currentY + 5, { fontSize: 8, textColor: 0 }); // Ajustado X
+            addText("CEP", clientColumnX + 190, currentY + 5, { fontSize: 8, textColor: 0 }); // Ajustado X
 
             // Buscar documento e endereços do cliente (assíncrono)
             const urlBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : '';
@@ -1159,19 +1151,27 @@ document.addEventListener('DOMContentLoaded', function () {
             const clientDataY = currentY + 10;
             const clientDataLineHeight = 5; // Linha de altura para os dados do cliente
 
-            addText(orcamento.clienteInfo?.cliente || '', clientColumnX, clientDataY, { fontSize: 9, textColor: 0, fontStyle: 'bold' });
-            addText(orcamento.clienteInfo?.codCliente || '', clientColumnX + 40, clientDataY, { fontSize: 9, textColor: 0 });
-            addText(clienteDetalhes.documento || 'N/A', clientColumnX + 70, clientDataY, { fontSize: 9, textColor: 0 });
-            addText(clienteDetalhes.telefone || 'N/A', clientColumnX + 100, clientDataY, { fontSize: 9, textColor: 0 });
-            addText(clienteDetalhes.enderecos?.[0]?.cep || 'N/A', clientColumnX + 130, clientDataY, { fontSize: 9, textColor: 0 });
+            // Nome do Cliente e Código (ajuste de largura para evitar embolamento)
+            let clienteNomeText = orcamento.clienteInfo?.cliente || '';
+            let codClienteText = orcamento.clienteInfo?.codCliente || '';
+            // Se o nome for muito longo, trunca e adiciona "..."
+            if (doc.getStringUnitWidth(clienteNomeText) * doc.internal.getFontSize() / doc.internal.scaleFactor > 60) { // Max 60mm para o nome
+                clienteNomeText = doc.splitTextToSize(clienteNomeText, 60)[0] + "...";
+            }
+            addText(clienteNomeText, clientColumnX, clientDataY, { fontSize: 9, textColor: 0, fontStyle: 'bold' });
+            addText(codClienteText, clientColumnX + 70, clientDataY, { fontSize: 9, textColor: 0 }); // Ajustado X
+
+            addText(clienteDetalhes.documento || 'N/A', clientColumnX + 110, clientDataY, { fontSize: 9, textColor: 0 }); // Ajustado X
+            addText(clienteDetalhes.telefone || 'N/A', clientColumnX + 150, clientDataY, { fontSize: 9, textColor: 0 }); // Ajustado X
+            addText(clienteDetalhes.enderecos?.[0]?.cep || 'N/A', clientColumnX + 190, clientDataY, { fontSize: 9, textColor: 0 }); // Ajustado X
 
             // Endereço Principal do Cliente (ajuste de posição para evitar embolamento)
             const addressY = clientDataY + clientDataLineHeight * 2; // Pula duas linhas para o endereço
             addText("ENDEREÇO PRINCIPAL", clientColumnX, addressY, { fontSize: 8, textColor: 0 });
             addText("S/N", clientColumnX + 70, addressY, { fontSize: 8, textColor: 0 });
             addText("BAIRRO", clientColumnX + 90, addressY, { fontSize: 8, textColor: 0 });
-            addText("CIDADE", clientColumnX + 115, addressY, { fontSize: 8, textColor: 0 });
-            addText("ESTADO", clientColumnX + 140, addressY, { fontSize: 8, textColor: 0 });
+            addText("CIDADE", clientColumnX + 130, addressY, { fontSize: 8, textColor: 0 }); // Ajustado X
+            addText("ESTADO", clientColumnX + 160, addressY, { fontSize: 8, textColor: 0 }); // Ajustado X
 
             if (clienteDetalhes.enderecos && clienteDetalhes.enderecos.length > 0) {
                 const principal = clienteDetalhes.enderecos[0];
@@ -1186,11 +1186,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Ajuste de largura para a cidade e estado
                 let cidadeText = principal.cidade || '';
                 let estadoText = principal.estado || '';
-                if (doc.getStringUnitWidth(cidadeText) * doc.internal.getFontSize() / doc.internal.scaleFactor > 20) { // Largura máxima para cidade
-                    cidadeText = doc.splitTextToSize(cidadeText, 20)[0] + "...";
-                }
-                addText(cidadeText, clientColumnX + 115, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
-                addText(estadoText, clientColumnX + 140, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
+                // Ajusta o posicionamento da cidade e estado para evitar embolamento
+                addText(cidadeText, clientColumnX + 130, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
+                addText(estadoText, clientColumnX + 160, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
             } else {
                 addText("Nenhum endereço principal.", clientColumnX, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
             }
@@ -1208,11 +1206,8 @@ document.addEventListener('DOMContentLoaded', function () {
             addRect(marginX, currentY, pageWidth - (2 * marginX), 8, '#ff8c00'); // Fundo laranja
             addText("PRODUTO", marginX + 2, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
             addText("UND", marginX + 100, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
-            // addText("CLASS.", marginX + 115, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' }); // REMOVIDO
             addText("QTD", marginX + 135, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
-            addText("VALOR", marginX + 155, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
-            // addText("DESCONTO", marginX + 175, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' }); // REMOVIDO
-            // addText("LÍQUIDO", marginX + 195, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' }); // REMOVIDO
+            // addText("VALOR", marginX + 155, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' }); // REMOVIDO
             addText("TOTAL", marginX + 215, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
 
             currentY += 8; // Posição Y após o cabeçalho da tabela
@@ -1233,11 +1228,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 addText(produtoDesc, marginX + 2, currentY + 4.5);
                 addText("PC", marginX + 100, currentY + 4.5); // Unidade de medida
-                // addText("000.430 (30)", marginX + 115, currentY + 4.5); // REMOVIDO
                 addText(item.quantidade?.toString() || '', marginX + 135, currentY + 4.5);
-                addText(`R$ ${(parseFloat(item.custo) / item.quantidade).toFixed(2)}`, marginX + 155, currentY + 4.5); // Valor unitário
-                // addText("0.00", marginX + 175, currentY + 4.5); // REMOVIDO
-                // addText(`R$ ${(parseFloat(item.custo) / item.quantidade).toFixed(2)}`, marginX + 195, currentY + 4.5); // REMOVIDO
+                // addText(`R$ ${(parseFloat(item.custo) / item.quantidade).toFixed(2)}`, marginX + 155, currentY + 4.5); // REMOVIDO
                 addText(`R$ ${parseFloat(item.custo).toFixed(2)}`, marginX + 215, currentY + 4.5); // Total da linha
 
                 currentY += 7; // Altura da linha
@@ -1248,7 +1240,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     addText("PRODUTO", marginX + 2, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
                     addText("UND", marginX + 100, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
                     addText("QTD", marginX + 135, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
-                    addText("VALOR", marginX + 155, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
                     addText("TOTAL", marginX + 215, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
                     currentY += 8;
                 }
@@ -1258,10 +1249,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // --- TOTAIS DA TABELA (VALOR TOTAL) ---
             addRect(marginX, currentY, pageWidth - (2 * marginX), 8, '#ff8c00'); // Fundo laranja
-            addText(`VALOR: ${orcamento.resumoGeral.custoTotalGeral}`, pageWidth - marginX - 2, currentY + 5, { fontSize: 12, textColor: 255, fontStyle: 'bold', align: 'right' });
-            // addText(`BRUTO: R$ ${orcamento.resumoGeral.custoTotalGeralNumerico.toFixed(2)}`, marginX + 2, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' }); // Alterado para "VALOR"
-            // addText(`DESCONTO: R$ 0.00`, marginX + 80, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' }); // REMOVIDO
-
+            addText(`TOTAL: ${orcamento.resumoGeral.custoTotalGeral}`, pageWidth - marginX - 2, currentY + 5, { fontSize: 12, textColor: 255, fontStyle: 'bold', align: 'right' });
 
             currentY += 13; // Espaço após os totais da tabela
 
@@ -1281,17 +1269,6 @@ document.addEventListener('DOMContentLoaded', function () {
             addText(`${enderecoEntrega.rua || ''}, ${enderecoEntrega.numero || ''} - ${enderecoEntrega.bairro || ''}, ${enderecoEntrega.cidade || ''}/${enderecoEntrega.estado || ''}`, leftColX + 2, currentY + 15, { fontSize: 8, textColor: 0 });
 
 
-            // Observações (REMOVIDAS)
-            // addText("OBS: ORÇAMENTO: PEDIDO DE COMPRAS Nº N/A OBS", leftColX + 2, currentY + 25, { fontSize: 7, textColor: 0 });
-            // addText("ENDEREÇO: ENTREGAR NA LOJA BIVOLT, PARA A NOVA A2", leftColX + 2, currentY + 29, { fontSize: 7, textColor: 0 });
-            // addText("PESAR/VEÍCULO: CAMINHÃO: SOMENTE PEQUENO VENDEDOR:", leftColX + 2, currentY + 33, { fontSize: 7, textColor: 0 });
-
-            // Imagem do Thiago Soares e Caminhão (REMOVIDAS)
-            // addImageToPdf(thiagoImage, leftColX + 5, currentY + 35, 15, 15);
-            // addText("THIAGO SOARES DE", leftColX + 25, currentY + 40, { fontSize: 8, textColor: 0 });
-            // addImageToPdf(caminhaoImage, leftColX + 90, currentY + 35, 15, 15);
-
-
             // Coluna direita da seção inferior
             const rightColX = marginX + (pageWidth - (2 * marginX)) * 0.45 + 5; // Posição X para a coluna da direita
             // const rightColWidth = (pageWidth - (2 * marginX)) * 0.55 - 5; // Não usado diretamente
@@ -1302,14 +1279,13 @@ document.addEventListener('DOMContentLoaded', function () {
             addText("PREVISÃO DE ENTREGA", rightColX, currentY + 5, { fontSize: 8, textColor: 0 });
             addText(previsaoEntregaData.toLocaleDateString('pt-BR'), rightColX, currentY + 10, { fontSize: 14, textColor: '#ff8c00', fontStyle: 'bold' }); // Laranja
 
-            // Pagamento (REMOVIDO)
-            // addText("PAGAMENTO", rightColX, currentY + 25, { fontSize: 8, textColor: 0 });
-            // addText("PRAZO: 21 DIAS", rightColX, currentY + 30, { fontSize: 9, textColor: 0, fontStyle: 'bold' });
-            // addText("1X BOLETO BANCÁRIO", rightColX, currentY + 37, { fontSize: 9, textColor: 0 });
-            // addText(`R$ ${orcamento.resumoGeral.custoTotalGeralNumerico.toFixed(2)}`, rightColX + 60, currentY + 37, { fontSize: 9, textColor: 0 });
-            // addText(new Date().toLocaleDateString('pt-BR'), rightColX + 100, currentY + 37, { fontSize: 9, textColor: 0 });
-
             currentY += 55; // Espaço após a seção inferior
+
+            // --- IMAGEM PRINCIPAL NO MEIO ---
+            // Posiciona a imagem principal no centro da página, abaixo das seções principais
+            addImageToPdf(dafelMainLogo, pageWidth / 2 - 50, currentY + 5, 100, 30); // Ajuste as dimensões conforme necessário
+
+            currentY += 40; // Espaço após a imagem principal
 
             // --- RODAPÉ (Exemplo simples) ---
             doc.setFontSize(7);

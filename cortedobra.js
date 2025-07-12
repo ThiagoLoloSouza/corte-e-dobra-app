@@ -1071,8 +1071,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // Substitua estas URLs pelas suas imagens reais (Base64 ou URLs acessíveis publicamente)
             // Para imagens Base64: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
             const dafelLogoUrl = "https://placehold.co/120x40/FF8C00/FFFFFF?text=DAFEL+LOGO"; // Exemplo de placeholder
-            const thiagoImage = "https://placehold.co/50x50/007bff/FFFFFF?text=THIAGO"; // Exemplo de placeholder
-            const caminhaoImage = "https://placehold.co/30x30/FFC107/333333?text=CAM"; // Exemplo de placeholder para caminhão
+            // const thiagoImage = "https://placehold.co/50x50/007bff/FFFFFF?text=THIAGO"; // Removido
+            // const caminhaoImage = "https://placehold.co/30x30/FFC107/333333?text=CAM"; // Removido
 
             // Função para adicionar imagem (com tratamento de erro básico)
             const addImageToPdf = (imgUrl, x, y, width, height, callback) => {
@@ -1135,16 +1135,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Coluna da direita: DADOS DO CLIENTE
             const clientColumnX = marginX + (pageWidth - (2 * marginX)) * 0.45 + 5; // Posição X para a coluna do cliente
-            const clientColumnWidth = (pageWidth - (2 * marginX)) * 0.55 - 5; // 55% da largura disponível, menos espaçamento
+            // const clientColumnWidth = (pageWidth - (2 * marginX)) * 0.55 - 5; // Não usado diretamente no addRect
 
             addText("DADOS DO CLIENTE", clientColumnX, currentY + 5, { fontSize: 8, textColor: 0 });
             addText("CÓDIGO", clientColumnX + 40, currentY + 5, { fontSize: 8, textColor: 0 });
             addText("CNPJ/CPF", clientColumnX + 70, currentY + 5, { fontSize: 8, textColor: 0 });
             addText("TELEFONE", clientColumnX + 100, currentY + 5, { fontSize: 8, textColor: 0 });
             addText("CEP", clientColumnX + 130, currentY + 5, { fontSize: 8, textColor: 0 });
-
-            addText(orcamento.clienteInfo?.cliente || '', clientColumnX, currentY + 10, { fontSize: 9, textColor: 0, fontStyle: 'bold' });
-            addText(orcamento.clienteInfo?.codCliente || '', clientColumnX + 40, currentY + 10, { fontSize: 9, textColor: 0 });
 
             // Buscar documento e endereços do cliente (assíncrono)
             const urlBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : '';
@@ -1158,26 +1155,44 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.error("Erro ao buscar detalhes do cliente para PDF:", e);
             }
 
-            addText(clienteDetalhes.documento || 'N/A', clientColumnX + 70, currentY + 10, { fontSize: 9, textColor: 0 });
-            addText(clienteDetalhes.telefone || 'N/A', clientColumnX + 100, currentY + 10, { fontSize: 9, textColor: 0 });
-            addText(clienteDetalhes.enderecos?.[0]?.cep || 'N/A', clientColumnX + 130, currentY + 10, { fontSize: 9, textColor: 0 });
+            // Ajuste de espaçamento para os dados do cliente
+            const clientDataY = currentY + 10;
+            const clientDataLineHeight = 5; // Linha de altura para os dados do cliente
 
-            // Endereço Principal do Cliente
-            addText("ENDEREÇO PRINCIPAL", clientColumnX, currentY + 20, { fontSize: 8, textColor: 0 });
-            addText("S/N", clientColumnX + 70, currentY + 20, { fontSize: 8, textColor: 0 });
-            addText("BAIRRO", clientColumnX + 90, currentY + 20, { fontSize: 8, textColor: 0 });
-            addText("CIDADE", clientColumnX + 115, currentY + 20, { fontSize: 8, textColor: 0 });
-            addText("ESTADO", clientColumnX + 140, currentY + 20, { fontSize: 8, textColor: 0 });
+            addText(orcamento.clienteInfo?.cliente || '', clientColumnX, clientDataY, { fontSize: 9, textColor: 0, fontStyle: 'bold' });
+            addText(orcamento.clienteInfo?.codCliente || '', clientColumnX + 40, clientDataY, { fontSize: 9, textColor: 0 });
+            addText(clienteDetalhes.documento || 'N/A', clientColumnX + 70, clientDataY, { fontSize: 9, textColor: 0 });
+            addText(clienteDetalhes.telefone || 'N/A', clientColumnX + 100, clientDataY, { fontSize: 9, textColor: 0 });
+            addText(clienteDetalhes.enderecos?.[0]?.cep || 'N/A', clientColumnX + 130, clientDataY, { fontSize: 9, textColor: 0 });
+
+            // Endereço Principal do Cliente (ajuste de posição para evitar embolamento)
+            const addressY = clientDataY + clientDataLineHeight * 2; // Pula duas linhas para o endereço
+            addText("ENDEREÇO PRINCIPAL", clientColumnX, addressY, { fontSize: 8, textColor: 0 });
+            addText("S/N", clientColumnX + 70, addressY, { fontSize: 8, textColor: 0 });
+            addText("BAIRRO", clientColumnX + 90, addressY, { fontSize: 8, textColor: 0 });
+            addText("CIDADE", clientColumnX + 115, addressY, { fontSize: 8, textColor: 0 });
+            addText("ESTADO", clientColumnX + 140, addressY, { fontSize: 8, textColor: 0 });
 
             if (clienteDetalhes.enderecos && clienteDetalhes.enderecos.length > 0) {
                 const principal = clienteDetalhes.enderecos[0];
-                addText(`${principal.rua || ''}`, clientColumnX, currentY + 25, { fontSize: 9, textColor: 0 });
-                addText(`${principal.numero || ''}`, clientColumnX + 70, currentY + 25, { fontSize: 9, textColor: 0 });
-                addText(`${principal.bairro || ''}`, clientColumnX + 90, currentY + 25, { fontSize: 9, textColor: 0 });
-                addText(`${principal.cidade || ''}`, clientColumnX + 115, currentY + 25, { fontSize: 9, textColor: 0 });
-                addText(`${principal.estado || ''}`, clientColumnX + 140, currentY + 25, { fontSize: 9, textColor: 0 });
+                // Ajuste de largura para a rua para evitar embolamento
+                let ruaText = principal.rua || '';
+                if (doc.getStringUnitWidth(ruaText) * doc.internal.getFontSize() / doc.internal.scaleFactor > 65) { // Largura máxima para a rua
+                    ruaText = doc.splitTextToSize(ruaText, 65)[0] + "..."; // Trunca se for muito longo
+                }
+                addText(ruaText, clientColumnX, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
+                addText(`${principal.numero || ''}`, clientColumnX + 70, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
+                addText(`${principal.bairro || ''}`, clientColumnX + 90, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
+                // Ajuste de largura para a cidade e estado
+                let cidadeText = principal.cidade || '';
+                let estadoText = principal.estado || '';
+                if (doc.getStringUnitWidth(cidadeText) * doc.internal.getFontSize() / doc.internal.scaleFactor > 20) { // Largura máxima para cidade
+                    cidadeText = doc.splitTextToSize(cidadeText, 20)[0] + "...";
+                }
+                addText(cidadeText, clientColumnX + 115, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
+                addText(estadoText, clientColumnX + 140, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
             } else {
-                addText("Nenhum endereço principal.", clientColumnX, currentY + 25, { fontSize: 9, textColor: 0 });
+                addText("Nenhum endereço principal.", clientColumnX, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
             }
 
             // Data de Impressão (no canto inferior direito do bloco)
@@ -1193,11 +1208,11 @@ document.addEventListener('DOMContentLoaded', function () {
             addRect(marginX, currentY, pageWidth - (2 * marginX), 8, '#ff8c00'); // Fundo laranja
             addText("PRODUTO", marginX + 2, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
             addText("UND", marginX + 100, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
-            addText("CLASS.", marginX + 115, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
+            // addText("CLASS.", marginX + 115, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' }); // REMOVIDO
             addText("QTD", marginX + 135, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
             addText("VALOR", marginX + 155, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
-            addText("DESCONTO", marginX + 175, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
-            addText("LÍQUIDO", marginX + 195, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
+            // addText("DESCONTO", marginX + 175, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' }); // REMOVIDO
+            // addText("LÍQUIDO", marginX + 195, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' }); // REMOVIDO
             addText("TOTAL", marginX + 215, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
 
             currentY += 8; // Posição Y após o cabeçalho da tabela
@@ -1218,11 +1233,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 addText(produtoDesc, marginX + 2, currentY + 4.5);
                 addText("PC", marginX + 100, currentY + 4.5); // Unidade de medida
-                addText("000.430 (30)", marginX + 115, currentY + 4.5); // Classe (exemplo)
+                // addText("000.430 (30)", marginX + 115, currentY + 4.5); // REMOVIDO
                 addText(item.quantidade?.toString() || '', marginX + 135, currentY + 4.5);
                 addText(`R$ ${(parseFloat(item.custo) / item.quantidade).toFixed(2)}`, marginX + 155, currentY + 4.5); // Valor unitário
-                addText("0.00", marginX + 175, currentY + 4.5); // Desconto (exemplo)
-                addText(`R$ ${(parseFloat(item.custo) / item.quantidade).toFixed(2)}`, marginX + 195, currentY + 4.5); // Líquido (exemplo)
+                // addText("0.00", marginX + 175, currentY + 4.5); // REMOVIDO
+                // addText(`R$ ${(parseFloat(item.custo) / item.quantidade).toFixed(2)}`, marginX + 195, currentY + 4.5); // REMOVIDO
                 addText(`R$ ${parseFloat(item.custo).toFixed(2)}`, marginX + 215, currentY + 4.5); // Total da linha
 
                 currentY += 7; // Altura da linha
@@ -1232,11 +1247,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     addRect(marginX, currentY, pageWidth - (2 * marginX), 8, '#ff8c00'); // Recria cabeçalho da tabela
                     addText("PRODUTO", marginX + 2, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
                     addText("UND", marginX + 100, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
-                    addText("CLASS.", marginX + 115, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
                     addText("QTD", marginX + 135, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
                     addText("VALOR", marginX + 155, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
-                    addText("DESCONTO", marginX + 175, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
-                    addText("LÍQUIDO", marginX + 195, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
                     addText("TOTAL", marginX + 215, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
                     currentY += 8;
                 }
@@ -1244,22 +1256,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
             currentY += 5; // Espaçamento após a tabela de itens
 
-            // --- TOTAIS DA TABELA (BRUTO, DESCONTO, LÍQUIDO) ---
+            // --- TOTAIS DA TABELA (VALOR TOTAL) ---
             addRect(marginX, currentY, pageWidth - (2 * marginX), 8, '#ff8c00'); // Fundo laranja
-            addText(`BRUTO: R$ ${orcamento.resumoGeral.custoTotalGeralNumerico.toFixed(2)}`, marginX + 2, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
-            addText(`DESCONTO: R$ 0.00`, marginX + 80, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
-            addText(`TOTAL: ${orcamento.resumoGeral.custoTotalGeral}`, pageWidth - marginX - 2, currentY + 5, { fontSize: 12, textColor: 255, fontStyle: 'bold', align: 'right' });
+            addText(`VALOR: ${orcamento.resumoGeral.custoTotalGeral}`, pageWidth - marginX - 2, currentY + 5, { fontSize: 12, textColor: 255, fontStyle: 'bold', align: 'right' });
+            // addText(`BRUTO: R$ ${orcamento.resumoGeral.custoTotalGeralNumerico.toFixed(2)}`, marginX + 2, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' }); // Alterado para "VALOR"
+            // addText(`DESCONTO: R$ 0.00`, marginX + 80, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' }); // REMOVIDO
+
 
             currentY += 13; // Espaço após os totais da tabela
 
-            // --- SEÇÃO INFERIOR: ENDEREÇO ENTREGA, PREVISÃO, PAGAMENTO ---
+            // --- SEÇÃO INFERIOR: ENDEREÇO ENTREGA E PREVISÃO ---
             addRect(marginX, currentY, pageWidth - (2 * marginX), 50, '#F0F0F0'); // Fundo cinza claro
             doc.setDrawColor(200);
             doc.line(marginX + (pageWidth - (2 * marginX)) * 0.45, currentY, marginX + (pageWidth - (2 * marginX)) * 0.45, currentY + 50); // Linha vertical no meio
 
             // Coluna esquerda da seção inferior
             const leftColX = marginX;
-            const leftColWidth = (pageWidth - (2 * marginX)) * 0.45;
+            // const leftColWidth = (pageWidth - (2 * marginX)) * 0.45; // Não usado diretamente
 
             addText("ENDEREÇO ENTREGA", leftColX + 2, currentY + 5, { fontSize: 8, textColor: 0 });
             addText(orcamento.obraInfo?.nome || 'N/A', leftColX + 2, currentY + 10, { fontSize: 9, textColor: 0, fontStyle: 'bold' });
@@ -1268,20 +1281,20 @@ document.addEventListener('DOMContentLoaded', function () {
             addText(`${enderecoEntrega.rua || ''}, ${enderecoEntrega.numero || ''} - ${enderecoEntrega.bairro || ''}, ${enderecoEntrega.cidade || ''}/${enderecoEntrega.estado || ''}`, leftColX + 2, currentY + 15, { fontSize: 8, textColor: 0 });
 
 
-            // Observações
-            addText("OBS: ORÇAMENTO: PEDIDO DE COMPRAS Nº N/A OBS", leftColX + 2, currentY + 25, { fontSize: 7, textColor: 0 });
-            addText("ENDEREÇO: ENTREGAR NA LOJA BIVOLT, PARA A NOVA A2", leftColX + 2, currentY + 29, { fontSize: 7, textColor: 0 });
-            addText("PESAR/VEÍCULO: CAMINHÃO: SOMENTE PEQUENO VENDEDOR:", leftColX + 2, currentY + 33, { fontSize: 7, textColor: 0 });
+            // Observações (REMOVIDAS)
+            // addText("OBS: ORÇAMENTO: PEDIDO DE COMPRAS Nº N/A OBS", leftColX + 2, currentY + 25, { fontSize: 7, textColor: 0 });
+            // addText("ENDEREÇO: ENTREGAR NA LOJA BIVOLT, PARA A NOVA A2", leftColX + 2, currentY + 29, { fontSize: 7, textColor: 0 });
+            // addText("PESAR/VEÍCULO: CAMINHÃO: SOMENTE PEQUENO VENDEDOR:", leftColX + 2, currentY + 33, { fontSize: 7, textColor: 0 });
 
-            // Imagem do Thiago Soares e Caminhão
-            addImageToPdf(thiagoImage, leftColX + 5, currentY + 35, 15, 15); // Posição e tamanho da imagem
-            addText("THIAGO SOARES DE", leftColX + 25, currentY + 40, { fontSize: 8, textColor: 0 });
-            addImageToPdf(caminhaoImage, leftColX + 90, currentY + 35, 15, 15); // Posição e tamanho do caminhão
+            // Imagem do Thiago Soares e Caminhão (REMOVIDAS)
+            // addImageToPdf(thiagoImage, leftColX + 5, currentY + 35, 15, 15);
+            // addText("THIAGO SOARES DE", leftColX + 25, currentY + 40, { fontSize: 8, textColor: 0 });
+            // addImageToPdf(caminhaoImage, leftColX + 90, currentY + 35, 15, 15);
 
 
             // Coluna direita da seção inferior
-            const rightColX = marginX + leftColWidth + 5; // Posição X para a coluna da direita
-            const rightColWidth = (pageWidth - (2 * marginX)) * 0.55 - 5;
+            const rightColX = marginX + (pageWidth - (2 * marginX)) * 0.45 + 5; // Posição X para a coluna da direita
+            // const rightColWidth = (pageWidth - (2 * marginX)) * 0.55 - 5; // Não usado diretamente
 
             // Previsão de Entrega (mock data)
             const previsaoEntregaData = new Date();
@@ -1289,16 +1302,16 @@ document.addEventListener('DOMContentLoaded', function () {
             addText("PREVISÃO DE ENTREGA", rightColX, currentY + 5, { fontSize: 8, textColor: 0 });
             addText(previsaoEntregaData.toLocaleDateString('pt-BR'), rightColX, currentY + 10, { fontSize: 14, textColor: '#ff8c00', fontStyle: 'bold' }); // Laranja
 
-            // Pagamento (mock data)
-            addText("PAGAMENTO", rightColX, currentY + 25, { fontSize: 8, textColor: 0 });
-            addText("PRAZO: 21 DIAS", rightColX, currentY + 30, { fontSize: 9, textColor: 0, fontStyle: 'bold' });
-            addText("1X BOLETO BANCÁRIO", rightColX, currentY + 37, { fontSize: 9, textColor: 0 });
-            addText(`R$ ${orcamento.resumoGeral.custoTotalGeralNumerico.toFixed(2)}`, rightColX + 60, currentY + 37, { fontSize: 9, textColor: 0 });
-            addText(new Date().toLocaleDateString('pt-BR'), rightColX + 100, currentY + 37, { fontSize: 9, textColor: 0 }); // Data de hoje
+            // Pagamento (REMOVIDO)
+            // addText("PAGAMENTO", rightColX, currentY + 25, { fontSize: 8, textColor: 0 });
+            // addText("PRAZO: 21 DIAS", rightColX, currentY + 30, { fontSize: 9, textColor: 0, fontStyle: 'bold' });
+            // addText("1X BOLETO BANCÁRIO", rightColX, currentY + 37, { fontSize: 9, textColor: 0 });
+            // addText(`R$ ${orcamento.resumoGeral.custoTotalGeralNumerico.toFixed(2)}`, rightColX + 60, currentY + 37, { fontSize: 9, textColor: 0 });
+            // addText(new Date().toLocaleDateString('pt-BR'), rightColX + 100, currentY + 37, { fontSize: 9, textColor: 0 });
 
             currentY += 55; // Espaço após a seção inferior
 
-            // --- RODAPÉ ---
+            // --- RODAPÉ (Exemplo simples) ---
             doc.setFontSize(7);
             doc.setTextColor(100, 100, 100);
             addText("Documento gerado por CortaFácil - Todos os direitos reservados.", pageWidth / 2, pageHeight - 5, { align: 'center' });

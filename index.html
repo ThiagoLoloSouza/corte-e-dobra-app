@@ -23,31 +23,31 @@
         <section class="cliente-info">
             <h2>Dados do Cliente</h2>
             <form id="form-cliente">
-                <label>Cliente:</label>
-                <input type="text" id="cliente" readonly> <!-- Campo somente leitura -->
+                <label for="cliente">Cliente:</label>
+                <input type="text" id="cliente" name="cliente" readonly> <!-- Campo somente leitura -->
 
-                <label>Cód. Cliente:</label>
-                <input type="text" id="codCliente" readonly> <!-- Campo somente leitura -->
+                <label for="codCliente">Cód. Cliente:</label>
+                <input type="text" id="codCliente" name="codCliente" readonly> <!-- Campo somente leitura -->
 
-                <label>Obra:</label>
-                <input type="text" id="obra">
+                <label for="obra">Obra:</label>
+                <input type="text" id="obra" name="obra">
 
-                <label>Nº do Pedido:</label>
-                <input type="text" id="numPedido"> <!-- Este será preenchido automaticamente ao salvar o orçamento -->
+                <label for="numPedido">Nº do Pedido:</label>
+                <input type="text" id="numPedido" name="numPedido" readonly> <!-- Este será preenchido automaticamente ao salvar o orçamento -->
                 <!-- Campo oculto para armazenar o ID do orçamento ao carregar para edição -->
-                <input type="hidden" id="orcamentoId" value="">
+                <input type="hidden" id="orcamentoId" name="orcamentoId" value="">
 
-                <label>Recebe Caminhão?</label>
-                <select id="recebeCaminhao">
+                <label for="recebeCaminhao">Recebe Caminhão?</label>
+                <select id="recebeCaminhao" name="recebeCaminhao">
                     <option value="Sim">Sim</option>
                     <option value="Não">Não</option>
                 </select>
 
-                <label>Data Desejada:</label>
-                <input type="date" id="dataDesejada">
+                <label for="dataDesejada">Data Desejada:</label>
+                <input type="date" id="dataDesejada" name="dataDesejada">
             </form>
 
-            <!-- Campo de Busca de Cliente Existente - MOVIDO PARA AQUI -->
+            <!-- Campo de Busca de Cliente Existente -->
             <div class="form-group search-client-group">
                 <label for="buscarCliente">Buscar Cliente Existente:</label>
                 <div class="input-button-group">
@@ -59,7 +59,7 @@
                 <!-- Resultados da busca serão inseridos aqui pelo JavaScript -->
             </div>
 
-            <!-- Botão para abrir a modal de cadastro de cliente - MOVIDO PARA AQUI -->
+            <!-- Botão para abrir a modal de cadastro de cliente -->
             <button id="btnAbrirModalCadastroCliente" type="button" class="btn-cliente-action">Cadastrar Novo Cliente</button>
 
         </section>
@@ -72,7 +72,7 @@
                 <div class="form-row">
                     <div class="form-group-inline">
                         <label for="tipo">Tipo de Peça:</label>
-                        <select id="tipo" required>
+                        <select id="tipo" name="tipo" required>
                             <option value="varaU">Vara em U</option>
                             <option value="estribo">Estribo</option>
                             <option value="varaReta">Vara Reta</option>
@@ -83,7 +83,7 @@
                     <!-- CAMPO DA BITOLA -->
                     <div class="form-group-inline">
                         <label for="bitola">Bitola (mm):</label>
-                        <select id="bitola" required>
+                        <select id="bitola" name="bitola" required>
                             <option value="4.2">4.2</option>
                             <option value="5.0">5.0</option>
                             <option value="6.3">6.3</option>
@@ -102,15 +102,15 @@
                         <label>Medidas (cm):</label>
                         <!-- NOVO DIV PARA AGRUPAR AS MEDIDAS -->
                         <div class="medidas-group">
-                            <input type="number" placeholder="a" id="a" required>
-                            <input type="number" placeholder="b" id="b">
-                            <input type="number" placeholder="c" id="c">
+                            <input type="number" placeholder="a" id="a" name="a" required>
+                            <input type="number" placeholder="b" id="b" name="b">
+                            <input type="number" placeholder="c" id="c" name="c">
                         </div>
                     </div>
 
                     <div class="form-group-inline">
                         <label for="quantidade">Quantidade de Peças:</label>
-                        <input type="number" id="quantidade" required>
+                        <input type="number" id="quantidade" name="quantidade" required>
                     </div>
                 </div>
 

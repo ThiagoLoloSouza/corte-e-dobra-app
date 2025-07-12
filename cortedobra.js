@@ -683,8 +683,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 );
                 if (index > -1) { linhasOrcamento.splice(index, 1); }
 
-                novaLinhaTabela.remove();
-                atualizarResumoBitolas();
+                novaLinhaTabela.remove(); // Remove a linha da tabela HTML
+                atualizarResumoBitolas(); // Recalcula e atualiza o resumo
             });
 
             tabelaResultados.appendChild(novaLinhaTabela);
@@ -909,7 +909,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             for (const bitola in orcamento.resumoBitolas) {
                 const resumo = orcamento.resumoBitolas[bitola];
-                doc.text(`Bitola ${bitola}mm: Peso ${resumo.toFixed(3) || '0.000'} kg - Custo R$ ${orcamento.resumoCustos[bitola]?.toFixed(2) || '0.00'}`, 10, y);
+                doc.text(`Bitola ${bitola}mm: Peso ${resumo.toFixed(3) || '0.000'} kg - Custo R$ ${resumo.custo?.toFixed(2) || '0.00'}`, 10, y);
                 y += lineHeight;
                 if (y > 280) { doc.addPage(); y = 10; }
             }

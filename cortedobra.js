@@ -1060,21 +1060,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 doc.text(String(text).toUpperCase(), x, y, options.align ? { align: options.align } : {}); // CONVERTE PARA MAIÚSCULAS DE FORMA SEGURA
             };
 
-            // --- IMAGENS (AGORA COM PLACEHOLDERS DE URL PÚBLICA) ---
-            // URLs de placeholders para garantir que as imagens apareçam.
-            // Para usar suas imagens reais, você precisará hospedá-las publicamente e usar as URLs diretas aqui.
-            const dafelLogoSuperior = "https://placehold.co/40x15/333333/FFFFFF?text=GRUPO_DAFE"; // Para logo_grupo-dafel_8KDzHg.png
-            const dafelSeriedadeNossaMarca = "https://placehold.co/60x15/333333/FFFFFF?text=DAFE_SERIEDADE"; // Para image_a9f29e.png
-            const laranjaDadosCliente = "https://placehold.co/20x20/FF8C00/FFFFFF?text=IMG_CLIENTE"; // Para image_a9dc1d.png
-            const dafelMainLogo = "https://placehold.co/100x30/F0F0F0/000000?text=LOGO_PRINCIPAL"; // Para 411878334_914510800158541_3475139305395707762_n.jpg
-            const qrCodePlaceholder = "https://placehold.co/12x12/FFFFFF/000000?text=QR";
-
-            // Função para adicionar imagem usando URL (mais simples com placeholders)
-            const addImageToPdfDirect = (imgUrl, x, y, width, height, format = 'PNG') => {
-                doc.addImage(imgUrl, format, x, y, width, height);
-            };
-
-
             // --- CABEÇALHO SUPERIOR ---
             // Fundo azul escuro para o cabeçalho superior
             addRect(0, 0, pageWidth, 20, '#333333'); // Ajustado para a largura da página horizontal
@@ -1086,12 +1071,6 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.text("ORÇAMENTO", marginX, 13);
             doc.setFontSize(10); // Volta ao padrão
             doc.setFont('helvetica', 'normal'); // Volta ao padrão
-
-            // Imagem "Dafé Seriedade Nossa Marca" no meio do cabeçalho
-            addImageToPdfDirect(dafelSeriedadeNossaMarca, pageWidth / 2 - 30, 3, 60, 15, 'PNG'); // Ajuste de posição e tamanho
-            
-            // Imagem "Grupo Dafé" no canto superior direito
-            addImageToPdfDirect(dafelLogoSuperior, pageWidth - marginX - 45, 3, 40, 15, 'PNG'); // Ajuste de posição e tamanho
 
             // Informações do site e redes sociais (lado direito) - TEXTO BRANCO
             doc.setTextColor(255, 255, 255); // Cor branca para estes textos
@@ -1108,12 +1087,8 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.setDrawColor(0); // Cor da borda preta
             addRect(marginX, currentY, pageWidth - (2 * marginX), 45, '#FFFFFF', 'FD'); // Fundo branco e borda
 
-            // Imagem laranja na seção "Dados do Cliente"
-            addImageToPdfDirect(laranjaDadosCliente, marginX + 2, currentY + 2, 20, 20, 'PNG'); // Posição e tamanho da imagem laranja
-
-            // Coluna da direita: DADOS DO CLIENTE (Agora com offset para a imagem)
-            const clientColumnXOffset = 25; // Offset para o texto devido à imagem laranja
-            const clientColumnX = marginX + clientColumnXOffset; // Começa na margem esquerda + offset
+            // Coluna da direita: DADOS DO CLIENTE (Sem offset para imagem)
+            const clientColumnX = marginX; // Começa na margem esquerda
 
             addText("DADOS DO CLIENTE", clientColumnX + 2, currentY + 5, { fontSize: 8, textColor: 0 });
             addText("CÓDIGO", clientColumnX + 70, currentY + 5, { fontSize: 8, textColor: 0 });
@@ -1169,9 +1144,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 addText(ruaText, clientColumnX + 2, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
                 addText(`${String(principal.numero || '')}`, clientColumnX + 70, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
                 addText(`${String(principal.bairro || '')}`, clientColumnX + 90, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
-                // Ajuste de largura para a cidade e estado
-                let cidadeText = String(principal.cidade || '');
-                let estadoText = String(principal.estado || '');
                 // Ajusta o posicionamento da cidade e estado para evitar embolamento
                 addText(cidadeText, clientColumnX + 130, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
                 addText(estadoText, clientColumnX + 180, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 }); // POSIÇÃO AJUSTADA AINDA MAIS PARA A DIREITA
@@ -1322,12 +1294,6 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.setFont('helvetica', 'normal'); // Volta ao padrão
 
             currentY += 55; // Espaço após a seção inferior
-
-            // --- IMAGEM PRINCIPAL NO MEIO ---
-            // Posiciona a imagem principal no centro da página, abaixo das seções principais
-            addImageToPdfDirect(dafelMainLogo, pageWidth / 2 - 50, currentY + 5, 100, 30, 'JPEG'); // Ajuste as dimensões conforme necessário
-
-            currentY += 40; // Espaço após a imagem principal
 
             // --- RODAPÉ (Exemplo simples) ---
             doc.setFontSize(7);

@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const tabelaResultados = document.querySelector('#tabela-resultados tbody');
     const resumoBitolasDisplay = document.getElementById("tabela-resumo-bitolas");
     const pesoTotalGeralElement = document.getElementById("peso-total-geral");
-    const custoTotalGeralElement = document.getElementById("custo-total-geral"); // CORRIGIDO AQUI
+    const custoTotalGeralElement = document.getElementById("custo-total-geral");
     const btnSalvarOrcamento = document.getElementById("btnSalvarOrcamento");
     const btnGerarPdf = document.getElementById("btnGerarPdf");
     const btnNovoOrcamento = document.getElementById("btnNovoOrcamento");
@@ -20,8 +20,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Campos de medida da peça
     const tipoPecaSelect = document.getElementById('tipo');
     const medidaAInput = document.getElementById('a');
-    const medidaBInput = document.getElementById('b'); // CORRIGIDO AQUI
-    const medidaCInput = document.getElementById('c'); // CORRIGIDO AQUI
+    const medidaBInput = document.getElementById('b');
+    const medidaCInput = document.getElementById('c');
     const bitolaSelect = document.getElementById('bitola'); // Referência para o select da bitola
 
     // Referência para o botão "Cadastrar Novo Cliente"
@@ -1068,6 +1068,7 @@ document.addEventListener('DOMContentLoaded', function () {
             };
 
             // --- IMAGENS ---
+            // URLs de exemplo. Você precisará substituir estas pelas URLs das suas imagens hospedadas.
             const dafelLogoSuperior = "https://lh3.googleusercontent.com/file_content/10"; // logo_grupo-dafel_8KDzHg.png
             const dafelSiteLogo = "https://lh3.googleusercontent.com/file_content/9"; // ve7afy0h8caia2elqjwo.webp
             const dafelMainLogo = "https://lh3.googleusercontent.com/file_content/7"; // 411878334_914510800158541_3475139305395707762_n.jpg
@@ -1122,13 +1123,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Coluna da direita: DADOS DO CLIENTE (Agora ocupa a largura total do bloco)
             const clientColumnX = marginX; // Começa na margem esquerda
-            const clientColumnWidth = pageWidth - (2 * marginX);
 
             addText("DADOS DO CLIENTE", clientColumnX, currentY + 5, { fontSize: 8, textColor: 0 });
-            addText("CÓDIGO", clientColumnX + 70, currentY + 5, { fontSize: 8, textColor: 0 }); // Ajustado X
-            addText("CNPJ/CPF", clientColumnX + 110, currentY + 5, { fontSize: 8, textColor: 0 }); // Ajustado X
-            addText("TELEFONE", clientColumnX + 150, currentY + 5, { fontSize: 8, textColor: 0 }); // Ajustado X
-            addText("CEP", clientColumnX + 190, currentY + 5, { fontSize: 8, textColor: 0 }); // Ajustado X
+            addText("CÓDIGO", clientColumnX + 70, currentY + 5, { fontSize: 8, textColor: 0 });
+            addText("CNPJ/CPF", clientColumnX + 110, currentY + 5, { fontSize: 8, textColor: 0 });
+            addText("TELEFONE", clientColumnX + 150, currentY + 5, { fontSize: 8, textColor: 0 });
+            addText("CEP", clientColumnX + 190, currentY + 5, { fontSize: 8, textColor: 0 });
 
             // Buscar documento e endereços do cliente (assíncrono)
             const urlBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : '';
@@ -1154,19 +1154,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 clienteNomeText = doc.splitTextToSize(clienteNomeText, 60)[0] + "...";
             }
             addText(clienteNomeText, clientColumnX, clientDataY, { fontSize: 9, textColor: 0, fontStyle: 'bold' });
-            addText(codClienteText, clientColumnX + 70, clientDataY, { fontSize: 9, textColor: 0 }); // Ajustado X
+            addText(codClienteText, clientColumnX + 70, clientDataY, { fontSize: 9, textColor: 0 });
 
-            addText(clienteDetalhes.documento || 'N/A', clientColumnX + 110, clientDataY, { fontSize: 9, textColor: 0 }); // Ajustado X
-            addText(clienteDetalhes.telefone || 'N/A', clientColumnX + 150, clientDataY, { fontSize: 9, textColor: 0 }); // Ajustado X
-            addText(clienteDetalhes.enderecos?.[0]?.cep || 'N/A', clientColumnX + 190, clientDataY, { fontSize: 9, textColor: 0 }); // Ajustado X
+            addText(clienteDetalhes.documento || 'N/A', clientColumnX + 110, clientDataY, { fontSize: 9, textColor: 0 });
+            addText(clienteDetalhes.telefone || 'N/A', clientColumnX + 150, clientDataY, { fontSize: 9, textColor: 0 });
+            addText(clienteDetalhes.enderecos?.[0]?.cep || 'N/A', clientColumnX + 190, clientDataY, { fontSize: 9, textColor: 0 });
 
             // Endereço Principal do Cliente (ajuste de posição para evitar embolamento)
             const addressY = clientDataY + clientDataLineHeight * 2; // Pula duas linhas para o endereço
             addText("ENDEREÇO PRINCIPAL", clientColumnX, addressY, { fontSize: 8, textColor: 0 });
             addText("S/N", clientColumnX + 70, addressY, { fontSize: 8, textColor: 0 });
             addText("BAIRRO", clientColumnX + 90, addressY, { fontSize: 8, textColor: 0 });
-            addText("CIDADE", clientColumnX + 130, addressY, { fontSize: 8, textColor: 0 }); // Ajustado X
-            addText("ESTADO", clientColumnX + 160, addressY, { fontSize: 8, textColor: 0 }); // Ajustado X
+            addText("CIDADE", clientColumnX + 130, addressY, { fontSize: 8, textColor: 0 });
+            addText("ESTADO", clientColumnX + 160, addressY, { fontSize: 8, textColor: 0 });
 
             if (clienteDetalhes.enderecos && clienteDetalhes.enderecos.length > 0) {
                 const principal = clienteDetalhes.enderecos[0];
@@ -1200,9 +1200,11 @@ document.addEventListener('DOMContentLoaded', function () {
             // Cabeçalho da tabela de produtos
             addRect(marginX, currentY, pageWidth - (2 * marginX), 8, '#ff8c00'); // Fundo laranja
             addText("PRODUTO", marginX + 2, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
-            addText("UND", marginX + 100, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
-            addText("QTD", marginX + 135, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
-            addText("TOTAL", marginX + 215, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
+            addText("UND", marginX + 90, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
+            addText("QTD", marginX + 120, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
+            addText("PESO (KG)", marginX + 170, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold', align: 'right' });
+            addText("PREÇO/KG", marginX + 210, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold', align: 'right' });
+            addText("TOTAL", pageWidth - marginX - 2, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold', align: 'right' });
 
             currentY += 8; // Posição Y após o cabeçalho da tabela
 
@@ -1220,20 +1222,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 const medidasStr = `${item.medidas?.a || ''}${item.medidas?.b ? '/' + item.medidas.b : ''}${item.medidas?.c ? '/' + item.medidas.c : ''}`;
                 const produtoDesc = `${item.tipo} ${item.bitola}mm (${medidasStr} cm)`; // Descrição mais completa
 
+                const precoPorKgItem = (parseFloat(item.pesoKg) > 0) ? (parseFloat(item.custo) / parseFloat(item.pesoKg)) : 0;
+
                 addText(produtoDesc, marginX + 2, currentY + 4.5);
-                addText("PC", marginX + 100, currentY + 4.5); // Unidade de medida
-                addText(item.quantidade?.toString() || '', marginX + 135, currentY + 4.5);
-                addText(`R$ ${parseFloat(item.custo).toFixed(2)}`, marginX + 215, currentY + 4.5); // Total da linha
+                addText("PC", marginX + 90, currentY + 4.5); // Unidade de medida
+                addText(item.quantidade?.toString() || '', marginX + 120, currentY + 4.5);
+                addText(`${parseFloat(item.pesoKg).toFixed(3)}`, marginX + 170, currentY + 4.5, { align: 'right' }); // Peso
+                addText(`R$ ${precoPorKgItem.toFixed(2)}`, marginX + 210, currentY + 4.5, { align: 'right' }); // Preço/KG
+                addText(`R$ ${parseFloat(item.custo).toFixed(2)}`, pageWidth - marginX - 2, currentY + 4.5, { align: 'right' }); // Total da linha
 
                 currentY += 7; // Altura da linha
                 if (currentY > pageHeight - 50) { // Nova página se estiver perto do final
                     doc.addPage('l', 'mm', 'a4'); // Adiciona nova página em paisagem
                     currentY = 10;
-                    addRect(marginX, currentY, pageWidth - (2 * marginX), 8, '#ff8c00'); // Recria cabeçalho da tabela
+                    // Recria cabeçalho da tabela
+                    addRect(marginX, currentY, pageWidth - (2 * marginX), 8, '#ff8c00'); // Fundo laranja
                     addText("PRODUTO", marginX + 2, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
-                    addText("UND", marginX + 100, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
-                    addText("QTD", marginX + 135, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
-                    addText("TOTAL", marginX + 215, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
+                    addText("UND", marginX + 90, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
+                    addText("QTD", marginX + 120, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
+                    addText("PESO (KG)", marginX + 170, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold', align: 'right' });
+                    addText("PREÇO/KG", marginX + 210, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold', align: 'right' });
+                    addText("TOTAL", pageWidth - marginX - 2, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold', align: 'right' });
                     currentY += 8;
                 }
             });

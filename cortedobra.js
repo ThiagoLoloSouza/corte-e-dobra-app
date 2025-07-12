@@ -24,6 +24,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const medidaCInput = document.getElementById('c');
     const bitolaSelect = document.getElementById('bitola'); // Referência para o select da bitola
 
+    // Referência para o botão "Cadastrar Novo Cliente" movido
+    const btnAbrirModalCadastroCliente = document.getElementById('btnAbrirModalCadastroCliente');
+
+
     if (clienteInputPrincipal) clienteInputPrincipal.readOnly = true;
     if (codClienteInputPrincipal) codClienteInputPrincipal.readOnly = true;
     if (numPedidoInput) numPedidoInput.readOnly = true;
@@ -35,7 +39,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- REFERÊNCIAS E LÓGICA DA MODAL DE CADASTRO DE CLIENTE ---
     const modalCadastroCliente = document.getElementById('modalCadastroCliente');
-    const btnAbrirModalCadastroCliente = document.getElementById('btnAbrirModalCadastroCliente');
     const closeModalCadastroCliente = document.getElementById('closeModalCadastroCliente');
     const formCadastroCliente = document.getElementById('formCadastroCliente');
     const cadastroClienteFeedback = document.getElementById('cadastroClienteFeedback');

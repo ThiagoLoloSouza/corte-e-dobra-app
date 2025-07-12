@@ -1,81 +1,40 @@
-// db.js
+// db.js - Temporário para adicionar a coluna updated_at
 
 const { Pool } = require('pg');
 
-let poolConfig = {};
-
-// Prioriza o uso de DATABASE_URL se ela estiver definida (comum em ambientes de produção como Render)
-if (process.env.DATABASE_URL) {
-    poolConfig.connectionString = process.env.DATABASE_URL;
-
-    // Para o Render e outros ambientes de produção, SSL é quase sempre obrigatório.
-    // O 'rejectUnauthorized: false' é frequentemente necessário para certificados autoassinados.
-    poolConfig.ssl = {
-        rejectUnauthorized: false
-    };
-    console.log('Configurando conexão PostgreSQL com SSL (via DATABASE_URL).');
-} else {
-    // Fallback para ambiente local usando variáveis separadas e sem SSL
-    poolConfig = {
-        user: process.env.DB_USER,
-        host: process.env.DB_HOST,
-        database: process.env.DB_NAME,
-        password: process.env.DB_PASSWORD,
-        port: process.env.DB_PORT,
-        ssl: false // Desabilita SSL para localhost
-    };
-    console.log('Configurando conexão PostgreSQL sem SSL (ambiente local).');
-}
-
-const pool = new Pool(poolConfig);
-
-// Event listener para quando a conexão for estabelecida
-pool.on('connect', () => {
-    console.log('Conectado ao PostgreSQL!');
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false // Necessário para Render/Heroku SSL
+    }
 });
 
-// Event listener para erros de conexão
-pool.on('error', (err) => {
-    console.error('Erro na conexão com o PostgreSQL:', err);
-});
-
-// Função assíncrona para criar as tabelas se elas não existirem
-async function createTables() {
+async function connectDbAndAlterTable() {
     try {
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS orcamentos (
-                id SERIAL PRIMARY KEY,
-                cliente_info JSONB,
-                itens_pedido JSONB,
-                resumo_bitolas JSONB,
-                resumo_custos JSONB,
-                resumo_geral JSONB,
-                obra_info JSONB,
-                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-            );
-        `);
-        console.log('Tabela "orcamentos" verificada/criada com sucesso.');
+        await pool.connect();
+        console.log('Conectado ao PostgreSQL!');
 
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS clientes (
-                id VARCHAR(20) PRIMARY KEY,
-                nome VARCHAR(255) NOT NULL,
-                tipo_pessoa VARCHAR(10) NOT NULL,
-                documento VARCHAR(20),
-                endereco TEXT,
-                telefone VARCHAR(20),
-                email VARCHAR(255),
-                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-            );
-        `);
-        console.log('Tabela "clientes" verificada/criada com sucesso.');
+        // Comando SQL para adicionar a coluna updated_at se ela não existir
+        // O "IF NOT EXISTS" é crucial para evitar erros se você rodar isso mais de uma vez
+        const alterTableQuery = `
+            ALTER TABLE orcamentos
+            ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;
+        `;
+        await pool.query(alterTableQuery);
+        console.log('Coluna updated_at adicionada ou já existente na tabela orcamentos.');
 
     } catch (err) {
-        console.error('Erro ao criar tabela:', err.message);
+        console.error('Erro ao conectar ou inicializar o banco de dados:', err);
+    } finally {
+        // Não feche o pool aqui se o servidor precisar dele para outras operações.
+        // A conexão será gerenciada pelo pool.
     }
 }
 
-// Chama a função para criar tabelas assim que o módulo db for importado
-createTables();
+connectDbAndAlterTable(); // Chama a função para conectar e tentar alterar a tabela
 
-module.exports = pool;
+module.exports = {
+    query: (text, params) => pool.query(text, params),
+    // Não é necessário exportar connectDbAndAlterTable para uso externo,
+    // ela é executada na inicialização.
+};

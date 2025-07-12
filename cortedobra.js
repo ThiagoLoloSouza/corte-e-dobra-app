@@ -1068,10 +1068,12 @@ document.addEventListener('DOMContentLoaded', function () {
             };
 
             // --- IMAGENS (AGORA COM AS URLS CORRETAS) ---
-            const dafelLogoSuperior = "http://googleusercontent.com/file_content/10"; // logo_grupo-dafel_8KDzHg.png
-            const dafelSiteLogo = "http://googleusercontent.com/file_content/9"; // ve7afy0h8caia2elqjwo.webp
-            const dafelMainLogo = "http://googleusercontent.com/file_content/7"; // 411878334_914510800158541_3475139305395707762_n.jpg
-            const dafelSocialMediaLogo = "http://googleusercontent.com/file_content/8"; // 288802433_329085279378732_7698072396463611572_n.jpg
+            // As URLs abaixo são as que a plataforma fornece para as imagens que você carregou.
+            // Elas são resolvidas em tempo de execução.
+            const dafelLogoSuperior = "uploaded:logo_grupo-dafel_8KDzHg.png-1b243712-8c99-4052-998d-065a76e45a90";
+            const dafelSiteLogo = "uploaded:ve7afy0h8caia2elqjwo.webp-b46de274-c89f-4f23-92cd-8bd782e70eea";
+            const dafelMainLogo = "uploaded:411878334_914510800158541_3475139305395707762_n.jpg-af57b59b-3b46-49e2-bd70-6a39aedbf9ca";
+            const dafelSocialMediaLogo = "uploaded:288802433_329085279378732_7698072396463611572_n.jpg-69f491a9-8af0-48e1-8c6b-02154d64f67f";
             const qrCodePlaceholder = "https://placehold.co/50x50/FFFFFF/000000?text=QR"; // Placeholder para QR Code
 
             // Função para adicionar imagem (com tratamento de erro básico)
@@ -1089,7 +1091,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         // O ideal seria converter no backend ou usar uma lib que suporte.
                         // Por enquanto, vamos assumir que as imagens fornecidas são PNG/JPG.
                         format = 'PNG'; // Fallback, pode não funcionar
-                        console.warn("WEBP images might not be fully supported by jsPDF directly. Consider converting them to PNG/JPEG for better compatibility.");
+                        console.warn("WEBP IMAGES MIGHT NOT BE FULLY SUPPORTED BY JSPDF DIRECTLY. CONSIDER CONVERTING THEM TO PNG/JPEG FOR BETTER COMPATIBILITY.");
                     }
                     doc.addImage(img, format, x, y, width, height);
                     if (callback) callback();

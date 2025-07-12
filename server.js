@@ -41,20 +41,26 @@ app.get('/', (req, res) => {
 // ROTA: POST /api/clientes - Para cadastrar um novo cliente
 app.post('/api/clientes', async (req, res) => {
     // Desestrutura os dados do corpo da requisição
-    // CORREÇÃO AQUI: Mudar 'enderecoCliente' para 'endereco'
     const { nomeCliente, tipoPessoa, cnpjCliente, cpfCliente, endereco, telefoneCliente, emailCliente } = req.body;
     console.log('Recebendo requisição POST para /api/clientes. Dados:', req.body);
 
     // Validação básica dos dados recebidos
-    // CORREÇÃO AQUI: Mudar 'enderecoCliente' para 'endereco' na validação
     if (!nomeCliente || !endereco || !telefoneCliente || (!cnpjCliente && !cpfCliente)) {
         console.log('Dados do cliente incompletos.');
-        return res.status(400).json({ message: 'Dados do cliente incompletos. Nome, endereço, telefone e CNPJ/CPF são obrigatórios.' });
+        // Adiciona mais detalhes na mensagem de erro para depuração
+        let missingFields = [];
+        if (!nomeCliente) missingFields.push('Nome');
+        if (!endereco) missingFields.push('Endereço');
+        if (!telefoneCliente) missingFields.push('Telefone');
+        if (!cnpjCliente && !cpfCliente) missingFields.push('CNPJ/CPF');
+
+        return res.status(400).json({
+            message: `Dados do cliente incompletos. Os seguintes campos são obrigatórios: ${missingFields.join(', ')}.`,
+            details: req.body // Retorna o corpo da requisição para ajudar na depuração no frontend
+        });
     }
 
     // Gera um código único para o cliente (ex: CLI-0001, CLI-0002)
-    // Este ID será usado como PRIMARY KEY na tabela 'clientes' do PostgreSQL.
-    // Usamos um contador em memória para gerar um ID no formato desejado antes de inserir no DB.
     const newClientId = `CLI-${String(nextClientIdInMemory++).padStart(4, '0')}`;
 
     // Cria o objeto do novo cliente no formato que será salvo no DB
@@ -63,7 +69,7 @@ app.post('/api/clientes', async (req, res) => {
         nome: nomeCliente,
         tipo_pessoa: tipoPessoa,
         documento: tipoPessoa === 'juridica' ? cnpjCliente : cpfCliente,
-        endereco: endereco, // CORREÇÃO AQUI: Usar a variável 'endereco' desestruturada
+        endereco: endereco,
         telefone: telefoneCliente,
         email: emailCliente || null
     };
@@ -95,7 +101,6 @@ app.get('/api/clientes/buscar', async (req, res) => {
 
     try {
         // Adapta a query SQL para buscar por nome, ID ou documento (CNPJ/CPF)
-        // ILIKE para busca case-insensitive, % para wildcards (busca por qualquer parte do termo)
         const result = await db.query(
             `SELECT id, nome, documento, endereco, telefone, email, tipo_pessoa
              FROM clientes
@@ -117,19 +122,13 @@ app.post('/api/orcamentos', async (req, res) => {
     console.log('\n--- Requisição POST /api/orcamentos recebida ---');
     console.log('req.body:', req.body);
 
-    // Desestrutura os dados do orçamento enviados pelo frontend
     const { clienteInfo, itensPedido, resumoBitolas, resumoCustos, resumoGeral, obraInfo } = req.body;
 
-    // Validação básica dos dados do orçamento
     if (!clienteInfo || !itensPedido || !resumoGeral || !obraInfo) {
         return res.status(400).json({ error: 'Dados do orçamento incompletos.' });
     }
 
     try {
-        // Insere o orçamento na tabela 'orcamentos' do PostgreSQL.
-        // O 'id' será gerado automaticamente pelo PostgreSQL (SERIAL PRIMARY KEY).
-        // 'RETURNING id' faz com que o ID gerado seja retornado na resposta.
-        // Certifique-se que a coluna 'obra_info' existe na sua tabela 'orcamentos' (tipo JSONB).
         const result = await db.query(
             `INSERT INTO orcamentos (cliente_info, itens_pedido, resumo_bitolas, resumo_custos, resumo_geral, obra_info)
              VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
@@ -137,19 +136,17 @@ app.post('/api/orcamentos', async (req, res) => {
                 JSON.stringify(clienteInfo),
                 JSON.stringify(itensPedido),
                 JSON.stringify(resumoBitolas),
-                JSON.stringify(resumoCustos),
                 JSON.stringify(resumoGeral),
-                JSON.stringify(obraInfo) // Salva as informações da obra como JSONB
+                JSON.stringify(obraInfo)
             ]
         );
 
-        const novoIdOrcamento = result.rows[0].id; // Pega o ID gerado pelo banco de dados
+        const novoIdOrcamento = result.rows[0].id;
 
-        // Retorna o ID gerado e um número de pedido formatado para o frontend
         res.status(201).json({
             message: 'Orçamento salvo com sucesso!',
-            id: novoIdOrcamento, // ID real do orçamento no banco de dados
-            numPedido: `PED-${String(novoIdOrcamento).padStart(4, '0')}` // Ex: PED-0001, PED-0002
+            id: novoIdOrcamento,
+            numPedido: `PED-${String(novoIdOrcamento).padStart(4, '0')}`
         });
     } catch (err) {
         console.error('Erro ao salvar orçamento:', err);
@@ -160,8 +157,54 @@ app.post('/api/orcamentos', async (req, res) => {
     }
 });
 
-// NOVA ROTA: GET /api/orcamentos - Para listar todos os orçamentos (com filtro opcional)
-// Esta é a rota que estava dando 404. Verifique se ela está exatamente assim no seu arquivo.
+// ROTA: PUT /api/orcamentos/:id - Para atualizar um orçamento existente
+app.put('/api/orcamentos/:id', async (req, res) => {
+    const orcamentoId = req.params.id;
+    console.log(`\n--- Requisição PUT /api/orcamentos/${orcamentoId} recebida ---`);
+    console.log('req.body:', req.body);
+
+    const { clienteInfo, itensPedido, resumoBitolas, resumoCustos, resumoGeral, obraInfo } = req.body;
+
+    if (!clienteInfo || !itensPedido || !resumoGeral || !obraInfo) {
+        return res.status(400).json({ error: 'Dados do orçamento incompletos para atualização.' });
+    }
+
+    try {
+        const result = await db.query(
+            `UPDATE orcamentos
+             SET cliente_info = $1, itens_pedido = $2, resumo_bitolas = $3, resumo_custos = $4, resumo_geral = $5, obra_info = $6, updated_at = NOW()
+             WHERE id = $7 RETURNING id`,
+            [
+                JSON.stringify(clienteInfo),
+                JSON.stringify(itensPedido),
+                JSON.stringify(resumoBitolas),
+                JSON.stringify(resumoCustos),
+                JSON.stringify(resumoGeral),
+                JSON.stringify(obraInfo),
+                orcamentoId
+            ]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Orçamento não encontrado para atualização.' });
+        }
+
+        res.status(200).json({
+            message: 'Orçamento atualizado com sucesso!',
+            id: result.rows[0].id,
+            numPedido: obraInfo && obraInfo.numPedido ? obraInfo.numPedido : `PED-${String(result.rows[0].id).padStart(4, '0')}`
+        });
+    } catch (err) {
+        console.error('Erro ao atualizar orçamento:', err);
+        res.status(500).json({
+            error: 'Erro ao atualizar orçamento.',
+            details: err.message
+        });
+    }
+});
+
+
+// ROTA: GET /api/orcamentos - Para listar todos os orçamentos (com filtro opcional)
 app.get('/api/orcamentos', async (req, res) => {
     const searchTerm = req.query.q;
     console.log('Recebendo requisição GET para /api/orcamentos. Termo de filtro:', searchTerm);
@@ -192,7 +235,7 @@ app.get('/api/orcamentos', async (req, res) => {
     }
 });
 
-// NOVA ROTA: GET /api/orcamentos/:id - Para obter detalhes de um orçamento específico
+// ROTA: GET /api/orcamentos/:id - Para obter detalhes de um orçamento específico
 app.get('/api/orcamentos/:id', async (req, res) => {
     const orcamentoId = req.params.id;
     console.log('Recebendo requisição GET para /api/orcamentos/:id. ID:', orcamentoId);
@@ -221,6 +264,25 @@ app.get('/api/orcamentos/:id', async (req, res) => {
     } catch (err) {
         console.error('Erro ao buscar detalhes do orçamento:', err);
         res.status(500).json({ error: 'Erro ao buscar detalhes do orçamento.', details: err.message });
+    }
+});
+
+// ROTA: DELETE /api/orcamentos/:id - Para excluir um orçamento
+app.delete('/api/orcamentos/:id', async (req, res) => {
+    const orcamentoId = req.params.id;
+    console.log(`Recebendo requisição DELETE para /api/orcamentos/${orcamentoId}`);
+
+    try {
+        const result = await db.query(`DELETE FROM orcamentos WHERE id = $1 RETURNING id`, [orcamentoId]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Orçamento não encontrado para exclusão.' });
+        }
+
+        res.status(200).json({ message: 'Orçamento excluído com sucesso!', id: result.rows[0].id });
+    } catch (err) {
+        console.error('Erro ao excluir orçamento:', err);
+        res.status(500).json({ error: 'Erro ao excluir orçamento.', details: err.message });
     }
 });
 

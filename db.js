@@ -42,7 +42,9 @@
     // Função assíncrona para criar as tabelas e adicionar colunas se necessário
     async function createTables() {
         try {
-            // Cria a tabela 'orcamentos' se não existir
+            // Cria a tabela 'orcamentos' se não existir.
+            // NOTA: As colunas obra_info e created_at NÃO são incluídas aqui,
+            // pois serão adicionadas via ALTER TABLE abaixo se não existirem.
             await pool.query(`
                 CREATE TABLE IF NOT EXISTS orcamentos (
                     id SERIAL PRIMARY KEY,
@@ -51,12 +53,11 @@
                     resumo_bitolas JSONB,
                     resumo_custos JSONB,
                     resumo_geral JSONB
-                    -- created_at e obra_info serão adicionados via ALTER TABLE abaixo se não existirem
                 );
             `);
             console.log('Tabela "orcamentos" verificada/criada com sucesso.');
 
-            // **NOVO BLOCO TEMPORÁRIO: Adiciona a coluna obra_info se ela não existir**
+            // **BLOCO TEMPORÁRIO: Adiciona a coluna obra_info se ela não existir**
             await pool.query(`
                 DO $$
                 BEGIN
@@ -71,7 +72,7 @@
             `);
             console.log('Verificação/Adição da coluna "obra_info" concluída.');
 
-            // **NOVO BLOCO TEMPORÁRIO: Adiciona a coluna created_at se ela não existir**
+            // **BLOCO TEMPORÁRIO: Adiciona a coluna created_at se ela não existir**
             await pool.query(`
                 DO $$
                 BEGIN
@@ -111,4 +112,5 @@
     createTables();
 
     module.exports = pool;
+    
     

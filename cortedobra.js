@@ -1064,8 +1064,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // IMPORTANTE: As URLs abaixo são de placeholders. Para que suas imagens reais apareçam no PDF,
             // você deve hospedá-las em um serviço público (Google Drive, Dropbox, Imgur, etc.)
             // e substituir estas URLs pelas URLs diretas das suas imagens.
-            const dafelLogoSuperiorPDF = ""; // Para logo_grupo-dafel_8KDzHg.png
-            const dafelSeriedadeNossaMarcaPDF = "https://drive.google.com/file/d/1XDjJ0A3Y9qPCD5VEKDgbWJT1WiAKfS9C/view?usp=drive_link"; // Para image_a9f29e.png
+            const dafelLogoSuperiorPDF = "https://drive.google.com/uc?export=download&id=1XDjJ0A3Y9qPCD5VEKDgbWJT1WiAKfS9C"; // Para logo_grupo-dafel_8KDzHg.png
+            const dafelSeriedadeNossaMarcaPDF = "https://placehold.co/60x15/333333/FFFFFF?text=DAFE_SERIEDADE_PDF"; // Para image_a9f29e.png
             const laranjaDadosClientePDF = "https://placehold.co/20x20/FF8C00/FFFFFF?text=IMG_CLIENTE_PDF"; // Para image_a9dc1d.png
             const dafelMainLogoPDF = "https://placehold.co/100x30/F0F0F0/000000?text=LOGO_PRINCIPAL_PDF"; // Para 411878334_914510800158541_3475139305395707762_n.jpg
 
@@ -1103,7 +1103,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Informações do site e redes sociais (lado direito) - TEXTO BRANCO
             doc.setTextColor(255, 255, 255); // Cor branca para estes textos
             addText("ACESSE NOSSO SITE", pageWidth - marginX - 70, 7, { fontSize: 7, align: 'right' });
-            addText("WWW.DTEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, align: 'right' });
+            addText("WWW.DAFEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, align: 'right' });
             addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, align: 'right' });
             addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, align: 'right' });
             doc.setTextColor(0, 0, 0); // Volta para preto padrão

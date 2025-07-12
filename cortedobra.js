@@ -7,21 +7,30 @@ document.addEventListener('DOMContentLoaded', function () {
     const custoTotalGeralElement = document.getElementById("custo-total-geral");
     const btnSalvarOrcamento = document.getElementById("btnSalvarOrcamento");
     const btnGerarPdf = document.getElementById("btnGerarPdf");
+    const btnNovoOrcamento = document.getElementById("btnNovoOrcamento");
 
     const clienteInputPrincipal = document.getElementById('cliente');
     const codClienteInputPrincipal = document.getElementById('codCliente');
     const obraInput = document.getElementById('obra');
     const numPedidoInput = document.getElementById('numPedido');
+    const orcamentoIdInput = document.getElementById('orcamentoId'); // Campo oculto para ID do orçamento (para edição)
     const recebeCaminhaoSelect = document.getElementById('recebeCaminhao');
     const dataDesejadaInput = document.getElementById('dataDesejada');
+
+    // Campos de medida da peça
+    const tipoPecaSelect = document.getElementById('tipo');
+    const medidaAInput = document.getElementById('a');
+    const medidaBInput = document.getElementById('b');
+    const medidaCInput = document.getElementById('c');
 
     if (clienteInputPrincipal) clienteInputPrincipal.readOnly = true;
     if (codClienteInputPrincipal) codClienteInputPrincipal.readOnly = true;
     if (numPedidoInput) numPedidoInput.readOnly = true;
 
+    // Variáveis para armazenar dados do orçamento e cálculos
     const resumoBitolasCalculo = {};
     const resumoCustosCalculo = {};
-    const linhasOrcamento = [];
+    const linhasOrcamento = []; // Armazena os dados das peças adicionadas
 
     // --- REFERÊNCIAS E LÓGICA DA MODAL DE CADASTRO DE CLIENTE ---
     const modalCadastroCliente = document.getElementById('modalCadastroCliente');
@@ -37,6 +46,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const cnpjClienteInput = document.getElementById('cnpjCliente');
     const cpfClienteInput = document.getElementById('cpfCliente');
 
+    /**
+     * Alterna a visibilidade dos campos CNPJ e CPF na modal de cadastro de cliente.
+     */
     function toggleCpfCnpjFields() {
         const tipoPessoaSelecionado = document.querySelector('input[name="tipoPessoa"]:checked')?.value || 'juridica';
         if (tipoPessoaSelecionado === 'juridica') {
@@ -54,6 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // Event listeners para abrir/fechar a modal de cadastro de cliente
     if (btnAbrirModalCadastroCliente && modalCadastroCliente) {
         btnAbrirModalCadastroCliente.addEventListener('click', function() {
             modalCadastroCliente.style.display = 'flex';
@@ -83,10 +96,14 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Event listener para os botões de rádio de tipo de pessoa
     document.querySelectorAll('input[name="tipoPessoa"]').forEach(radio => {
         radio.addEventListener('change', toggleCpfCnpjFields);
     });
 
+    /**
+     * Envia os dados do novo cliente para o backend.
+     */
     if (formCadastroCliente && cadastroClienteFeedback && clienteInputPrincipal && codClienteInputPrincipal) {
         formCadastroCliente.addEventListener('submit', async function(event) {
             event.preventDefault();
@@ -156,6 +173,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const btnBuscarCliente = document.getElementById('btnBuscarCliente');
     const resultadosBuscaClienteDiv = document.getElementById('resultadosBuscaCliente');
 
+    /**
+     * Busca clientes no backend e exibe os resultados.
+     */
     if (btnBuscarCliente && buscarClienteInput && resultadosBuscaClienteDiv) {
         btnBuscarCliente.addEventListener('click', async () => {
             const searchTerm = buscarClienteInput.value.trim();
@@ -191,13 +211,17 @@ document.addEventListener('DOMContentLoaded', function () {
                         p.addEventListener('mouseout', () => p.style.backgroundColor = '#f9f9f9');
                         
                         p.addEventListener('click', () => {
+                            // Preenche os campos do formulário principal com os dados do cliente selecionado
                             if (clienteInputPrincipal) clienteInputPrincipal.value = cliente.nome;
                             if (codClienteInputPrincipal) codClienteInputPrincipal.value = cliente.id;
+                            // Limpa os campos de obra e pedido para um novo orçamento
                             if (obraInput) obraInput.value = '';
                             if (numPedidoInput) numPedidoInput.value = '';
+                            if (orcamentoIdInput) orcamentoIdInput.value = ''; // Limpa o ID do orçamento atual
                             if (recebeCaminhaoSelect) recebeCaminhaoSelect.value = 'Sim';
                             if (dataDesejadaInput) dataDesejadaInput.value = '';
                             
+                            // Limpa a tabela de peças e resumo para um novo orçamento
                             tabelaResultados.innerHTML = '';
                             Object.keys(resumoBitolasCalculo).forEach(key => delete resumoBitolasCalculo[key]);
                             Object.keys(resumoCustosCalculo).forEach(key => delete resumoCustosCalculo[key]);
@@ -226,7 +250,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const listaOrcamentosDiv = document.getElementById('listaOrcamentos');
     const visualizarOrcamentoFeedback = document.getElementById('visualizarOrcamentoFeedback');
 
-    // Função para carregar e exibir a lista de orçamentos
+    /**
+     * Carrega e exibe a lista de orçamentos na modal de visualização.
+     * @param {string} filtro - Termo opcional para filtrar orçamentos.
+     */
     async function carregarOrcamentos(filtro = '') {
         if (!listaOrcamentosDiv) return;
         listaOrcamentosDiv.innerHTML = '<p style="text-align: center; color: gray;">Carregando orçamentos...</p>';
@@ -249,13 +276,15 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 orcamentos.forEach(orcamento => {
                     const p = document.createElement('p');
-                    // CORREÇÃO AQUI: Adicionando verificações de existência para clienteInfo e obraInfo
                     const clienteNome = orcamento.clienteInfo?.cliente || 'Cliente Desconhecido';
                     const obraNome = orcamento.obraInfo?.nome || 'Obra Desconhecida';
                     const numPedidoDisplay = orcamento.numPedido || orcamento.id || 'N/A';
                     const dataDisplay = orcamento.dataOrcamento || 'Data Desconhecida';
 
-                    p.textContent = `Pedido Nº: ${numPedidoDisplay} - Cliente: ${clienteNome} - Obra: ${obraNome} - Data: ${dataDisplay}`;
+                    p.innerHTML = `
+                        Pedido Nº: ${numPedidoDisplay} - Cliente: ${clienteNome} - Obra: ${obraNome} - Data: ${dataDisplay}
+                        <button class="btn-excluir-orcamento" data-orcamento-id="${orcamento.id}" style="float: right; background-color: #dc3545; color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer; font-size: 0.8em;">Excluir</button>
+                    `;
                     p.classList.add('orcamento-item');
                     p.dataset.orcamentoId = orcamento.id;
                     p.style.cursor = 'pointer';
@@ -265,7 +294,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     p.addEventListener('mouseover', () => p.style.backgroundColor = '#e9ecef');
                     p.addEventListener('mouseout', () => p.style.backgroundColor = '#fefefe');
 
-                    p.addEventListener('click', () => carregarOrcamentoNaTela(orcamento.id));
+                    // Event listener para carregar o orçamento (clicando no texto, não no botão de excluir)
+                    p.querySelector('span')?.addEventListener('click', () => carregarOrcamentoNaTela(orcamento.id));
+                    // Event listener para o botão de excluir
+                    p.querySelector('.btn-excluir-orcamento').addEventListener('click', (e) => {
+                        e.stopPropagation(); // Impede que o clique no botão ative o clique no parágrafo
+                        const idParaExcluir = e.target.dataset.orcamentoId;
+                        if (confirm(`Tem certeza que deseja excluir o orçamento Pedido Nº: ${numPedidoDisplay}?`)) {
+                            excluirOrcamento(idParaExcluir);
+                        }
+                    });
                     listaOrcamentosDiv.appendChild(p);
                 });
             }
@@ -275,7 +313,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Função para carregar um orçamento específico na tela principal
+    /**
+     * Carrega um orçamento específico na tela principal para visualização/edição.
+     * @param {string} orcamentoId - O ID numérico do orçamento a ser carregado.
+     */
     async function carregarOrcamentoNaTela(orcamentoId) {
         console.log(`Carregando orçamento ID: ${orcamentoId}`);
         if(visualizarOrcamentoFeedback) {
@@ -298,6 +339,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (codClienteInputPrincipal) codClienteInputPrincipal.value = orcamentoDetalhes.clienteInfo?.codCliente || '';
             if (obraInput) obraInput.value = orcamentoDetalhes.obraInfo?.nome || '';
             if (numPedidoInput) numPedidoInput.value = orcamentoDetalhes.obraInfo?.numPedido || orcamentoDetalhes.id || '';
+            if (orcamentoIdInput) orcamentoIdInput.value = orcamentoDetalhes.id; // Define o ID do orçamento para edição
             if (recebeCaminhaoSelect) recebeCaminhaoSelect.value = orcamentoDetalhes.obraInfo?.recebeCaminhao || 'Sim';
             if (dataDesejadaInput) dataDesejadaInput.value = orcamentoDetalhes.obraInfo?.dataDesejada || '';
 
@@ -322,18 +364,23 @@ document.addEventListener('DOMContentLoaded', function () {
                     novaLinhaTabela.dataset.bitola = item.bitola || '';
                     novaLinhaTabela.dataset.peso = item.pesoKg || '0';
                     novaLinhaTabela.dataset.custo = item.custo || '0';
+                    // Armazena os dados originais da peça para facilitar a remoção do array
+                    novaLinhaTabela.orcamentoData = item;
 
                     novaLinhaTabela.querySelector(".btn-excluir").addEventListener("click", function () {
                         const bitolaExcluir = novaLinhaTabela.dataset.bitola;
                         const pesoExcluir = parseFloat(novaLinhaTabela.dataset.peso);
                         const custoExcluir = parseFloat(novaLinhaTabela.dataset.custo);
 
-                        if (resumoBitolasCalculo[bitolaExcluir]) { resumoBitolasCalculo[bitolaExcluir] -= pesoExcluir; if (resumoBitolasCalculo[bitolaExcluir] < 0.001) { delete resumoBitolasCalculo[bitolaExcluir]; }}
-                        if (resumoCustosCalculo[bitolaExcluir]) { resumoCustosCalculo[bitolaExcluir] -= custoExcluir; if (resumoCustosCalculo[bitolaExcluir] < 0.001) { delete resumoCustosCalculo[bitolaExcluir]; }}
+                        if (resumoBitolasCalculo[bitolaExcluir]) { resumoBitolasCalculo[bitolaExcluir] -= pesoExcluir; if (resumoBitolasCalculo[bitolaExcluir] < 0.001) { delete resumoBitolasCalculo[bitolaExcluir]; } }
+                        if (resumoCustosCalculo[bitolaExcluir]) { resumoCustosCalculo[bitolaExcluir] -= custoExcluir; if (resumoCustosCalculo[bitolaExcluir] < 0.001) { delete resumoCustosCalculo[bitolaExcluir]; } }
 
+                        // Encontra o índice da peça no array linhasOrcamento para remover
                         const index = linhasOrcamento.findIndex(li =>
-                            li.tipo === item.tipo && li.bitola === item.bitola &&
-                            li.comprimentoCm === item.comprimentoCm && li.quantidade === item.quantidade
+                            li.tipo === novaLinhaTabela.orcamentoData.tipo &&
+                            li.bitola === novaLinhaTabela.orcamentoData.bitola &&
+                            li.comprimentoCm === novaLinhaTabela.orcamentoData.comprimentoCm &&
+                            li.quantidade === novaLinhaTabela.orcamentoData.quantidade
                         );
                         if (index > -1) { linhasOrcamento.splice(index, 1); }
 
@@ -341,7 +388,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         atualizarResumoBitolas();
                     });
 
-                    novaLinhaTabela.orcamentoData = item;
                     linhasOrcamento.push(item);
                     tabelaResultados.appendChild(novaLinhaTabela);
 
@@ -366,7 +412,35 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Event listener para abrir a modal de visualização de orçamentos
+    /**
+     * Envia uma requisição para excluir um orçamento.
+     * @param {string} id - O ID do orçamento a ser excluído.
+     */
+    async function excluirOrcamento(id) {
+        const urlBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000'
+            : '';
+        try {
+            const response = await fetch(`${urlBase}/api/orcamentos/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ message: 'Erro desconhecido ao excluir orçamento.' }));
+                throw new Error(errorData.message || "Erro ao excluir orçamento.");
+            }
+
+            alert('Orçamento excluído com sucesso!');
+            carregarOrcamentos(); // Recarrega a lista de orçamentos após a exclusão
+            iniciarNovoOrcamento(); // Limpa o formulário principal caso o orçamento excluído estivesse carregado
+        } catch (error) {
+            console.error('Erro ao excluir orçamento:', error);
+            alert(`Erro ao excluir orçamento: ${error.message}`);
+        }
+    }
+
+
+    // Event listeners para abrir/fechar a modal de visualização de orçamentos
     if (btnAbrirModalVisualizarOrcamentos && modalVisualizarOrcamentos) {
         btnAbrirModalVisualizarOrcamentos.addEventListener('click', function() {
             modalVisualizarOrcamentos.style.display = 'flex';
@@ -374,7 +448,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Event listener para fechar a modal de visualização pelo botão 'x'
     if (closeModalVisualizarOrcamentos && modalVisualizarOrcamentos && filtroOrcamentoInput && listaOrcamentosDiv && visualizarOrcamentoFeedback) {
         closeModalVisualizarOrcamentos.addEventListener('click', function() {
             modalVisualizarOrcamentos.style.display = 'none';
@@ -384,7 +457,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Event listener para fechar a modal de visualização clicando fora dela
     if (modalVisualizarOrcamentos && filtroOrcamentoInput && listaOrcamentosDiv && visualizarOrcamentoFeedback) {
         window.addEventListener('click', function(event) {
             if (event.target === modalVisualizarOrcamentos) {
@@ -401,8 +473,47 @@ document.addEventListener('DOMContentLoaded', function () {
         btnFiltrarOrcamentos.addEventListener('click', () => carregarOrcamentos(filtroOrcamentoInput.value));
     }
 
+    /**
+     * Limpa todos os campos do formulário principal e o resumo para iniciar um novo orçamento.
+     */
+    function iniciarNovoOrcamento() {
+        // Limpar campos de Dados do Cliente
+        if (clienteInputPrincipal) clienteInputPrincipal.value = '';
+        if (codClienteInputPrincipal) codClienteInputPrincipal.value = '';
+        if (obraInput) obraInput.value = '';
+        if (numPedidoInput) numPedidoInput.value = '';
+        if (orcamentoIdInput) orcamentoIdInput.value = ''; // Limpa o ID do orçamento atual
+        if (recebeCaminhaoSelect) recebeCaminhaoSelect.value = 'Sim'; // Valor padrão
+        if (dataDesejadaInput) dataDesejadaInput.value = '';
+        if (buscarClienteInput) buscarClienteInput.value = ''; // Limpa o campo de busca de cliente
+        if (resultadosBuscaClienteDiv) resultadosBuscaClienteDiv.innerHTML = ''; // Limpa resultados da busca
 
-    // --- LÓGICA DE CÁLCULO DE PEÇAS E RESUMO DO ORÇAMENTO (EXISTENTE) ---
+        // Limpar tabela de peças
+        tabelaResultados.innerHTML = '';
+        linhasOrcamento.length = 0; // Zera o array de peças
+
+        // Limpar cálculos de resumo
+        Object.keys(resumoBitolasCalculo).forEach(key => delete resumoBitolasCalculo[key]);
+        Object.keys(resumoCustosCalculo).forEach(key => delete resumoCustosCalculo[key]);
+        atualizarResumoBitolas(); // Atualiza os totais para zero
+
+        // Limpar formulário de Adicionar Peça
+        formPeca.reset();
+        // Garante que os campos de medida estejam corretos para o tipo padrão (Vara em U)
+        if (tipoPecaSelect) tipoPecaSelect.value = 'varaU';
+        validarCamposMedida(); // Chama a validação para resetar os campos b e c
+        
+        // Opcional: Focar no primeiro campo para nova entrada
+        if (clienteInputPrincipal) clienteInputPrincipal.focus();
+    }
+
+    // --- EVENT LISTENER para o botão "Novo Orçamento" ---
+    if (btnNovoOrcamento) {
+        btnNovoOrcamento.addEventListener('click', iniciarNovoOrcamento);
+    }
+
+
+    // --- LÓGICA DE CÁLCULO DE PEÇAS E RESUMO DO ORÇAMENTO ---
 
     const pesosPorMetro = {
         "4.2": 0.109, "5.0": 0.154, "6.3": 0.249, "8.0": 0.395, "10.0": 0.617,
@@ -414,16 +525,75 @@ document.addEventListener('DOMContentLoaded', function () {
         "12.5": 7.60, "16.0": 7.50, "20.0": 7.40, "25.0": 7.30
     };
 
+    /**
+     * Valida e ajusta a visibilidade/obrigatoriedade dos campos de medida (b, c)
+     * com base no tipo de peça selecionado.
+     */
+    function validarCamposMedida() {
+        const tipoSelecionado = tipoPecaSelect.value;
+
+        // Resetar todos os campos e estados primeiro
+        medidaBInput.value = '';
+        medidaCInput.value = '';
+        medidaBInput.disabled = false;
+        medidaCInput.disabled = false;
+        medidaBInput.required = false;
+        medidaCInput.required = false;
+
+        switch (tipoSelecionado) {
+            case 'varaReta':
+                medidaBInput.disabled = true;
+                medidaCInput.disabled = true;
+                break;
+            case 'varaL':
+            case 'estribo': // Estribo também usa A e B
+                medidaCInput.disabled = true;
+                medidaBInput.required = true;
+                break;
+            case 'varaU':
+                medidaBInput.required = true;
+                medidaCInput.required = true;
+                break;
+            default:
+                // Caso padrão, todos habilitados ou desabilitados conforme sua lógica inicial
+                break;
+        }
+    }
+
+    // Event listener para o tipo de peça mudar
+    if (tipoPecaSelect) {
+        tipoPecaSelect.addEventListener('change', validarCamposMedida);
+    }
+
     if (formPeca && tabelaResultados) {
         formPeca.addEventListener('submit', function (event) {
             event.preventDefault();
 
-            const tipo = document.getElementById('tipo')?.value;
+            const tipo = tipoPecaSelect.value;
             const bitola = document.getElementById('bitola')?.value;
-            const a = parseFloat(document.getElementById('a')?.value) || 0;
-            const b = parseFloat(document.getElementById('b')?.value) || 0;
-            const c = parseFloat(document.getElementById('c')?.value) || 0;
+            const a = parseFloat(medidaAInput.value) || 0;
+            const b = parseFloat(medidaBInput.value) || 0;
+            const c = parseFloat(medidaCInput.value) || 0;
             const quantidade = parseInt(document.getElementById('quantidade')?.value) || 0;
+
+            // Validação adicional baseada no tipo de peça
+            if (tipo === 'varaReta' && (medidaBInput.value !== '' || medidaCInput.value !== '')) {
+                alert('Para "Vara Reta", apenas a medida "a" é necessária. Por favor, limpe os campos "b" e "c".');
+                return;
+            }
+            if ((tipo === 'varaL' || tipo === 'estribo') && medidaCInput.value !== '') {
+                alert(`Para "${tipo === 'varaL' ? 'Vara em L' : 'Estribo'}", apenas as medidas "a" e "b" são necessárias. Por favor, limpe o campo "c".`);
+                return;
+            }
+            if (tipo === 'varaU' && (isNaN(b) || isNaN(c))) {
+                alert('Para "Vara em U", as medidas "a", "b" e "c" são necessárias.');
+                return;
+            }
+            if ((tipo === 'varaL' || tipo === 'estribo') && isNaN(b)) {
+                alert(`Para "${tipo === 'varaL' ? 'Vara em L' : 'Estribo'}", as medidas "a" e "b" são necessárias.`);
+                return;
+            }
+
 
             if (!tipo || !bitola || isNaN(a) || isNaN(quantidade) || quantidade <= 0) {
                 alert('Por favor, preencha Tipo, Bitola, Medida "a" e Quantidade com valores válidos.');
@@ -457,35 +627,35 @@ document.addEventListener('DOMContentLoaded', function () {
             novaLinhaTabela.dataset.bitola = bitola;
             novaLinhaTabela.dataset.peso = pesoTotalPecas;
             novaLinhaTabela.dataset.custo = custoTotalPecas;
-
-            novaLinhaTabela.querySelector(".btn-excluir").addEventListener("click", function () {
-                const bitolaExcluir = novaLinhaTabela.dataset.bitola;
-                const pesoExcluir = parseFloat(novaLinhaTabela.dataset.peso);
-                const custoExcluir = parseFloat(novaLinhaTabela.dataset.custo);
-
-                if (resumoBitolasCalculo[bitolaExcluir]) { resumoBitolasCalculo[bitolaExcluir] -= pesoExcluir; if (resumoBitolasCalculo[bitolaExcluir] < 0.001) { delete resumoBitolasCalculo[bitolaExcluir]; }}
-                if (resumoCustosCalculo[bitolaExcluir]) { resumoCustosCalculo[bitolaExcluir] -= custoExcluir; if (resumoCustosCalculo[bitolaExcluir] < 0.001) { delete resumoCustosCalculo[bitolaExcluir]; }}
-
-                const index = linhasOrcamento.findIndex(item =>
-                    item.tipo === novaLinhaTabela.orcamentoData.tipo &&
-                    item.bitola === novaLinhaTabela.orcamentoData.bitola &&
-                    item.comprimentoCm === item.comprimentoCm && item.quantidade === item.quantidade
-                );
-                if (index > -1) { linhasOrcamento.splice(index, 1); }
-
-                novaLinhaTabela.remove();
-                atualizarResumoBitolas();
-            });
-
+            // Armazena os dados originais da peça para facilitar a remoção do array
             const dadosPeca = {
                 tipo, bitola, medidas: { a, b, c }, quantidade,
                 comprimentoCm: comprimentoCm.toFixed(2),
                 pesoKg: pesoTotalPecas.toFixed(3),
                 custo: custoTotalPecas.toFixed(2)
             };
+            novaLinhaTabela.orcamentoData = dadosPeca; // Associa os dados à linha HTML
+            linhasOrcamento.push(dadosPeca); // Adiciona ao array global de peças
 
-            novaLinhaTabela.orcamentoData = dadosPeca;
-            linhasOrcamento.push(dadosPeca);
+            novaLinhaTabela.querySelector(".btn-excluir").addEventListener("click", function () {
+                const bitolaExcluir = novaLinhaTabela.dataset.bitola;
+                const pesoExcluir = parseFloat(novaLinhaTabela.dataset.peso);
+                const custoExcluir = parseFloat(novaLinhaTabela.dataset.custo);
+
+                if (resumoBitolasCalculo[bitolaExcluir]) { resumoBitolasCalculo[bitolaExcluir] -= pesoExcluir; if (resumoBitolasCalculo[bitolaExcluir] < 0.001) { delete resumoBitolasCalculo[bitolaExcluir]; } }
+                if (resumoCustosCalculo[bitolaExcluir]) { resumoCustosCalculo[bitolaExcluir] -= custoExcluir; if (resumoCustosCalculo[bitolaExcluir] < 0.001) { delete resumoCustosCalculo[bitolaExcluir]; } }
+
+                const index = linhasOrcamento.findIndex(item =>
+                    item.tipo === novaLinhaTabela.orcamentoData.tipo &&
+                    item.bitola === novaLinhaTabela.orcamentoData.bitola &&
+                    item.comprimentoCm === novaLinhaTabela.orcamentoData.comprimentoCm &&
+                    item.quantidade === novaLinhaTabela.orcamentoData.quantidade
+                );
+                if (index > -1) { linhasOrcamento.splice(index, 1); }
+
+                novaLinhaTabela.remove();
+                atualizarResumoBitolas();
+            });
 
             tabelaResultados.appendChild(novaLinhaTabela);
 
@@ -494,11 +664,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
             atualizarResumoBitolas();
             formPeca.reset();
-            document.getElementById('b').value = '';
-            document.getElementById('c').value = '';
+            validarCamposMedida(); // Reseta os campos b e c após adicionar a peça
         });
     }
 
+    /**
+     * Atualiza o resumo de pesos e custos por bitola e os totais gerais.
+     */
     function atualizarResumoBitolas() {
         if (!resumoBitolasDisplay || !pesoTotalGeralElement || !custoTotalGeralElement) return;
 
@@ -527,11 +699,16 @@ document.addEventListener('DOMContentLoaded', function () {
         custoTotalGeralElement.textContent = "R$ " + custoTotalGeral.toFixed(2);
     }
 
+    /**
+     * Monta um objeto de orçamento com os dados atuais do formulário.
+     * @returns {object} Objeto contendo todos os dados do orçamento.
+     */
     function montarOrcamento() {
         const clienteNome = clienteInputPrincipal?.value || '';
         const codCliente = codClienteInputPrincipal?.value || '';
         const obra = obraInput?.value || '';
         const numPedido = numPedidoInput?.value || '';
+        const orcamentoId = orcamentoIdInput?.value || ''; // Pega o ID do orçamento para edição
         const recebeCaminhao = recebeCaminhaoSelect?.value || '';
         const dataDesejada = dataDesejadaInput?.value || '';
 
@@ -539,6 +716,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const custoTotalGeralDisplay = custoTotalGeralElement?.textContent || 'R$ 0.00';
 
         return {
+            id: orcamentoId, // Inclui o ID para operações de PUT (edição)
             clienteInfo: { cliente: clienteNome, codCliente: codCliente },
             obraInfo: { nome: obra, numPedido: numPedido, recebeCaminhao: recebeCaminhao, dataDesejada: dataDesejada },
             itensPedido: linhasOrcamento.map(item => ({ ...item, medidas: { ...item.medidas } })),
@@ -553,8 +731,11 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 
-    // --- EVENT LISTENERS FOR SAVING AND GENERATING PDF ---
+    // --- EVENT LISTENERS PARA SALVAR E GERAR PDF ---
 
+    /**
+     * Salva ou atualiza um orçamento no backend.
+     */
     if (btnSalvarOrcamento) {
         btnSalvarOrcamento.addEventListener("click", async () => {
             if (!clienteInputPrincipal.value || !codClienteInputPrincipal.value) {
@@ -567,42 +748,57 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             const orcamentoParaSalvar = montarOrcamento();
-
             const urlBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
                 ? 'http://localhost:3000'
                 : '';
 
+            let method = 'POST';
+            let url = `${urlBase}/api/orcamentos`;
+
+            // Se orcamentoIdInput.value tem um valor, é uma edição (PUT)
+            if (orcamentoParaSalvar.id) {
+                method = 'PUT';
+                url = `${urlBase}/api/orcamentos/${orcamentoParaSalvar.id}`;
+            }
+
             try {
-                const response = await fetch(`${urlBase}/api/orcamentos`, {
-                    method: 'POST',
+                const response = await fetch(url, {
+                    method: method,
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(orcamentoParaSalvar)
                 });
 
                 if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ message: 'Erro desconhecido ao salvar orçamento.' }));
-                    throw new Error(errorData.message || "Erro ao salvar orçamento.");
+                    const errorData = await response.json().catch(() => ({ message: 'Erro desconhecido ao salvar/atualizar orçamento.' }));
+                    throw new Error(errorData.message || "Erro ao salvar/atualizar orçamento.");
                 }
 
                 const resultado = await response.json();
-                alert(`Orçamento salvo com sucesso! Pedido Nº: ${resultado.numPedido || resultado.id}`);
+                alert(`Orçamento ${method === 'POST' ? 'salvo' : 'atualizado'} com sucesso! Pedido Nº: ${resultado.numPedido || resultado.id}`);
 
                 if (numPedidoInput) {
                     numPedidoInput.value = resultado.numPedido || resultado.id;
                 }
+                if (orcamentoIdInput && method === 'POST') {
+                    orcamentoIdInput.value = resultado.id; // Define o ID para o novo orçamento salvo
+                }
 
-                tabelaResultados.innerHTML = '';
-                Object.keys(resumoBitolasCalculo).forEach(key => delete resumoBitolasCalculo[key]);
-                Object.keys(resumoCustosCalculo).forEach(key => delete resumoCustosCalculo[key]);
-                linhasOrcamento.length = 0;
-                atualizarResumoBitolas();
+                // Após salvar/atualizar, inicia um novo orçamento automaticamente
+                // ou mantém o atual se for edição e o usuário quiser continuar trabalhando nele
+                if (method === 'POST') { // Apenas limpa para um novo orçamento se for um POST
+                    iniciarNovoOrcamento();
+                }
+
             } catch (error) {
-                console.error("Erro ao salvar orçamento:", error);
-                alert("Erro ao salvar orçamento. Detalhes: " + error.message);
+                console.error("Erro ao salvar/atualizar orçamento:", error);
+                alert("Erro ao salvar/atualizar orçamento. Detalhes: " + error.message);
             }
         });
     }
 
+    /**
+     * Gera um PDF do orçamento atual.
+     */
     if (btnGerarPdf) {
         btnGerarPdf.addEventListener("click", () => {
             const { jsPDF } = window.jspdf;
@@ -681,7 +877,6 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.text("Resumo por Bitola:", 10, y);
             y += lineHeight;
 
-            // CORREÇÃO AQUI: Iterar sobre orcamento.resumoBitolas (não resumoBitolasCalculo)
             for (const bitola in orcamento.resumoBitolas) {
                 const resumo = orcamento.resumoBitolas[bitola];
                 doc.text(`Bitola ${bitola}mm: Peso ${resumo.peso?.toFixed(3) || '0.000'} kg - Custo R$ ${resumo.custo?.toFixed(2) || '0.00'}`, 10, y);
@@ -701,4 +896,5 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- INITIALIZATION ON PAGE LOAD ---
     toggleCpfCnpjFields();
     atualizarResumoBitolas();
+    validarCamposMedida(); // Chama a validação inicial para o tipo de peça padrão
 });

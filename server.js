@@ -24,13 +24,6 @@ app.use(bodyParser.json());
 // Isso é útil se você quiser servir seu frontend diretamente do backend em produção.
 app.use(express.static(path.join(__dirname, '')));
 
-// --- VARIÁVEIS EM MEMÓRIA (PARA GERAÇÃO TEMPORÁRIA DE IDs SE NÃO HOUVER DB) ---
-// Estas variáveis são usadas para gerar IDs únicos (CLI-0001)
-// quando o salvamento no banco de dados ainda não está totalmente implementado ou testado.
-// Uma vez que o salvamento no DB esteja funcionando e retornando IDs reais do DB,
-// a lógica de geração de ID pode ser simplificada para usar apenas os IDs do banco.
-let nextClientIdInMemory = 1; // Contador simples para gerar IDs de cliente em memória
-
 // --- ROTAS DA API ---
 
 // Rota GET de exemplo: Verifica se o backend está funcionando
@@ -48,7 +41,19 @@ app.post('/api/clientes', async (req, res) => {
         return res.status(400).json({ message: 'Dados do cliente incompletos. Nome, endereço, telefone e CNPJ/CPF são obrigatórios.' });
     }
 
-    const newClientId = `CLI-${String(nextClientIdInMemory++).padStart(4, '0')}`;
+    // Gera um código único para o cliente (ex: CLI-0001, CLI-0002)
+    // O ideal é que este ID venha do banco de dados ou seja gerado de forma mais robusta.
+    // Por enquanto, mantemos uma geração simples em memória para o exemplo.
+    // Em um sistema real, você pode ter uma sequência no DB ou UUIDs.
+    let nextClientIdInMemory = 1; // Esta variável deveria ser persistente ou vir de um contador no DB
+    try {
+        const checkCount = await db.query(`SELECT COUNT(*) FROM clientes`);
+        nextClientIdInMemory = checkCount.rows[0].count ? parseInt(checkCount.rows[0].count) + 1 : 1;
+    } catch (countErr) {
+        console.warn('Não foi possível obter a contagem de clientes do DB para gerar ID. Usando contador em memória padrão.', countErr.message);
+    }
+    const newClientId = `CLI-${String(nextClientIdInMemory).padStart(4, '0')}`;
+
 
     const newClientData = {
         id: newClientId,
@@ -100,7 +105,7 @@ app.get('/api/clientes/buscar', async (req, res) => {
 });
 
 
-// ROTA: POST /api/orcamentos - Para salvar um orçamento
+// ROTA: POST /api/orcamentos - Para salvar um novo orçamento
 app.post('/api/orcamentos', async (req, res) => {
     console.log('\n--- Requisição POST /api/orcamentos recebida ---');
     console.log('req.body:', req.body);
@@ -141,8 +146,54 @@ app.post('/api/orcamentos', async (req, res) => {
     }
 });
 
+// NOVA ROTA: PUT /api/orcamentos/:id - Para atualizar um orçamento existente
+app.put('/api/orcamentos/:id', async (req, res) => {
+    const orcamentoId = req.params.id;
+    console.log(`\n--- Requisição PUT /api/orcamentos/${orcamentoId} recebida ---`);
+    console.log('req.body:', req.body);
+
+    const { clienteInfo, itensPedido, resumoBitolas, resumoCustos, resumoGeral, obraInfo } = req.body;
+
+    if (!clienteInfo || !itensPedido || !resumoGeral || !obraInfo) {
+        return res.status(400).json({ error: 'Dados do orçamento incompletos para atualização.' });
+    }
+
+    try {
+        const result = await db.query(
+            `UPDATE orcamentos
+             SET cliente_info = $1, itens_pedido = $2, resumo_bitolas = $3, resumo_custos = $4, resumo_geral = $5, obra_info = $6, created_at = CURRENT_TIMESTAMP
+             WHERE id = $7 RETURNING id`, // Atualiza created_at para a data/hora da última modificação
+            [
+                JSON.stringify(clienteInfo),
+                JSON.stringify(itensPedido),
+                JSON.stringify(resumoBitolas),
+                JSON.stringify(resumoCustos),
+                JSON.stringify(resumoGeral),
+                JSON.stringify(obraInfo),
+                orcamentoId
+            ]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Orçamento não encontrado para atualização.' });
+        }
+
+        res.status(200).json({
+            message: 'Orçamento atualizado com sucesso!',
+            id: result.rows[0].id,
+            numPedido: obraInfo && obraInfo.numPedido ? obraInfo.numPedido : `PED-${String(result.rows[0].id).padStart(4, '0')}`
+        });
+    } catch (err) {
+        console.error('Erro ao atualizar orçamento:', err);
+        res.status(500).json({
+            error: 'Erro ao atualizar orçamento.',
+            details: err.message
+        });
+    }
+});
+
+
 // ROTA: GET /api/orcamentos - Para listar todos os orçamentos (com filtro opcional)
-// Esta é a rota que estava dando 404. Verifique se ela está exatamente assim no seu arquivo.
 app.get('/api/orcamentos', async (req, res) => {
     const searchTerm = req.query.q;
     console.log('Recebendo requisição GET para /api/orcamentos. Termo de filtro:', searchTerm);
@@ -202,6 +253,25 @@ app.get('/api/orcamentos/:id', async (req, res) => {
     } catch (err) {
         console.error('Erro ao buscar detalhes do orçamento:', err);
         res.status(500).json({ error: 'Erro ao buscar detalhes do orçamento.', details: err.message });
+    }
+});
+
+// NOVA ROTA: DELETE /api/orcamentos/:id - Para excluir um orçamento
+app.delete('/api/orcamentos/:id', async (req, res) => {
+    const orcamentoId = req.params.id;
+    console.log(`\n--- Requisição DELETE /api/orcamentos/${orcamentoId} recebida ---`);
+
+    try {
+        const result = await db.query(`DELETE FROM orcamentos WHERE id = $1 RETURNING id`, [orcamentoId]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Orçamento não encontrado para exclusão.' });
+        }
+
+        res.status(200).json({ message: 'Orçamento excluído com sucesso!', id: orcamentoId });
+    } catch (err) {
+        console.error('Erro ao excluir orçamento:', err);
+        res.status(500).json({ error: 'Erro ao excluir orçamento.', details: err.message });
     }
 });
 

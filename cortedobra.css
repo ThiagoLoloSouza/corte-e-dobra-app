@@ -446,3 +446,12 @@ justify-content: center;
     background-color: #45a049;
 }
 
+#btnNovoOrcamento:hover {
+    background-color: #e0a800; /* Cor mais escura ao passar o mouse */
+    transform: translateY(-1px);
+}
+#btnNovoOrcamento:active {
+    background-color: #d39e00;
+    transform: translateY(1px);
+}
+

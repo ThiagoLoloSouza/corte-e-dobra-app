@@ -65,6 +65,8 @@
 
                 <label>Nº do Pedido:</label>
                 <input type="text" id="numPedido"> <!-- Este será preenchido automaticamente ao salvar o orçamento -->
+                <!-- Campo oculto para armazenar o ID do orçamento ao carregar para edição -->
+                <input type="hidden" id="orcamentoId" value="">
 
                 <label>Recebe Caminhão?</label>
                 <select id="recebeCaminhao">
@@ -88,19 +90,6 @@
                     <option value="estribo">Estribo</option>
                     <option value="varaReta">Vara Reta</option>
                     <option value="varaL">Vara em L</option>
-                </select>
-
-                <label for="bitola">Bitola (mm):</label>
-                <select id="bitola" required>
-                    <option value="4.2">4.2</option>
-                    <option value="5.0">5.0</option>
-                    <option value="6.3">6.3</option>
-                    <option value="8.0">8.0</option>
-                    <option value="10.0">10.0</option>
-                    <option value="12.5">12.5</option>
-                    <option value="16.0">16.0</option>
-                    <option value="20.0">20.0</option>
-                    <option value="25.0">25.0</option>
                 </select>
 
                 <label>Medidas (cm):</label>
@@ -164,7 +153,10 @@
             style="padding: 12px 25px; background-color: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1.1em; margin-right: 15px; transition: background-color 0.3s ease;">Gerar
             PDF do Orçamento</button>
 
-        <!-- NOVO BOTÃO: Visualizar Orçamentos -->
+        <!-- NOVO BOTÃO: Novo Orçamento -->
+        <button type="button" id="btnNovoOrcamento"
+            style="padding: 12px 25px; background-color: #ffc107; color: #333; border: none; border-radius: 6px; cursor: pointer; font-size: 1.1em; margin-right: 15px; transition: background-color 0.3s ease; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">Novo Orçamento</button>
+
         <button type="button" id="btnAbrirModalVisualizarOrcamentos"
             style="padding: 12px 25px; background-color: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1.1em; transition: background-color 0.3s ease;">Visualizar Orçamentos</button>
     </section>

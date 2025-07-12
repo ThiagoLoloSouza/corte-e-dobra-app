@@ -520,6 +520,48 @@ section:last-of-type button {
     padding: 10px 15px;
 }
 
+#btnSalvarOrcamento { background-color: #007bff; }
+#btnSalvarOrcamento:hover { background-color: #0056b3; }
+
+#btnGerarPdf { background-color: #28a745; }
+#btnGerarPdf:hover { background-color: #218838; }
+
+#btnNovoOrcamento {
+    background-color: #ffc107; /* Amarelo */
+    color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+#btnNovoOrcamento:hover {
+    background-color: #e0a800; /* Amarelo mais escuro */
+    transform: translateY(-1px);
+}
+#btnNovoOrcamento:active {
+    background-color: #d39e00;
+    transform: translateY(1px);
+}
+
+#btnAbrirModalVisualizarOrcamentos { background-color: #6c757d; }
+#btnAbrirModalVisualizarOrcamentos:hover { background-color: #5a6268; }
+
+
+/* Estilo para o botão de exclusão de orçamento na modal */
+.btn-excluir-orcamento {
+    background-color: #dc3545; /* Vermelho */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 0.8em;
+    margin-left: 10px; /* Espaçamento do texto */
+    transition: background-color 0.3s ease;
+    flex-shrink: 0; /* Impede que o botão encolha */
+}
+
+.btn-excluir-orcamento:hover {
+    background-color: #c82333;
+}
+
 /* Estilos para a modal de cadastro de cliente */
 #formCadastroCliente {
     display: grid;
@@ -535,29 +577,20 @@ section:last-of-type button {
 
     /* Campos que devem ocupar a largura total (2 colunas) */
     #formCadastroCliente .form-group:nth-child(1), /* Nome/Razão Social */
-    #formCadastroCliente .form-group.radio-group-tipo-pessoa, /* Tipo de Pessoa */
     #formCadastroCliente #cnpjGroup, /* CNPJ */
     #formCadastroCliente #cpfGroup, /* CPF */
-    #formCadastroCliente .form-group:nth-child(9), /* E-mail (opcional) - AJUSTADO O NTH-CHILD */
+    #formCadastroCliente .form-group:nth-child(11), /* E-mail (opcional) - AJUSTADO O NTH-CHILD */
     #formCadastroCliente button[type="submit"] {
         grid-column: span 2;
     }
 
-    /* Campos de Endereço (Rua, Número, Bairro, Cidade, CEP) */
+    /* Campos de Endereço (Rua, Número, Bairro, Cidade, CEP) e Telefone */
     #formCadastroCliente .form-group:nth-child(5), /* Rua */
     #formCadastroCliente .form-group:nth-child(6), /* Número */
     #formCadastroCliente .form-group:nth-child(7), /* Bairro */
-    #formCadastroCliente .form-group:nth-child(8) { /* Cidade */
-        grid-column: span 1; /* Cada um ocupa 1 coluna */
-    }
-    /* CEP deve ficar em uma linha própria ou ao lado de Cidade, dependendo do design.
-       Vamos colocar CEP e Telefone lado a lado, e E-mail em uma linha completa. */
-    #formCadastroCliente .form-group:nth-child(9), /* Telefone - AJUSTADO O NTH-CHILD */
-    #formCadastroCliente .form-group:nth-child(10) { /* E-mail (opcional) - AJUSTADO O NTH-CHILD */
-        grid-column: span 1;
-    }
-    /* CEP ficará em uma linha própria por enquanto para simplificar o grid */
-    #formCadastroCliente .form-group:nth-child(9) { /* CEP - AJUSTADO O NTH-CHILD */
+    #formCadastroCliente .form-group:nth-child(8), /* Cidade */
+    #formCadastroCliente .form-group:nth-child(9), /* CEP */
+    #formCadastroCliente .form-group:nth-child(10) { /* Telefone */
         grid-column: span 1;
     }
 }
@@ -565,26 +598,40 @@ section:last-of-type button {
 /* Estilos para o grupo de rádio botões na modal de cadastro de cliente */
 .form-group.radio-group-tipo-pessoa {
     display: flex;
-    flex-direction: column; /* Empilha a label "Tipo de Pessoa" e as opções */
-    align-items: flex-start; /* Alinha a label à esquerda */
-    margin-bottom: 15px; /* Espaçamento da label */
+    flex-direction: row; /* Alinha a label e as opções na mesma linha */
+    align-items: center; /* Centraliza verticalmente */
+    gap: 10px; /* Espaçamento entre a label e as opções */
+    margin-bottom: 0; /* Reduz margem para aproximar do campo de nome */
+    padding-top: 5px; /* Pequeno padding para alinhar melhor */
+    grid-column: span 2; /* Ocupa as duas colunas em telas maiores */
+}
+
+.radio-group-tipo-pessoa label {
+    margin-bottom: 0; /* Remove margem inferior da label */
+    font-weight: normal; /* Deixa o texto da label mais leve */
+    white-space: nowrap; /* Evita que a label quebre linha */
 }
 
 .radio-group-tipo-pessoa .radio-options {
     display: flex;
-    flex-wrap: wrap; /* Permite que as opções quebrem linha em telas menores */
-    gap: 20px; /* Espaçamento entre as opções Jurídica e Física */
-    margin-top: 5px; /* Espaçamento da label */
+    flex-wrap: wrap;
+    gap: 10px; /* Espaçamento reduzido entre CNPJ e CPF */
+    margin-top: 0; /* Remove margem superior */
 }
 
 .radio-group-tipo-pessoa .radio-options > div {
     display: flex;
-    align-items: center; /* Alinha o rádio e a label na mesma linha */
-    gap: 5px; /* Espaçamento entre o rádio e o texto da label */
+    align-items: center;
+    gap: 3px; /* Espaçamento menor entre o rádio e o texto */
+    font-size: 0.9em; /* Torna o texto menor */
 }
 
+.radio-group-tipo-pessoa input[type="radio"] {
+    width: auto; /* Deixa o rádio com largura automática */
+    margin-bottom: 0; /* Remove margem inferior */
+}
 
-/* Ajuste para o campo de busca de cliente */
+/* Ajustes para o campo de busca de cliente */
 .cliente-info .form-group:first-child {
     display: flex;
     flex-wrap: wrap; /* Permite que input e botão quebrem linha */

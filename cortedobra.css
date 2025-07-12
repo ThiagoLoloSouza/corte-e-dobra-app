@@ -334,15 +334,28 @@ section:last-of-type button {
     #formCadastroCliente .form-group:nth-child(1), /* Nome/Razão Social */
     #formCadastroCliente #cnpjGroup, /* CNPJ */
     #formCadastroCliente #cpfGroup, /* CPF */
-    #formCadastroCliente .form-group:nth-child(7), /* E-mail (opcional) - AJUSTADO O NTH-CHILD */
+    #formCadastroCliente .form-group:has(label[for="emailCliente"]), /* E-mail (opcional) */
     #formCadastroCliente button[type="submit"] {
         grid-column: span 2;
     }
 
     /* Campos de Endereço e Telefone (lado a lado) */
-    #formCadastroCliente .form-group:nth-child(5), /* Endereço */
-    #formCadastroCliente .form-group:nth-child(6) { /* Telefone */
-        grid-column: span 1;
+    /* Ajuste para os novos campos de endereço detalhados */
+    #formCadastroCliente .form-group:has(label[for="ruaCliente"]), /* Rua */
+    #formCadastroCliente .form-group:has(label[for="telefoneCliente"]) { /* Telefone */
+        grid-column: span 2; /* Ocupam a largura total */
+    }
+
+    #formCadastroCliente .form-row { /* Para agrupar Número/Bairro e Cidade/Estado/CEP */
+        grid-column: span 2; /* Ocupam a largura total */
+        display: flex;
+        gap: 15px; /* Espaçamento entre os campos dentro da linha */
+    }
+    #formCadastroCliente .form-row .form-group-inline {
+        flex: 1; /* Distribui o espaço igualmente */
+    }
+    #formCadastroCliente input[name="estadoCliente"] {
+        max-width: 80px; /* Largura fixa para o campo de estado */
     }
 }
 
@@ -383,17 +396,21 @@ section:last-of-type button {
 }
 
 /* Ajustes para o campo de busca de cliente */
-.cliente-info .form-group:first-child {
+.cliente-info .form-group.search-client-group {
+    margin-top: 20px; /* Espaçamento do formulário acima */
+    margin-bottom: 15px;
+}
+
+.cliente-info .search-client-group .input-button-group {
     display: flex;
-    flex-wrap: wrap; /* Permite que input e botão quebrem linha */
     gap: 10px;
     align-items: flex-end;
 }
-.cliente-info .form-group:first-child input {
+.cliente-info .search-client-group input {
     flex: 1 1 200px; /* Input pode crescer, mas com base mínima */
     margin-bottom: 0; /* Remove margem inferior padrão */
 }
-.cliente-info .form-group:first-child button {
+.cliente-info .search-client-group button {
     flex-shrink: 0; /* Botão não encolhe */
     padding: 10px 15px;
     font-size: 1em;
@@ -402,7 +419,7 @@ section:last-of-type button {
     border-radius: 5px;
     box-shadow: none; /* Remove sombra extra */
 }
-.cliente-info .form-group:first-child button:hover {
+.cliente-info .search-client-group button:hover {
     background-color: #138496;
 }
 
@@ -434,4 +451,152 @@ section:last-of-type button {
 /* Ajuste para o botão de exclusão flutuante na lista de orçamentos */
 .orcamento-item .btn-excluir-orcamento {
     margin-left: auto; /* Empurra o botão para a direita em flexbox */
+}
+
+/* Estilos para os campos de medida A, B, C (mais coladinhos) */
+.medidas-group {
+    display: flex; /* Usa flexbox para alinhar os inputs */
+    gap: 8px; /* Espaçamento menor entre os inputs */
+    align-items: flex-end; /* Alinha os inputs pela base */
+    width: 100%; /* Garante que o grupo ocupe a largura total disponível */
+}
+
+.medidas-group input {
+    flex: 1; /* Faz com que cada input ocupe uma parte igual do espaço disponível */
+    min-width: 0; /* Permite que os inputs encolham se necessário */
+    margin-bottom: 0; /* Remove a margem inferior padrão dos inputs */
+}
+
+/* Media queries para responsividade geral */
+@media (max-width: 767px) {
+    body {
+        padding: 10px; /* Reduz o padding geral em telas pequenas */
+    }
+
+    header {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    header h1 {
+        font-size: 2em;
+    }
+
+    header p {
+        font-size: 1em;
+    }
+
+    main {
+        padding: 15px;
+    }
+
+    section {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    h2 {
+        font-size: 1.5em;
+        margin-bottom: 15px;
+    }
+
+    h3 {
+        font-size: 1.2em;
+    }
+
+    .form-row {
+        flex-direction: column; /* Empilha os elementos em colunas em telas pequenas */
+        gap: 10px;
+    }
+
+    .form-group-inline {
+        width: 100%; /* Ocupa a largura total */
+    }
+
+    .medidas-group {
+        flex-wrap: wrap; /* Permite que os inputs A, B, C quebrem linha */
+        gap: 5px; /* Espaçamento ainda menor para medidas */
+    }
+
+    .medidas-group input {
+        flex: 1 1 45%; /* Permite que dois inputs fiquem lado a lado em telas pequenas */
+        min-width: 80px; /* Garante um tamanho mínimo */
+    }
+
+    /* Ajustes para a tabela de resultados em telas pequenas */
+    #tabela-resultados, #resumo-bitolas table {
+        display: block;
+        overflow-x: auto; /* Adiciona rolagem horizontal para tabelas */
+        white-space: nowrap; /* Impede que o conteúdo da célula quebre linha */
+        -webkit-overflow-scrolling: touch; /* Rolagem suave em iOS */
+    }
+
+    #tabela-resultados thead, #resumo-bitolas table thead {
+        display: none; /* Esconde o cabeçalho da tabela em telas pequenas */
+    }
+
+    #tabela-resultados tr, #resumo-bitolas table tr {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    #tabela-resultados td, #resumo-bitolas table td {
+        border-bottom: 1px solid #eee;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: auto; /* Remove largura fixa */
+    }
+
+    #tabela-resultados td:last-child, #resumo-bitolas table td:last-child {
+        border-bottom: none;
+    }
+
+    #tabela-resultados td::before, #resumo-bitolas table td::before {
+        content: attr(data-label); /* Exibe o nome da coluna como label */
+        font-weight: bold;
+        margin-right: 10px;
+        color: #555;
+    }
+
+    /* Botões da seção final */
+    section:last-of-type {
+        flex-direction: column; /* Empilha os botões verticalmente */
+        align-items: center; /* Centraliza os botões */
+    }
+
+    section:last-of-type button {
+        width: 90%; /* Ocupa a maior parte da largura */
+        margin: 5px 0; /* Ajusta margem vertical */
+    }
+
+    /* Modal de cadastro de cliente em telas pequenas */
+    #formCadastroCliente {
+        grid-template-columns: 1fr; /* Uma coluna para todos os campos */
+    }
+
+    #formCadastroCliente .form-group:nth-child(1),
+    #formCadastroCliente .form-group.radio-group-tipo-pessoa,
+    #formCadastroCliente #cnpjGroup,
+    #formCadastroCliente #cpfGroup,
+    #formCadastroCliente .form-group:has(label[for="ruaCliente"]),
+    #formCadastroCliente .form-group:has(label[for="telefoneCliente"]),
+    #formCadastroCliente .form-group:has(label[for="emailCliente"]),
+    #formCadastroCliente button[type="submit"] {
+        grid-column: span 1; /* Garante que ocupem 1 coluna */
+    }
+
+    #formCadastroCliente .form-row {
+        flex-direction: column; /* Empilha os campos dentro do form-row */
+        gap: 10px;
+    }
+
+    #formCadastroCliente .form-row .form-group-inline {
+        width: 100%; /* Ocupa a largura total */
+    }
 }

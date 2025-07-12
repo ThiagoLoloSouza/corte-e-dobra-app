@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const medidaCInput = document.getElementById('c');
     const bitolaSelect = document.getElementById('bitola'); // Referência para o select da bitola
 
-    // Referência para o botão "Cadastrar Novo Cliente" movido
+    // Referência para o botão "Cadastrar Novo Cliente"
     const btnAbrirModalCadastroCliente = document.getElementById('btnAbrirModalCadastroCliente');
 
 
@@ -50,8 +50,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const cnpjClienteInput = document.getElementById('cnpjCliente');
     const cpfClienteInput = document.getElementById('cpfCliente');
 
-    // Campo de endereço único (conforme o HTML atual)
-    const enderecoClienteInput = document.getElementById('enderecoCliente');
+    // Novos campos de endereço detalhados
+    const ruaClienteInput = document.getElementById('ruaCliente');
+    const numeroClienteInput = document.getElementById('numeroCliente');
+    const bairroClienteInput = document.getElementById('bairroCliente');
+    const cidadeClienteInput = document.getElementById('cidadeCliente');
+    const estadoClienteInput = document.getElementById('estadoCliente');
+    const cepClienteInput = document.getElementById('cepCliente');
 
     const telefoneClienteInput = document.getElementById('telefoneCliente');
     const emailClienteInput = document.getElementById('emailCliente');
@@ -130,8 +135,15 @@ document.addEventListener('DOMContentLoaded', function () {
             const cnpjCliente = document.getElementById('cnpjCliente')?.value;
             const cpfCliente = document.getElementById('cpfCliente')?.value;
             
-            // Coleta o valor do campo de endereço único
-            const endereco = enderecoClienteInput?.value; // Chave 'endereco' para o backend
+            // Coleta os valores dos campos de endereço detalhados
+            const endereco = {
+                rua: ruaClienteInput?.value || '',
+                numero: numeroClienteInput?.value || '',
+                bairro: bairroClienteInput?.value || '',
+                cidade: cidadeClienteInput?.value || '',
+                estado: estadoClienteInput?.value || '',
+                cep: cepClienteInput?.value || ''
+            };
 
             const telefoneCliente = telefoneClienteInput?.value;
             const emailCliente = emailClienteInput?.value;
@@ -141,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 tipoPessoa,
                 cnpjCliente: tipoPessoa === 'juridica' ? cnpjCliente : null,
                 cpfCliente: tipoPessoa === 'fisica' ? cpfCliente : null,
-                endereco: endereco, // A chave agora é 'endereco'
+                endereco: endereco, // Envia o objeto de endereço detalhado
                 telefoneCliente,
                 emailCliente
             };
@@ -408,8 +420,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         );
                         if (index > -1) { linhasOrcamento.splice(index, 1); }
 
-                        novaLinhaTabela.remove();
-                        atualizarResumoBitolas();
+                        novaLinhaTabela.remove(); // Remove a linha da tabela HTML
+                        atualizarResumoBitolas(); // Recalcula e atualiza o resumo
                     });
 
                     linhasOrcamento.push(item);
@@ -547,7 +559,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const pesosPorMetro = {
         "4.2": 0.109, "5.0": 0.154, "6.3": 0.249, "8.0": 0.395, "10.0": 0.617,
-        "12.5": 0.962, "16.0": 1.578, "20.0": 2.466, "25.0": 3.853
+        "12.5": 0.962, "16.0": 1.578, "20.0": 2.466, "25.0": 7.30
     };
 
     const precosPorKg = {
@@ -878,6 +890,7 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.text("Detalhes das Peças:", 10, y);
             y += lineHeight;
 
+            // Cabeçalho da tabela no PDF
             doc.setFontSize(10);
             doc.text("Tipo", 10, y);
             doc.text("Bitola", 30, y);
@@ -888,6 +901,7 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.text("Custo (R$)", 160, y);
             y += lineHeight;
 
+            // Linhas das peças
             doc.setFontSize(9);
             orcamento.itensPedido.forEach(item => {
                 const medidasStr = `${item.medidas?.a || ''}${item.medidas?.b ? '/' + item.medidas.b : ''}${item.medidas?.c ? '/' + item.medidas.c : ''}`;
@@ -899,7 +913,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 doc.text(item.pesoKg || '', 130, y);
                 doc.text(item.custo || '', 160, y);
                 y += lineHeight;
-                if (y > 280) { doc.addPage(); y = 10; }
+                if (y > 280) { // Nova página se o conteúdo for muito longo
+                    doc.addPage();
+                    y = 10;
+                }
             });
 
             y += lineHeight;
@@ -908,10 +925,14 @@ document.addEventListener('DOMContentLoaded', function () {
             y += lineHeight;
 
             for (const bitola in orcamento.resumoBitolas) {
-                const resumo = orcamento.resumoBitolas[bitola];
-                doc.text(`Bitola ${bitola}mm: Peso ${resumo.toFixed(3) || '0.000'} kg - Custo R$ ${resumo.custo?.toFixed(2) || '0.00'}`, 10, y);
+                const pesoResumo = orcamento.resumoBitolas[bitola];
+                const custoResumo = orcamento.resumoCustos[bitola] || 0; // Pega o custo do objeto resumoCustos
+                doc.text(`Bitola ${bitola}mm: Peso ${pesoResumo.toFixed(3)} kg - Custo R$ ${custoResumo.toFixed(2)}`, 10, y);
                 y += lineHeight;
-                if (y > 280) { doc.addPage(); y = 10; }
+                if (y > 280) {
+                    doc.addPage();
+                    y = 10;
+                }
             }
 
             y += lineHeight;
@@ -923,8 +944,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // --- INITIALIZATION ON PAGE LOAD ---
+    // --- INICIALIZAÇÃO ---
+    // Garante que os campos CNPJ/CPF estejam corretos ao carregar a página
     toggleCpfCnpjFields();
+    // Atualiza o resumo inicial (pode ser 0.00 kg, R$ 0.00)
     atualizarResumoBitolas();
-    validarCamposMedida(); // Chama a validação inicial para o tipo de peça padrão
-});
+    // Valida os campos de medida ao carregar a página
+    validarCamposMedida();
+}); // FIM DO DOMContentLoaded (ÚNICO FECHAMENTO)

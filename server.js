@@ -25,10 +25,6 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '')));
 
 // --- VARIÁVEIS EM MEMÓRIA (PARA GERAÇÃO TEMPORÁRIA DE IDs SE NÃO HOUVER DB) ---
-// Estas variáveis são usadas para gerar IDs únicos (CLI-0001)
-// quando o salvamento no banco de dados ainda não está totalmente implementado ou testado.
-// Uma vez que o salvamento no DB esteja funcionando e retornando IDs reais do DB,
-// a lógica de geração de ID pode ser simplificada para usar apenas os IDs do banco.
 let nextClientIdInMemory = 1; // Contador simples para gerar IDs de cliente em memória
 
 // --- ROTAS DA API ---
@@ -40,30 +36,26 @@ app.get('/', (req, res) => {
 
 // ROTA: POST /api/clientes - Para cadastrar um novo cliente
 app.post('/api/clientes', async (req, res) => {
-    // Desestrutura os dados do corpo da requisição
     const { nomeCliente, tipoPessoa, cnpjCliente, cpfCliente, endereco, telefoneCliente, emailCliente } = req.body;
     console.log('Recebendo requisição POST para /api/clientes. Dados:', req.body);
 
-    // Validação básica dos dados recebidos
+    // Validação dos dados recebidos
     if (!nomeCliente || !endereco || !telefoneCliente || (!cnpjCliente && !cpfCliente)) {
-        console.log('Dados do cliente incompletos.');
-        // Adiciona mais detalhes na mensagem de erro para depuração
         let missingFields = [];
         if (!nomeCliente) missingFields.push('Nome');
         if (!endereco) missingFields.push('Endereço');
         if (!telefoneCliente) missingFields.push('Telefone');
         if (!cnpjCliente && !cpfCliente) missingFields.push('CNPJ/CPF');
 
+        console.log('Dados do cliente incompletos. Faltando:', missingFields.join(', '));
         return res.status(400).json({
             message: `Dados do cliente incompletos. Os seguintes campos são obrigatórios: ${missingFields.join(', ')}.`,
-            details: req.body // Retorna o corpo da requisição para ajudar na depuração no frontend
+            details: req.body
         });
     }
 
-    // Gera um código único para o cliente (ex: CLI-0001, CLI-0002)
     const newClientId = `CLI-${String(nextClientIdInMemory++).padStart(4, '0')}`;
 
-    // Cria o objeto do novo cliente no formato que será salvo no DB
     const newClientData = {
         id: newClientId,
         nome: nomeCliente,
@@ -75,24 +67,22 @@ app.post('/api/clientes', async (req, res) => {
     };
 
     try {
-        // Insere o novo cliente na tabela 'clientes' do PostgreSQL
         const result = await db.query(
             `INSERT INTO clientes (id, nome, tipo_pessoa, documento, endereco, telefone, email)
-             VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, nome`, // Retorna ID e nome do cliente salvo
+             VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, nome`,
             [newClientData.id, newClientData.nome, newClientData.tipo_pessoa, newClientData.documento, newClientData.endereco, newClientData.telefone, newClientData.email]
         );
         console.log('Cliente salvo no banco de dados:', result.rows[0]);
-        res.status(201).json(result.rows[0]); // Envia o cliente salvo do banco (com o ID gerado/confirmado)
+        res.status(201).json(result.rows[0]);
     } catch (err) {
         console.error('Erro ao salvar cliente no banco de dados:', err);
-        // Se houver um erro, envia uma resposta de erro para o frontend
         return res.status(500).json({ error: 'Erro interno do servidor ao cadastrar cliente.', details: err.message });
     }
 });
 
-// ROTA: GET /api/clientes/buscar - Para buscar clientes existentes no banco de dados
+// ROTA: GET /api/clientes/buscar - Para buscar clientes existentes
 app.get('/api/clientes/buscar', async (req, res) => {
-    const searchTerm = req.query.q; // O termo de busca (nome, id, cpf, cnpj)
+    const searchTerm = req.query.q;
     console.log('Recebendo requisição GET para /api/clientes/buscar. Termo:', searchTerm);
 
     if (!searchTerm) {
@@ -100,32 +90,30 @@ app.get('/api/clientes/buscar', async (req, res) => {
     }
 
     try {
-        // Adapta a query SQL para buscar por nome, ID ou documento (CNPJ/CPF)
         const result = await db.query(
             `SELECT id, nome, documento, endereco, telefone, email, tipo_pessoa
              FROM clientes
              WHERE nome ILIKE $1 OR id ILIKE $1 OR documento ILIKE $1
              ORDER BY nome
-             LIMIT 10`, // Limita os resultados para não sobrecarregar
+             LIMIT 10`,
             [`%${searchTerm}%`]
         );
-        res.json(result.rows); // Retorna os clientes encontrados
+        res.json(result.rows);
     } catch (err) {
         console.error('Erro ao buscar clientes:', err);
         res.status(500).json({ error: 'Erro ao buscar clientes.', details: err.message });
     }
 });
 
-
-// ROTA: POST /api/orcamentos - Para salvar um orçamento
+// ROTA: POST /api/orcamentos - Para salvar um novo orçamento
 app.post('/api/orcamentos', async (req, res) => {
     console.log('\n--- Requisição POST /api/orcamentos recebida ---');
     console.log('req.body:', req.body);
 
     const { clienteInfo, itensPedido, resumoBitolas, resumoCustos, resumoGeral, obraInfo } = req.body;
 
-    if (!clienteInfo || !itensPedido || !resumoGeral || !obraInfo) {
-        return res.status(400).json({ error: 'Dados do orçamento incompletos.' });
+    if (!clienteInfo || !itensPedido || !resumoGeral || !obraInfo || !clienteInfo.codCliente) {
+        return res.status(400).json({ error: 'Dados do orçamento incompletos. Cliente, itens do pedido, resumo e informações da obra são obrigatórios.' });
     }
 
     try {
@@ -136,6 +124,7 @@ app.post('/api/orcamentos', async (req, res) => {
                 JSON.stringify(clienteInfo),
                 JSON.stringify(itensPedido),
                 JSON.stringify(resumoBitolas),
+                JSON.stringify(resumoCustos),
                 JSON.stringify(resumoGeral),
                 JSON.stringify(obraInfo)
             ]
@@ -165,8 +154,8 @@ app.put('/api/orcamentos/:id', async (req, res) => {
 
     const { clienteInfo, itensPedido, resumoBitolas, resumoCustos, resumoGeral, obraInfo } = req.body;
 
-    if (!clienteInfo || !itensPedido || !resumoGeral || !obraInfo) {
-        return res.status(400).json({ error: 'Dados do orçamento incompletos para atualização.' });
+    if (!clienteInfo || !itensPedido || !resumoGeral || !obraInfo || !clienteInfo.codCliente) {
+        return res.status(400).json({ error: 'Dados do orçamento incompletos para atualização. Cliente, itens do pedido, resumo e informações da obra são obrigatórios.' });
     }
 
     try {
@@ -203,7 +192,6 @@ app.put('/api/orcamentos/:id', async (req, res) => {
     }
 });
 
-
 // ROTA: GET /api/orcamentos - Para listar todos os orçamentos (com filtro opcional)
 app.get('/api/orcamentos', async (req, res) => {
     const searchTerm = req.query.q;
@@ -213,6 +201,7 @@ app.get('/api/orcamentos', async (req, res) => {
     const queryParams = [];
 
     if (searchTerm) {
+        // Busca em cliente_info (nome, codCliente), obra_info (numPedido) e id do orçamento
         queryText += ` WHERE cliente_info->>'cliente' ILIKE $1 OR cliente_info->>'codCliente' ILIKE $1 OR obra_info->>'numPedido' ILIKE $1 OR id::text ILIKE $1`;
         queryParams.push(`%${searchTerm}%`);
     }

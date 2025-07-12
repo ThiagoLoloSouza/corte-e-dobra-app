@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const cpfCliente = document.getElementById('cpfCliente')?.value;
             
             // Coleta o valor do campo de endereço único
-            const enderecoCliente = enderecoClienteInput?.value;
+            const endereco = enderecoClienteInput?.value; // Chave 'endereco' para o backend
 
             const telefoneCliente = telefoneClienteInput?.value;
             const emailCliente = emailClienteInput?.value;
@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 tipoPessoa,
                 cnpjCliente: tipoPessoa === 'juridica' ? cnpjCliente : null,
                 cpfCliente: tipoPessoa === 'fisica' ? cpfCliente : null,
-                enderecoCliente: enderecoCliente, // Envia o endereço como 'enderecoCliente'
+                endereco: endereco, // A chave agora é 'endereco'
                 telefoneCliente,
                 emailCliente
             };
@@ -458,10 +458,16 @@ document.addEventListener('DOMContentLoaded', function () {
             carregarOrcamentos(); // Recarrega a lista de orçamentos após a exclusão
             iniciarNovoOrcamento(); // Limpa o formulário principal caso o orçamento excluído estivesse carregado
         } catch (error) {
-            console.error('Erro ao excluir orçamento:', error);
-            alert(`Erro ao excluir orçamento: ${error.message}`);
+                console.error('Erro ao excluir orçamento:', error);
+                // Usar uma modal customizada em vez de alert
+                const feedbackDiv = document.getElementById('visualizarOrcamentoFeedback');
+                if (feedbackDiv) {
+                    feedbackDiv.textContent = `Erro ao excluir orçamento: ${error.message}`;
+                    feedbackDiv.style.color = 'red';
+                    setTimeout(() => feedbackDiv.textContent = '', 5000);
+                }
+            }
         }
-    }
 
 
     // Event listeners para abrir/fechar a modal de visualização de orçamentos

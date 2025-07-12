@@ -50,12 +50,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const cnpjClienteInput = document.getElementById('cnpjCliente');
     const cpfClienteInput = document.getElementById('cpfCliente');
 
-    // Novos campos de endereço
-    const ruaClienteInput = document.getElementById('ruaCliente');
-    const numeroClienteInput = document.getElementById('numeroCliente');
-    const bairroClienteInput = document.getElementById('bairroCliente');
-    const cidadeClienteInput = document.getElementById('cidadeCliente');
-    const cepClienteInput = document.getElementById('cepCliente');
+    // Campo de endereço único (conforme o HTML atual)
+    const enderecoClienteInput = document.getElementById('enderecoCliente');
 
     const telefoneClienteInput = document.getElementById('telefoneCliente');
     const emailClienteInput = document.getElementById('emailCliente');
@@ -134,24 +130,18 @@ document.addEventListener('DOMContentLoaded', function () {
             const cnpjCliente = document.getElementById('cnpjCliente')?.value;
             const cpfCliente = document.getElementById('cpfCliente')?.value;
             
-            const ruaCliente = ruaClienteInput?.value;
-            const numeroCliente = numeroClienteInput?.value;
-            const bairroCliente = bairroClienteInput?.value;
-            const cidadeCliente = cidadeClienteInput?.value;
-            const cepCliente = cepClienteInput?.value;
+            // Coleta o valor do campo de endereço único
+            const enderecoCliente = enderecoClienteInput?.value;
 
             const telefoneCliente = telefoneClienteInput?.value;
             const emailCliente = emailClienteInput?.value;
-
-            // Concatena os campos de endereço em uma única string
-            const enderecoCompleto = `${ruaCliente}, ${numeroCliente}, ${bairroCliente}, ${cidadeCliente}, ${cepCliente}`;
 
             const clientData = {
                 nomeCliente,
                 tipoPessoa,
                 cnpjCliente: tipoPessoa === 'juridica' ? cnpjCliente : null,
                 cpfCliente: tipoPessoa === 'fisica' ? cpfCliente : null,
-                endereco: enderecoCompleto, // Envia o endereço como uma única string
+                enderecoCliente: enderecoCliente, // Envia o endereço como 'enderecoCliente'
                 telefoneCliente,
                 emailCliente
             };
@@ -246,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             if (numPedidoInput) numPedidoInput.value = '';
                             if (orcamentoIdInput) orcamentoIdInput.value = ''; // Limpa o ID do orçamento atual
                             if (recebeCaminhaoSelect) recebeCaminhaoSelect.value = 'Sim';
-                            if (dataDesejadaInput) dataDetaDesejadaInput.value = '';
+                            if (dataDesejadaInput) dataDesejadaInput.value = '';
                             
                             // Limpa a tabela de peças e resumo para um novo orçamento
                             tabelaResultados.innerHTML = '';

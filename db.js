@@ -1,9 +1,9 @@
-// db.js - Temporário para adicionar a coluna enderecos
+// db.js - Temporário para corrigir e adicionar a coluna enderecos
 
 const { Pool } = require('pg');
 
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connection: process.env.DATABASE_URL,
     ssl: {
         rejectUnauthorized: false // Necessário para Render/Heroku SSL
     }
@@ -14,28 +14,36 @@ async function connectDbAndAlterTable() {
         await pool.connect();
         console.log('Conectado ao PostgreSQL!');
 
-        // Adiciona a coluna 'enderecos' como um array de JSONB se ela não existir
-        // Esta coluna irá armazenar múltiplos endereços
+        // 1. Tenta remover a coluna 'enderecos' se ela já existir, para garantir um estado limpo.
+        // Isso é seguro com IF EXISTS.
+        const dropEnderecosColumnQuery = `
+            ALTER TABLE clientes
+            DROP COLUMN IF EXISTS enderecos;
+        `;
+        await pool.query(dropEnderecosColumnQuery);
+        console.log('Coluna "enderecos" removida (se existia) para recriação.');
+
+        // 2. Adiciona a coluna 'enderecos' como um array de JSONB.
+        // O tipo JSONB[] é crucial aqui para armazenar múltiplos endereços.
         const addEnderecosColumnQuery = `
             ALTER TABLE clientes
-            ADD COLUMN IF NOT EXISTS enderecos JSONB[];
+            ADD COLUMN enderecos JSONB[];
         `;
         await pool.query(addEnderecosColumnQuery);
-        console.log('Coluna "enderecos" adicionada ou já existente na tabela clientes.');
+        console.log('Coluna "enderecos" adicionada como JSONB[].');
 
-        // Opcional: Migrar dados da antiga coluna 'endereco' para a nova 'enderecos'
-        // Esta parte é importante se você já tem clientes cadastrados com um único endereço
-        // e quer que eles apareçam na nova estrutura de múltiplos endereços.
-        // Se você não tem dados antigos ou não se importa em perdê-los, pode remover este bloco.
+        // 3. Migra dados da antiga coluna 'endereco' (se existir) para a nova 'enderecos'.
+        // Converte o 'endereco' existente para JSONB (se ainda não for) e o coloca dentro de um array.
+        // A condição WHERE garante que só clientes com 'endereco' e sem 'enderecos' preenchidos sejam atualizados.
         const migrateOldEnderecoDataQuery = `
             UPDATE clientes
-            SET enderecos = ARRAY[endereco]
+            SET enderecos = ARRAY[endereco::jsonb]
             WHERE endereco IS NOT NULL AND (enderecos IS NULL OR array_length(enderecos, 1) IS NULL);
         `;
         await pool.query(migrateOldEnderecoDataQuery);
-        console.log('Dados da coluna "endereco" migrados para "enderecos" (se aplicável).');
+        console.log('Dados da antiga coluna "endereco" migrados para "enderecos" (se aplicável).');
 
-        // Opcional: Remover a antiga coluna 'endereco' após a migração (CUIDADO!)
+        // 4. Opcional: Remover a antiga coluna 'endereco' após a migração (CUIDADO!)
         // Descomente a linha abaixo SOMENTE se você tiver certeza que a migração foi bem-sucedida
         // e que não precisa mais da coluna 'endereco' antiga.
         // const dropOldEnderecoColumnQuery = `

@@ -1,69 +1,84 @@
 /* Estilos Gerais */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     margin: 0;
-    padding: 20px;
-    background-color: #f4f7f6; /* Um cinza claro para o fundo */
-    color: #333;
+    padding: 0;
+    background-color: #1a1a1a; /* Fundo escuro */
+    color: #e0e0e0; /* Texto claro */
     line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 header {
-    background-color: #2c3e50; /* Azul escuro */
-    color: white;
+    background-color: #333; /* Um pouco mais claro que o fundo */
+    color: #ffc107; /* Amarelo/Laranja para destaque */
     padding: 20px;
     text-align: center;
-    border-radius: 8px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    border-bottom: 3px solid #ffc107; /* Linha de destaque */
 }
 
 header h1 {
-    margin-bottom: 10px;
-    font-size: 2.5em; /* Tamanho maior para o título */
+    margin-bottom: 5px;
+    font-size: 2.8em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 header p {
-    font-size: 1.1em;
-    opacity: 0.9;
+    font-size: 1.2em;
+    opacity: 0.8;
 }
 
 main {
-    max-width: 1200px; /* Largura máxima para desktops */
-    margin: 0 auto; /* Centraliza o conteúdo */
+    flex-grow: 1; /* Ocupa o espaço restante */
+    max-width: 1200px;
+    margin: 30px auto; /* Centraliza e adiciona margem */
     padding: 20px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background-color: #2b2b2b; /* Fundo dos painéis */
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 30px; /* Espaçamento entre as seções */
 }
 
-section {
-    margin-bottom: 30px;
+section.panel {
+    background-color: #3a3a3a; /* Fundo dos painéis internos */
+    border: 1px solid #444;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    overflow: hidden; /* Garante que o header arredondado funcione */
+}
+
+.panel-header {
+    background-color: #ff8c00; /* Laranja vibrante para os cabeçalhos */
+    color: white;
+    padding: 15px 20px;
+    border-bottom: 1px solid #e07b00;
+    font-size: 1.5em;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.panel-header h2, .panel-header h3 {
+    margin: 0;
+    color: white; /* Garante que o texto do cabeçalho seja branco */
+    border-bottom: none; /* Remove a borda inferior padrão dos h2/h3 */
+    padding-bottom: 0;
+}
+
+.panel-content {
     padding: 20px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    background-color: #fdfdfd;
-}
-
-h2 {
-    color: #2c3e50;
-    border-bottom: 2px solid #3498db; /* Azul vibrante */
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    font-size: 1.8em;
-}
-
-h3 {
-    color: #34495e;
-    margin-top: 25px;
-    margin-bottom: 15px;
-    font-size: 1.4em;
 }
 
 hr {
     border: 0;
     height: 1px;
-    background-color: #ccc;
+    background-color: #444;
     margin: 40px 0;
 }
 
@@ -74,9 +89,10 @@ hr {
 
 label {
     display: block;
-    margin-bottom: 8px; /* Espaçamento padrão para labels */
+    margin-bottom: 5px;
     font-weight: bold;
-    color: #555;
+    color: #bbbbbb; /* Cor mais clara para labels */
+    font-size: 0.95em;
 }
 
 input[type="text"],
@@ -86,163 +102,168 @@ input[type="date"],
 select {
     width: 100%;
     padding: 10px 12px;
-    margin-bottom: 10px; /* Espaçamento padrão para inputs */
-    border: 1px solid #ccc;
+    background-color: #4a4a4a; /* Fundo dos inputs */
+    border: 1px solid #666;
     border-radius: 5px;
-    box-sizing: border-box; /* Garante que padding e border não aumentem a largura total */
+    box-sizing: border-box;
     font-size: 1em;
+    color: #e0e0e0; /* Cor do texto do input */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="date"]:focus,
+select:focus {
+    border-color: #ffc107; /* Borda amarela no foco */
+    box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.5); /* Sombra amarela no foco */
+    outline: none;
 }
 
 input[type="number"]::placeholder {
-    color: #999;
+    color: #888;
 }
 
-button {
+/* Botões */
+.btn {
     padding: 10px 20px;
-    background-color: #3498db; /* Azul */
-    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1em;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    display: inline-flex; /* Para alinhar ícone e texto */
+    align-items: center;
+    gap: 8px; /* Espaçamento entre ícone e texto */
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+    transform: translateY(0);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-button:hover {
-    background-color: #2980b9; /* Azul mais escuro no hover */
-    transform: translateY(-1px);
-}
-
-button:active {
-    background-color: #2471a3;
-    transform: translateY(1px);
-}
-
-/* Estilos específicos para botões na seção principal */
-section button[type="submit"] {
-    background-color: #27ae60; /* Verde para adicionar */
-}
-
-section button[type="submit"]:hover {
-    background-color: #229a56;
-}
-
-/* Estilos para tabelas */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden; /* Para bordas arredondadas funcionarem com thead/tbody */
-}
-
-th,
-td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-th {
-    background-color: #34495e; /* Azul acinzentado */
+/* Cores dos botões */
+.btn-primary {
+    background-color: #007bff; /* Azul padrão */
     color: white;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 0.9em;
+}
+.btn-primary:hover {
+    background-color: #0056b3;
 }
 
-tr:nth-child(even) {
-    background-color: #f8f8f8; /* Linhas zebradas */
+.btn-success {
+    background-color: #28a745; /* Verde */
+    color: white;
+}
+.btn-success:hover {
+    background-color: #218838;
 }
 
-tr:hover {
-    background-color: #f1f1f1;
+.btn-danger {
+    background-color: #dc3545; /* Vermelho */
+    color: white;
+}
+.btn-danger:hover {
+    background-color: #c82333;
 }
 
-/* Botão de Excluir dentro da tabela */
-.btn-excluir {
-    background-color: #e74c3c; /* Vermelho */
-    padding: 6px 12px;
-    font-size: 0.85em;
-    border-radius: 4px;
+.btn-info {
+    background-color: #17a2b8; /* Azul claro */
+    color: white;
+}
+.btn-info:hover {
+    background-color: #138496;
 }
 
-.btn-excluir:hover {
-    background-color: #c0392b;
+.btn-secondary {
+    background-color: #6c757d; /* Cinza */
+    color: white;
+}
+.btn-secondary:hover {
+    background-color: #5a6268;
 }
 
-/* Estilos para as modais */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1000; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0, 0, 0, 0.6); /* Black w/ opacity */
-    justify-content: center; /* Centraliza horizontalmente */
-    align-items: center; /* Centraliza verticalmente */
-    padding: 20px; /* Espaçamento interno para evitar que o conteúdo encoste nas bordas */
-    box-sizing: border-box;
+.btn-warning {
+    background-color: #ffc107; /* Amarelo */
+    color: #333;
+}
+.btn-warning:hover {
+    background-color: #e0a800;
 }
 
-.modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 30px;
-    border: 1px solid #888;
-    border-radius: 10px;
-    width: 90%; /* Largura padrão para mobile */
-    max-width: 600px; /* Largura máxima para desktop */
-    position: relative;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    box-sizing: border-box;
-    overflow-y: auto; /* Permite rolagem se o conteúdo for muito grande */
-    max-height: 90vh; /* Limita a altura da modal à altura da viewport */
+.btn-search {
+    background-color: #ffc107; /* Amarelo para busca */
+    color: #333;
+}
+.btn-search:hover {
+    background-color: #e0a800;
 }
 
-.close-button {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    cursor: pointer;
+/* Layout de Grid para Formulários (Desktop) */
+.form-row-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Colunas flexíveis */
+    gap: 20px; /* Espaçamento entre os grupos */
+    margin-bottom: 15px;
 }
 
-.close-button:hover,
-.close-button:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+.form-group-grid {
+    display: flex;
+    flex-direction: column;
+    /* Remove margin-bottom aqui, pois o gap do grid já cuida */
+}
+
+/* Ajustes para o campo de busca de cliente */
+.search-client-group .input-button-group {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+}
+.search-client-group input {
+    flex: 1;
+    margin-bottom: 0;
+}
+.search-client-group button {
+    flex-shrink: 0;
+    margin-bottom: 0;
 }
 
 /* Estilos para a lista de resultados de busca de cliente e orçamentos */
 .lista-resultados {
-    border: 1px solid #ddd;
+    background-color: #4a4a4a;
+    border: 1px solid #666;
     border-radius: 5px;
-    margin-bottom: 15px;
-    background-color: #fff;
-    max-height: 150px; /* Limite de altura para a lista de busca de cliente */
+    margin-top: 15px;
+    max-height: 200px; /* Aumenta a altura para melhor visualização */
     overflow-y: auto;
+    padding: 5px;
+}
+
+.lista-resultados p.loading-message {
+    color: #bbb;
+    text-align: center;
+    padding: 10px;
 }
 
 .resultado-cliente-item,
 .orcamento-item {
     padding: 10px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #555;
     cursor: pointer;
     transition: background-color 0.2s ease;
     font-size: 0.95em;
-    display: flex; /* Adicionado flexbox */
-    justify-content: space-between; /* Espaço entre texto e botão */
-    align-items: center; /* Alinhar verticalmente */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #e0e0e0;
 }
 
 .resultado-cliente-item:last-child,
@@ -252,351 +273,425 @@ tr:hover {
 
 .resultado-cliente-item:hover,
 .orcamento-item:hover {
-    background-color: #f0f0f0;
+    background-color: #5a5a5a;
 }
 
-/* Estilos para os botões principais da página */
-section:last-of-type {
+/* Estilos para os campos de medida A, B, C (mais coladinhos) */
+.medidas-group {
     display: flex;
-    flex-wrap: wrap; /* Permite que os botões quebrem linha */
-    justify-content: center; /* Centraliza os botões */
-    gap: 10px; /* Espaçamento entre os botões */
+    gap: 8px; /* Espaçamento menor entre os inputs */
+    align-items: flex-end;
+    width: 100%;
+}
+
+.medidas-group input {
+    flex: 1;
+    min-width: 0;
+    margin-bottom: 0;
+}
+
+/* Estilos para tabelas */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto; /* Adiciona rolagem horizontal para tabelas em telas menores */
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    min-width: 600px; /* Garante que a tabela tenha uma largura mínima para a rolagem */
+}
+
+th,
+td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #555;
+    color: #e0e0e0;
+}
+
+th {
+    background-color: #ff8c00; /* Laranja para cabeçalhos de tabela */
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+tr:nth-child(even) {
+    background-color: #3a3a3a; /* Linhas zebradas mais escuras */
+}
+
+tr:hover {
+    background-color: #4a4a4a;
+}
+
+/* Botão de Excluir dentro da tabela */
+.btn-excluir {
+    background-color: #dc3545; /* Vermelho */
+    padding: 6px 12px;
+    font-size: 0.85em;
+    border-radius: 4px;
+    color: white;
+}
+
+.btn-excluir:hover {
+    background-color: #c82333;
+}
+
+/* Resumo por Bitola e Totais Gerais */
+.summary-section {
+    background-color: #3a3a3a;
     padding: 15px;
-    border: none; /* Remove a borda da seção de botões */
-    background-color: transparent; /* Remove o fundo */
-    box-shadow: none; /* Remove a sombra */
+    border-radius: 8px;
+    margin-top: 20px;
 }
 
-section:last-of-type button {
-    flex: 1 1 auto; /* Permite que os botões cresçam e encolham, mas com base no conteúdo */
-    min-width: 150px; /* Largura mínima para botões */
-    margin: 5px; /* Ajusta margem para o gap */
-    font-size: 0.95em; /* Ajusta tamanho da fonte */
-    padding: 10px 15px;
+.summary-section h3 {
+    color: #ffc107; /* Amarelo para o título do resumo */
+    border-bottom: 1px solid #ffc107;
+    padding-bottom: 8px;
+    margin-bottom: 15px;
 }
 
-#btnSalvarOrcamento { background-color: #007bff; }
-#btnSalvarOrcamento:hover { background-color: #0056b3; }
+.total-summary {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #555;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #e0e0e0;
+}
 
-#btnGerarPdf { background-color: #28a745; }
-#btnGerarPdf:hover { background-color: #218838; }
+.total-summary span {
+    color: #ffc107; /* Amarelo para os valores totais */
+}
 
-#btnNovoOrcamento {
-    background-color: #ffc107; /* Amarelo */
-    color: #333;
+/* Ações Principais (Botões Inferiores) */
+.main-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px; /* Espaçamento entre os botões */
+    padding: 20px;
+    background-color: #2b2b2b; /* Fundo igual ao main */
+    border-top: 1px solid #444;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.4);
+    border-radius: 10px 10px 0 0; /* Bordas arredondadas no topo */
+    margin-top: 30px;
+}
+
+.btn-action {
+    flex: 1 1 200px; /* Permite que os botões cresçam e encolham */
+    max-width: 280px; /* Largura máxima para evitar que fiquem muito grandes */
+    padding: 15px 25px;
+    font-size: 1.1em;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-#btnNovoOrcamento:hover {
-    background-color: #e0a800; /* Amarelo mais escuro */
-    transform: translateY(-1px);
+
+.btn-save { background-color: #007bff; color: white; }
+.btn-save:hover { background-color: #0056b3; }
+
+.btn-pdf { background-color: #28a745; color: white; }
+.btn-pdf:hover { background-color: #218838; }
+
+.btn-new { background-color: #ffc107; color: #333; }
+.btn-new:hover { background-color: #e0a800; }
+
+.btn-view { background-color: #6c757d; color: white; }
+.btn-view:hover { background-color: #5a6268; }
+
+
+/* Estilos para as modais */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.8); /* Fundo da modal mais escuro */
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
 }
-#btnNovoOrcamento:active {
-    background-color: #d39e00;
-    transform: translateY(1px);
+
+.modal-content {
+    background-color: #2b2b2b; /* Fundo da modal */
+    padding: 0; /* Remove padding padrão, será adicionado no modal-body */
+    border: 1px solid #444;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 700px; /* Aumenta um pouco a largura máxima para os campos de endereço */
+    position: relative;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6);
+    box-sizing: border-box;
+    overflow: hidden; /* Para cantos arredondados */
+    max-height: 95vh; /* Ocupa mais altura da tela */
+    display: flex;
+    flex-direction: column;
 }
 
-#btnAbrirModalVisualizarOrcamentos { background-color: #6c757d; }
-#btnAbrirModalVisualizarOrcamentos:hover { background-color: #5a6268; }
-
-
-/* Estilo para o botão de exclusão de orçamento na modal */
-.btn-excluir-orcamento {
-    background-color: #dc3545; /* Vermelho */
+.modal-header {
+    background-color: #ff8c00; /* Laranja para o cabeçalho da modal */
     color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-size: 0.8em;
-    margin-left: 10px; /* Espaçamento do texto */
-    transition: background-color 0.3s ease;
-    flex-shrink: 0; /* Impede que o botão encolha */
+    padding: 15px 20px;
+    border-bottom: 1px solid #e07b00;
+    font-size: 1.4em;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.btn-excluir-orcamento:hover {
-    background-color: #c82333;
+.modal-header h2 {
+    margin: 0;
+    color: white;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.modal-body {
+    padding: 20px;
+    flex-grow: 1;
+    overflow-y: auto; /* Rolagem apenas no corpo da modal */
+}
+
+
+.close-button {
+    color: white; /* Cor do X na modal */
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute; /* Posiciona o botão de fechar */
+    top: 10px;
+    right: 20px;
+    transition: color 0.2s ease;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #ffc107; /* Amarelo no hover */
+    text-decoration: none;
 }
 
 /* Estilos para a modal de cadastro de cliente */
 #formCadastroCliente {
     display: grid;
     grid-template-columns: 1fr; /* Uma coluna por padrão em mobile */
-    gap: 15px; /* Espaçamento entre os grupos de formulário */
+    gap: 15px;
 }
 
-@media (min-width: 480px) {
+@media (min-width: 600px) { /* Breakpoint para 2 colunas */
     #formCadastroCliente {
-        grid-template-columns: repeat(2, 1fr); /* Duas colunas em telas maiores */
-        align-items: start; /* Alinha os itens ao início de sua área de grade */
+        grid-template-columns: repeat(2, 1fr);
     }
 
     /* Campos que devem ocupar a largura total (2 colunas) */
     #formCadastroCliente .form-group:nth-child(1), /* Nome/Razão Social */
-    #formCadastroCliente #cnpjGroup, /* CNPJ */
-    #formCadastroCliente #cpfGroup, /* CPF */
-    #formCadastroCliente .form-group:has(label[for="emailCliente"]), /* E-mail (opcional) */
+    #formCadastroCliente .form-group.radio-group-tipo-pessoa,
+    #formCadastroCliente #cnpjGroup,
+    #formCadastroCliente #cpfGroup,
+    #formCadastroCliente h3, /* Título "Endereço Principal" */
+    #formCadastroCliente .form-group:has(label[for="ruaCliente"]), /* Rua */
+    #formCadastroCliente .form-group:has(label[for="telefoneCliente"]), /* Telefone */
+    #formCadastroCliente .form-group:has(label[for="emailCliente"]), /* E-mail */
     #formCadastroCliente button[type="submit"] {
         grid-column: span 2;
     }
 
-    /* Campos de Endereço e Telefone (lado a lado) */
-    /* Ajuste para os novos campos de endereço detalhados */
-    #formCadastroCliente .form-group:has(label[for="ruaCliente"]), /* Rua */
-    #formCadastroCliente .form-group:has(label[for="telefoneCliente"]) { /* Telefone */
-        grid-column: span 2; /* Ocupam a largura total */
+    .form-row-grid { /* Usado para Numero/Bairro e Cidade/Estado/CEP */
+        grid-column: span 2;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* 2 ou 3 colunas dentro da linha */
+        gap: 15px;
     }
-
-    #formCadastroCliente .form-row { /* Para agrupar Número/Bairro e Cidade/Estado/CEP */
-        grid-column: span 2; /* Ocupam a largura total */
-        display: flex;
-        gap: 15px; /* Espaçamento entre os campos dentro da linha */
-    }
-    #formCadastroCliente .form-row .form-group-inline {
-        flex: 1; /* Distribui o espaço igualmente */
+    .form-row-grid .form-group-grid {
+        /* Reset flexbox para grid interno */
+        display: block;
     }
     #formCadastroCliente input[name="estadoCliente"] {
-        max-width: 80px; /* Largura fixa para o campo de estado */
+        max-width: 100px; /* Largura fixa para o campo de estado */
     }
 }
+
 
 /* Estilos para o grupo de rádio botões na modal de cadastro de cliente */
 .form-group.radio-group-tipo-pessoa {
     display: flex;
-    flex-direction: row; /* Alinha a label e as opções na mesma linha */
-    align-items: center; /* Centraliza verticalmente */
-    gap: 10px; /* Espaçamento entre a label e as opções */
-    margin-bottom: 0; /* Reduz margem para aproximar do campo de nome */
-    padding-top: 5px; /* Pequeno padding para alinhar melhor */
-    grid-column: span 2; /* Ocupa as duas colunas em telas maiores */
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0;
+    padding-top: 5px;
 }
 
 .radio-group-tipo-pessoa label {
-    margin-bottom: 0; /* Remove margem inferior da label */
-    font-weight: normal; /* Deixa o texto da label mais leve */
-    white-space: nowrap; /* Evita que a label quebre linha */
+    margin-bottom: 0;
+    font-weight: normal;
+    white-space: nowrap;
 }
 
 .radio-group-tipo-pessoa .radio-options {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px; /* Espaçamento reduzido entre CNPJ e CPF */
-    margin-top: 0; /* Remove margem superior */
+    gap: 10px;
+    margin-top: 0;
 }
 
 .radio-group-tipo-pessoa .radio-options > div {
     display: flex;
     align-items: center;
-    gap: 3px; /* Espaçamento menor entre o rádio e o texto */
-    font-size: 0.9em; /* Torna o texto menor */
+    gap: 3px;
+    font-size: 0.9em;
 }
 
 .radio-group-tipo-pessoa input[type="radio"] {
-    width: auto; /* Deixa o rádio com largura automática */
-    margin-bottom: 0; /* Remove margem inferior */
+    width: auto;
+    margin-bottom: 0;
 }
 
-/* Ajustes para o campo de busca de cliente */
-.cliente-info .form-group.search-client-group {
-    margin-top: 20px; /* Espaçamento do formulário acima */
-    margin-bottom: 15px;
-}
-
-.cliente-info .search-client-group .input-button-group {
-    display: flex;
-    gap: 10px;
-    align-items: flex-end;
-}
-.cliente-info .search-client-group input {
-    flex: 1 1 200px; /* Input pode crescer, mas com base mínima */
-    margin-bottom: 0; /* Remove margem inferior padrão */
-}
-.cliente-info .search-client-group button {
-    flex-shrink: 0; /* Botão não encolhe */
-    padding: 10px 15px;
-    font-size: 1em;
-    background-color: #17a2b8; /* Azul claro para busca */
-    color: white;
+/* Feedback messages */
+.feedback-message {
+    margin-top: 15px;
+    padding: 10px;
     border-radius: 5px;
-    box-shadow: none; /* Remove sombra extra */
-}
-.cliente-info .search-client-group button:hover {
-    background-color: #138496;
+    font-weight: bold;
+    text-align: center;
 }
 
-
-/* Ajuste para o filtro da modal de orçamentos */
-.modal-content .form-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: flex-end;
-}
-.modal-content .form-group input {
-    flex: 1 1 150px;
-    margin-bottom: 0;
-}
-.modal-content .form-group button {
-    flex-shrink: 0;
-    margin-bottom: 0;
+.feedback-message[style*="color: green"] {
+    background-color: rgba(40, 167, 69, 0.2); /* Verde claro */
+    color: #28a745;
 }
 
-/* Ajuste para o texto clicável na lista de orçamentos */
-.orcamento-item .orcamento-text-clickable {
-    flex-grow: 1; /* Permite que o texto ocupe o espaço disponível */
-    margin-right: 10px; /* Espaçamento entre o texto e o botão */
-    white-space: normal; /* Permite que o texto quebre linha */
-    word-wrap: break-word; /* Garante que palavras longas quebrem */
+.feedback-message[style*="color: red"] {
+    background-color: rgba(220, 53, 69, 0.2); /* Vermelho claro */
+    color: #dc3545;
 }
 
-/* Ajuste para o botão de exclusão flutuante na lista de orçamentos */
-.orcamento-item .btn-excluir-orcamento {
-    margin-left: auto; /* Empurra o botão para a direita em flexbox */
+.feedback-message[style*="color: blue"] {
+    background-color: rgba(0, 123, 255, 0.2); /* Azul claro */
+    color: #007bff;
 }
 
-/* Estilos para os campos de medida A, B, C (mais coladinhos) */
-.medidas-group {
-    display: flex; /* Usa flexbox para alinhar os inputs */
-    gap: 8px; /* Espaçamento menor entre os inputs */
-    align-items: flex-end; /* Alinha os inputs pela base */
-    width: 100%; /* Garante que o grupo ocupe a largura total disponível */
-}
-
-.medidas-group input {
-    flex: 1; /* Faz com que cada input ocupe uma parte igual do espaço disponível */
-    min-width: 0; /* Permite que os inputs encolham se necessário */
-    margin-bottom: 0; /* Remove a margem inferior padrão dos inputs */
-}
-
-/* Media queries para responsividade geral */
+/* Responsividade Geral */
 @media (max-width: 767px) {
     body {
-        padding: 10px; /* Reduz o padding geral em telas pequenas */
+        padding: 10px;
     }
 
     header {
         padding: 15px;
-        margin-bottom: 20px;
     }
 
     header h1 {
-        font-size: 2em;
+        font-size: 2.2em;
     }
 
     header p {
-        font-size: 1em;
+        font-size: 0.9em;
     }
 
     main {
+        margin: 20px auto;
         padding: 15px;
+        gap: 20px;
     }
 
-    section {
-        padding: 15px;
-        margin-bottom: 20px;
+    section.panel {
+        padding: 0; /* Remove padding da section, usa padding do panel-content */
     }
 
-    h2 {
-        font-size: 1.5em;
-        margin-bottom: 15px;
-    }
-
-    h3 {
+    .panel-header {
+        padding: 10px 15px;
         font-size: 1.2em;
     }
 
-    .form-row {
-        flex-direction: column; /* Empilha os elementos em colunas em telas pequenas */
+    .panel-content {
+        padding: 15px;
+    }
+
+    .form-row-grid {
+        grid-template-columns: 1fr; /* Uma coluna em telas pequenas */
         gap: 10px;
     }
 
-    .form-group-inline {
-        width: 100%; /* Ocupa a largura total */
+    .form-group-grid {
+        margin-bottom: 0; /* O gap do grid já cuida */
     }
 
     .medidas-group {
-        flex-wrap: wrap; /* Permite que os inputs A, B, C quebrem linha */
-        gap: 5px; /* Espaçamento ainda menor para medidas */
+        flex-wrap: wrap;
+        gap: 5px;
     }
 
     .medidas-group input {
-        flex: 1 1 45%; /* Permite que dois inputs fiquem lado a lado em telas pequenas */
-        min-width: 80px; /* Garante um tamanho mínimo */
+        flex: 1 1 45%; /* Duas colunas para medidas */
+        min-width: 80px;
     }
 
-    /* Ajustes para a tabela de resultados em telas pequenas */
-    #tabela-resultados, #resumo-bitolas table {
-        display: block;
-        overflow-x: auto; /* Adiciona rolagem horizontal para tabelas */
-        white-space: nowrap; /* Impede que o conteúdo da célula quebre linha */
-        -webkit-overflow-scrolling: touch; /* Rolagem suave em iOS */
+    .table-responsive {
+        overflow-x: auto; /* Garante rolagem para tabelas */
     }
 
-    #tabela-resultados thead, #resumo-bitolas table thead {
-        display: none; /* Esconde o cabeçalho da tabela em telas pequenas */
+    table {
+        min-width: 500px; /* Garante que a tabela tenha uma largura mínima para rolagem */
     }
 
-    #tabela-resultados tr, #resumo-bitolas table tr {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 15px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    th, td {
+        padding: 8px 10px;
     }
 
-    #tabela-resultados td, #resumo-bitolas table td {
-        border-bottom: 1px solid #eee;
-        padding: 10px;
-        display: flex;
-        justify-content: space-between;
+    .main-actions {
+        flex-direction: column; /* Empilha botões em celular */
         align-items: center;
-        width: auto; /* Remove largura fixa */
-    }
-
-    #tabela-resultados td:last-child, #resumo-bitolas table td:last-child {
-        border-bottom: none;
-    }
-
-    #tabela-resultados td::before, #resumo-bitolas table td::before {
-        content: attr(data-label); /* Exibe o nome da coluna como label */
-        font-weight: bold;
-        margin-right: 10px;
-        color: #555;
-    }
-
-    /* Botões da seção final */
-    section:last-of-type {
-        flex-direction: column; /* Empilha os botões verticalmente */
-        align-items: center; /* Centraliza os botões */
-    }
-
-    section:last-of-type button {
-        width: 90%; /* Ocupa a maior parte da largura */
-        margin: 5px 0; /* Ajusta margem vertical */
-    }
-
-    /* Modal de cadastro de cliente em telas pequenas */
-    #formCadastroCliente {
-        grid-template-columns: 1fr; /* Uma coluna para todos os campos */
-    }
-
-    #formCadastroCliente .form-group:nth-child(1),
-    #formCadastroCliente .form-group.radio-group-tipo-pessoa,
-    #formCadastroCliente #cnpjGroup,
-    #formCadastroCliente #cpfGroup,
-    #formCadastroCliente .form-group:has(label[for="ruaCliente"]),
-    #formCadastroCliente .form-group:has(label[for="telefoneCliente"]),
-    #formCadastroCliente .form-group:has(label[for="emailCliente"]),
-    #formCadastroCliente button[type="submit"] {
-        grid-column: span 1; /* Garante que ocupem 1 coluna */
-    }
-
-    #formCadastroCliente .form-row {
-        flex-direction: column; /* Empilha os campos dentro do form-row */
+        padding: 15px;
         gap: 10px;
     }
 
-    #formCadastroCliente .form-row .form-group-inline {
-        width: 100%; /* Ocupa a largura total */
+    .btn-action {
+        width: 90%;
+        max-width: none; /* Remove max-width em mobile */
+        font-size: 1em;
+        padding: 12px 20px;
+    }
+
+    .modal-content {
+        width: 95%;
+        max-width: 95%;
+        max-height: 90vh;
+    }
+
+    .modal-header {
+        padding: 10px 15px;
+        font-size: 1.2em;
+    }
+
+    .modal-body {
+        padding: 15px;
+    }
+
+    .close-button {
+        font-size: 24px;
+        top: 8px;
+        right: 15px;
+    }
+
+    #formCadastroCliente {
+        grid-template-columns: 1fr;
+    }
+
+    #formCadastroCliente .form-row-grid {
+        grid-template-columns: 1fr; /* Campos de endereço empilhados em mobile */
     }
 }

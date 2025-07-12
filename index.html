@@ -20,241 +20,266 @@
     </header>
 
     <main>
-        <section class="cliente-info">
-            <h2>Dados do Cliente</h2>
-            <form id="form-cliente">
-                <label for="cliente">Cliente:</label>
-                <input type="text" id="cliente" name="cliente" readonly> <!-- Campo somente leitura -->
+        <section class="cliente-info panel">
+            <div class="panel-header">
+                <h2>Dados do Cliente</h2>
+            </div>
+            <div class="panel-content">
+                <form id="form-cliente">
+                    <div class="form-row-grid">
+                        <div class="form-group-grid">
+                            <label for="cliente">Cliente:</label>
+                            <input type="text" id="cliente" name="cliente" readonly>
+                        </div>
+                        <div class="form-group-grid">
+                            <label for="codCliente">Cód. Cliente:</label>
+                            <input type="text" id="codCliente" name="codCliente" readonly>
+                        </div>
+                    </div>
 
-                <label for="codCliente">Cód. Cliente:</label>
-                <input type="text" id="codCliente" name="codCliente" readonly> <!-- Campo somente leitura -->
+                    <div class="form-row-grid">
+                        <div class="form-group-grid">
+                            <label for="obra">Obra:</label>
+                            <input type="text" id="obra" name="obra">
+                        </div>
+                        <div class="form-group-grid">
+                            <label for="numPedido">Nº do Pedido:</label>
+                            <input type="text" id="numPedido" name="numPedido" readonly>
+                            <input type="hidden" id="orcamentoId" name="orcamentoId" value="">
+                        </div>
+                    </div>
 
-                <label for="obra">Obra:</label>
-                <input type="text" id="obra" name="obra">
+                    <div class="form-row-grid">
+                        <div class="form-group-grid">
+                            <label for="recebeCaminhao">Recebe Caminhão?</label>
+                            <select id="recebeCaminhao" name="recebeCaminhao">
+                                <option value="Sim">Sim</option>
+                                <option value="Não">Não</option>
+                            </select>
+                        </div>
+                        <div class="form-group-grid">
+                            <label for="dataDesejada">Data Deseja:</label>
+                            <input type="date" id="dataDesejada" name="dataDesejada">
+                        </div>
+                    </div>
+                </form>
 
-                <label for="numPedido">Nº do Pedido:</label>
-                <input type="text" id="numPedido" name="numPedido" readonly> <!-- Este será preenchido automaticamente ao salvar o orçamento -->
-                <!-- Campo oculto para armazenar o ID do orçamento ao carregar para edição -->
-                <input type="hidden" id="orcamentoId" name="orcamentoId" value="">
-
-                <label for="recebeCaminhao">Recebe Caminhão?</label>
-                <select id="recebeCaminhao" name="recebeCaminhao">
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
-                </select>
-
-                <label for="dataDesejada">Data Desejada:</label>
-                <input type="date" id="dataDesejada" name="dataDesejada">
-            </form>
-
-            <!-- Campo de Busca de Cliente Existente -->
-            <div class="form-group search-client-group">
-                <label for="buscarCliente">Buscar Cliente Existente:</label>
-                <div class="input-button-group">
-                    <input type="text" id="buscarCliente" placeholder="Digite nome, código ou documento">
-                    <button id="btnBuscarCliente" type="button" class="btn">Buscar</button>
+                <!-- Campo de Busca de Cliente Existente -->
+                <div class="form-group search-client-group">
+                    <label for="buscarCliente">Buscar Cliente Existente:</label>
+                    <div class="input-button-group">
+                        <input type="text" id="buscarCliente" placeholder="Digite nome, código ou documento">
+                        <button id="btnBuscarCliente" type="button" class="btn btn-search"><i class="fas fa-search"></i> Buscar</button>
+                    </div>
                 </div>
-            </div>
-            <div id="resultadosBuscaCliente" class="lista-resultados">
-                <!-- Resultados da busca serão inseridos aqui pelo JavaScript -->
-            </div>
+                <div id="resultadosBuscaCliente" class="lista-resultados">
+                    <!-- Resultados da busca serão inseridos aqui pelo JavaScript -->
+                </div>
 
-            <!-- Botão para abrir a modal de cadastro de cliente -->
-            <button id="btnAbrirModalCadastroCliente" type="button" class="btn-cliente-action">Cadastrar Novo Cliente</button>
-
+                <!-- Botão para abrir a modal de cadastro de cliente -->
+                <button id="btnAbrirModalCadastroCliente" type="button" class="btn btn-primary btn-cliente-action"><i class="fas fa-user-plus"></i> Cadastrar Novo Cliente</button>
+            </div>
         </section>
 
         <hr>
 
-        <section class="formulario">
-            <h2>Adicionar Peça</h2>
-            <form id="form-peca">
-                <div class="form-row">
-                    <div class="form-group-inline">
-                        <label for="tipo">Tipo de Peça:</label>
-                        <select id="tipo" name="tipo" required>
-                            <option value="varaU">Vara em U</option>
-                            <option value="estribo">Estribo</option>
-                            <option value="varaReta">Vara Reta</option>
-                            <option value="varaL">Vara em L</option>
-                        </select>
-                    </div>
+        <section class="formulario panel">
+            <div class="panel-header">
+                <h2>Adicionar Peça</h2>
+            </div>
+            <div class="panel-content">
+                <form id="form-peca">
+                    <div class="form-row-grid">
+                        <div class="form-group-grid">
+                            <label for="tipo">Tipo de Peça:</label>
+                            <select id="tipo" name="tipo" required>
+                                <option value="varaU">Vara em U</option>
+                                <option value="estribo">Estribo</option>
+                                <option value="varaReta">Vara Reta</option>
+                                <option value="varaL">Vara em L</option>
+                            </select>
+                        </div>
 
-                    <!-- CAMPO DA BITOLA -->
-                    <div class="form-group-inline">
-                        <label for="bitola">Bitola (mm):</label>
-                        <select id="bitola" name="bitola" required>
-                            <option value="4.2">4.2</option>
-                            <option value="5.0">5.0</option>
-                            <option value="6.3">6.3</option>
-                            <option value="8.0">8.0</option>
-                            <option value="10.0">10.0</option>
-                            <option value="12.5">12.5</option>
-                            <option value="16.0">16.0</option>
-                            <option value="20.0">20.0</option>
-                            <option value="25.0">25.0</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group-inline">
-                        <label>Medidas (cm):</label>
-                        <!-- NOVO DIV PARA AGRUPAR AS MEDIDAS - MAIS COLADINHO -->
-                        <div class="medidas-group">
-                            <input type="number" placeholder="a" id="a" name="a" required>
-                            <input type="number" placeholder="b" id="b" name="b">
-                            <input type="number" placeholder="c" id="c" name="c">
+                        <!-- CAMPO DA BITOLA -->
+                        <div class="form-group-grid">
+                            <label for="bitola">Bitola (mm):</label>
+                            <select id="bitola" name="bitola" required>
+                                <option value="4.2">4.2</option>
+                                <option value="5.0">5.0</option>
+                                <option value="6.3">6.3</option>
+                                <option value="8.0">8.0</option>
+                                <option value="10.0">10.0</option>
+                                <option value="12.5">12.5</option>
+                                <option value="16.0">16.0</option>
+                                <option value="20.0">20.0</option>
+                                <option value="25.0">25.0</option>
+                            </select>
                         </div>
                     </div>
 
-                    <div class="form-group-inline">
-                        <label for="quantidade">Quantidade de Peças:</label>
-                        <input type="number" id="quantidade" name="quantidade" required>
-                    </div>
-                </div>
+                    <div class="form-row-grid">
+                        <div class="form-group-grid">
+                            <label>Medidas (cm):</label>
+                            <!-- NOVO DIV PARA AGRUPAR AS MEDIDAS - MAIS COLADINHO -->
+                            <div class="medidas-group">
+                                <input type="number" placeholder="a" id="a" name="a" required>
+                                <input type="number" placeholder="b" id="b" name="b">
+                                <input type="number" placeholder="c" id="c" name="c">
+                            </div>
+                        </div>
 
-                <button type="submit">Adicionar</button>
-            </form>
+                        <div class="form-group-grid">
+                            <label for="quantidade">Quantidade de Peças:</label>
+                            <input type="number" id="quantidade" name="quantidade" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success"><i class="fas fa-plus-circle"></i> Adicionar</button>
+                </form>
+            </div>
         </section>
 
-        <section class="resultado">
-            <h2>Resumo do Pedido</h2>
-            <table id="tabela-resultados">
-                <thead>
-                    <tr>
-                        <th>Tipo</th>
-                        <th>Bitola</th>
-                        <th>Medidas</th>
-                        <th>Qtd</th>
-                        <th>Comprimento</th>
-                        <th>Peso</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- As linhas da tabela serão inseridas aqui pelo JavaScript -->
-                </tbody>
-            </table>
-            <section id="resumo-bitolas" style="margin-top: 2rem;">
-                <h3>Resumo por Bitola</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Bitola</th>
-                            <th>Peso Total (kg)</th>
-                            <th>Custo Total (R$)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabela-resumo-bitolas">
-                        <!-- O resumo por bitola será inserido aqui pelo JavaScript -->
-                    </tbody>
-                </table>
+        <section class="resultado panel">
+            <div class="panel-header">
+                <h2>Resumo do Pedido</h2>
+            </div>
+            <div class="panel-content">
+                <div class="table-responsive">
+                    <table id="tabela-resultados">
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Bitola</th>
+                                <th>Medidas</th>
+                                <th>Qtd</th>
+                                <th>Comprimento</th>
+                                <th>Peso</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- As linhas da tabela serão inseridas aqui pelo JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <section id="resumo-bitolas" class="summary-section">
+                    <h3>Resumo por Bitola</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Bitola</th>
+                                    <th>Peso Total (kg)</th>
+                                    <th>Custo Total (R$)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-resumo-bitolas">
+                                <!-- O resumo por bitola será inserido aqui pelo JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
 
-                <p style="margin-top: 1rem;"><strong>Peso Total Geral:</strong> <span
-                        id="peso-total-geral">0.00 kg</span></p>
-                <p><strong>Custo Total Geral:</strong> <span id="custo-total-geral">R$ 0.00</span></p>
-            </section>
+                    <div class="total-summary">
+                        <p><strong>Peso Total Geral:</strong> <span id="peso-total-geral">0.00 kg</span></p>
+                        <p><strong>Custo Total Geral:</strong> <span id="custo-total-geral">R$ 0.00</span></p>
+                    </div>
+                </section>
+            </div>
         </section>
     </main>
 
-    <section style="margin-top: 30px; text-align: center;">
-        <button type="button" id="btnSalvarOrcamento"
-            style="padding: 12px 25px; background-color: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1.1em; margin-right: 15px; transition: background-color 0.3s ease;">Salvar
-            Orçamento</button>
-
-        <button type="button" id="btnGerarPdf"
-            style="padding: 12px 25px; background-color: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1.1em; margin-right: 15px; transition: background-color 0.3s ease;">Gerar
-            PDF do Orçamento</button>
-
-        <!-- NOVO BOTÃO: Novo Orçamento -->
-        <button type="button" id="btnNovoOrcamento"
-            style="padding: 12px 25px; background-color: #ffc107; color: #333; border: none; border-radius: 6px; cursor: pointer; font-size: 1.1em; margin-right: 15px; transition: background-color 0.3s ease; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">Novo Orçamento</button>
-
-        <button type="button" id="btnAbrirModalVisualizarOrcamentos"
-            style="padding: 12px 25px; background-color: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1.1em; transition: background-color 0.3s ease;">Visualizar Orçamentos</button>
+    <section class="main-actions">
+        <button type="button" id="btnSalvarOrcamento" class="btn btn-action btn-save"><i class="fas fa-save"></i> Salvar Orçamento</button>
+        <button type="button" id="btnGerarPdf" class="btn btn-action btn-pdf"><i class="fas fa-file-pdf"></i> Gerar PDF do Orçamento</button>
+        <button type="button" id="btnNovoOrcamento" class="btn btn-action btn-new"><i class="fas fa-plus-square"></i> Novo Orçamento</button>
+        <button type="button" id="btnAbrirModalVisualizarOrcamentos" class="btn btn-action btn-view"><i class="fas fa-eye"></i> Visualizar Orçamentos</button>
     </section>
 
     <!-- Estrutura da Modal de Cadastro de Cliente -->
     <div id="modalCadastroCliente" class="modal">
         <div class="modal-content">
             <span class="close-button" id="closeModalCadastroCliente">&times;</span>
-            <h2>Cadastrar Novo Cliente</h2>
-            <form id="formCadastroCliente">
-                <div class="form-group">
-                    <label for="nomeCliente">Nome/Razão Social:</label>
-                    <input type="text" id="nomeCliente" name="nomeCliente" required>
-                </div>
+            <div class="modal-header">
+                <h2>Cadastrar Novo Cliente</h2>
+            </div>
+            <div class="modal-body">
+                <form id="formCadastroCliente">
+                    <div class="form-group">
+                        <label for="nomeCliente">Nome/Razão Social:</label>
+                        <input type="text" id="nomeCliente" name="nomeCliente" required>
+                    </div>
 
-                <!-- Botões de Rádio para Tipo de Pessoa -->
-                <div class="form-group radio-group-tipo-pessoa">
-                    <label>Tipo de Pessoa:</label>
-                    <div class="radio-options">
-                        <div>
-                            <input type="radio" id="radioJuridica" name="tipoPessoa" value="juridica" checked>
-                            <label for="radioJuridica">CNPJ</label>
+                    <!-- Botões de Rádio para Tipo de Pessoa -->
+                    <div class="form-group radio-group-tipo-pessoa">
+                        <label>Tipo de Pessoa:</label>
+                        <div class="radio-options">
+                            <div>
+                                <input type="radio" id="radioJuridica" name="tipoPessoa" value="juridica" checked>
+                                <label for="radioJuridica">CNPJ</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="radioFisica" name="tipoPessoa" value="fisica">
+                                <label for="radioFisica">CPF</label>
+                            </div>
                         </div>
-                        <div>
-                            <input type="radio" id="radioFisica" name="tipoPessoa" value="fisica">
-                            <label for="radioFisica">CPF</label>
+                    </div>
+
+                    <!-- CAMPO CNPJ (Visível por padrão, oculto por JS se for CPF) -->
+                    <div class="form-group" id="cnpjGroup">
+                        <label for="cnpjCliente">CNPJ:</label>
+                        <input type="text" id="cnpjCliente" name="cnpjCliente">
+                    </div>
+
+                    <!-- CAMPO CPF (Inicialmente oculto, visível por JS se for CPF) -->
+                    <div class="form-group" id="cpfGroup" style="display: none;">
+                        <label for="cpfCliente">CPF:</label>
+                        <input type="text" id="cpfCliente" name="cpfCliente">
+                    </div>
+
+                    <!-- Campos de Endereço Detalhados -->
+                    <h3>Endereço Principal</h3>
+                    <div class="form-group">
+                        <label for="ruaCliente">Rua:</label>
+                        <input type="text" id="ruaCliente" name="ruaCliente" required>
+                    </div>
+                    <div class="form-row-grid">
+                        <div class="form-group-grid">
+                            <label for="numeroCliente">Número:</label>
+                            <input type="text" id="numeroCliente" name="numeroCliente">
+                        </div>
+                        <div class="form-group-grid">
+                            <label for="bairroCliente">Bairro:</label>
+                            <input type="text" id="bairroCliente" name="bairroCliente">
                         </div>
                     </div>
-                </div>
+                    <div class="form-row-grid">
+                        <div class="form-group-grid">
+                            <label for="cidadeCliente">Cidade:</label>
+                            <input type="text" id="cidadeCliente" name="cidadeCliente" required>
+                        </div>
+                        <div class="form-group-grid">
+                            <label for="estadoCliente">Estado (UF):</label>
+                            <input type="text" id="estadoCliente" name="estadoCliente" maxlength="2" required>
+                        </div>
+                        <div class="form-group-grid">
+                            <label for="cepCliente">CEP:</label>
+                            <input type="text" id="cepCliente" name="cepCliente">
+                        </div>
+                    </div>
+                    <!-- Fim dos Campos de Endereço Detalhados -->
 
-                <!-- CAMPO CNPJ (Visível por padrão, oculto por JS se for CPF) -->
-                <div class="form-group" id="cnpjGroup">
-                    <label for="cnpjCliente">CNPJ:</label>
-                    <input type="text" id="cnpjCliente" name="cnpjCliente">
-                </div>
-
-                <!-- CAMPO CPF (Inicialmente oculto, visível por JS se for CPF) -->
-                <div class="form-group" id="cpfGroup" style="display: none;">
-                    <label for="cpfCliente">CPF:</label>
-                    <input type="text" id="cpfCliente" name="cpfCliente">
-                </div>
-
-                <!-- Campos de Endereço Detalhados -->
-                <div class="form-group">
-                    <label for="ruaCliente">Rua:</label>
-                    <input type="text" id="ruaCliente" name="ruaCliente" required>
-                </div>
-                <div class="form-row">
-                    <div class="form-group-inline">
-                        <label for="numeroCliente">Número:</label>
-                        <input type="text" id="numeroCliente" name="numeroCliente">
+                    <div class="form-group">
+                        <label for="telefoneCliente">Telefone:</label>
+                        <input type="text" id="telefoneCliente" name="telefoneCliente" required>
                     </div>
-                    <div class="form-group-inline">
-                        <label for="bairroCliente">Bairro:</label>
-                        <input type="text" id="bairroCliente" name="bairroCliente">
+                    <div class="form-group">
+                        <label for="emailCliente">E-mail (opcional):</label>
+                        <input type="email" id="emailCliente" name="emailCliente">
                     </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group-inline">
-                        <label for="cidadeCliente">Cidade:</label>
-                        <input type="text" id="cidadeCliente" name="cidadeCliente" required>
-                    </div>
-                    <div class="form-group-inline">
-                        <label for="estadoCliente">Estado (UF):</label>
-                        <input type="text" id="estadoCliente" name="estadoCliente" maxlength="2" required>
-                    </div>
-                    <div class="form-group-inline">
-                        <label for="cepCliente">CEP:</label>
-                        <input type="text" id="cepCliente" name="cepCliente">
-                    </div>
-                </div>
-                <!-- Fim dos Campos de Endereço Detalhados -->
-
-                <div class="form-group">
-                    <label for="telefoneCliente">Telefone:</label>
-                    <input type="text" id="telefoneCliente" name="telefoneCliente" required>
-                </div>
-                <div class="form-group">
-                    <label for="emailCliente">E-mail (opcional):</label>
-                    <input type="email" id="emailCliente" name="emailCliente">
-                </div>
-                <button type="submit">Salvar Cliente</button>
-            </form>
-            <div id="cadastroClienteFeedback" style="margin-top: 10px; color: green;"></div>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i> Salvar Cliente</button>
+                </form>
+                <div id="cadastroClienteFeedback" class="feedback-message"></div>
+            </div>
         </div>
     </div>
 
@@ -262,27 +287,23 @@
     <div id="modalVisualizarOrcamentos" class="modal">
         <div class="modal-content">
             <span class="close-button" id="closeModalVisualizarOrcamentos">&times;</span>
-            <h2>Visualizar Orçamentos</h2>
-            <div class="form-group">
-                <label for="filtroOrcamento">Filtrar por Cliente/Pedido:</label>
-                <input type="text" id="filtroOrcamento" placeholder="Digite para filtrar" style="width: calc(100% - 80px);">
-                <button id="btnFiltrarOrcamentos" type="button" class="btn" style="
-                    padding: 8px 15px;
-                    background-color: #17a2b8; /* Azul claro para busca */
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    font-size: 0.9em;
-                    margin-left: 5px;
-                    transition: background-color 0.3s ease;
-                ">Filtrar</button>
+            <div class="modal-header">
+                <h2>Visualizar Orçamentos</h2>
             </div>
-            <div id="listaOrcamentos" class="lista-resultados" style="max-height: 400px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px; margin-top: 10px;">
-                <!-- Orçamentos serão carregados aqui -->
-                <p style="text-align: center; color: gray;">Carregando orçamentos...</p>
+            <div class="modal-body">
+                <div class="form-group search-filter-group">
+                    <label for="filtroOrcamento">Filtrar por Cliente/Pedido:</label>
+                    <div class="input-button-group">
+                        <input type="text" id="filtroOrcamento" placeholder="Digite para filtrar">
+                        <button id="btnFiltrarOrcamentos" type="button" class="btn btn-search"><i class="fas fa-filter"></i> Filtrar</button>
+                    </div>
+                </div>
+                <div id="listaOrcamentos" class="lista-resultados">
+                    <!-- Orçamentos serão carregados aqui -->
+                    <p class="loading-message">Carregando orçamentos...</p>
+                </div>
+                <div id="visualizarOrcamentoFeedback" class="feedback-message"></div>
             </div>
-            <div id="visualizarOrcamentoFeedback" style="margin-top: 10px;"></div>
         </div>
     </div>
 

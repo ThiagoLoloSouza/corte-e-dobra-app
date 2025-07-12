@@ -1,4 +1,4 @@
-// db.js - Temporário para corrigir e adicionar a coluna enderecos (Versão 3)
+// db.js - Temporário para recriar a tabela clientes com a coluna enderecos JSONB[]
 
 const { Pool } = require('pg');
 
@@ -9,50 +9,45 @@ const pool = new Pool({
     }
 });
 
-async function connectDbAndAlterTable() {
+async function connectDbAndRecreateClientsTable() {
     try {
         await pool.connect();
         console.log('Conectado ao PostgreSQL!');
 
-        // 1. Tenta remover a coluna 'enderecos' se ela já existir, para garantir um estado limpo.
-        // Isso é seguro com IF EXISTS.
-        const dropEnderecosColumnQuery = `
-            ALTER TABLE clientes
-            DROP COLUMN IF EXISTS enderecos;
+        // 1. Apaga a tabela 'clientes' se ela existir.
+        // Isso removerá todos os dados e a estrutura atual.
+        const dropClientsTableQuery = `
+            DROP TABLE IF EXISTS clientes CASCADE;
         `;
-        await pool.query(dropEnderecosColumnQuery);
-        console.log('Coluna "enderecos" removida (se existia) para recriação.');
+        await pool.query(dropClientsTableQuery);
+        console.log('Tabela "clientes" removida (se existia).');
 
-        // 2. Adiciona a coluna 'enderecos' como um array de JSONB.
-        // O tipo JSONB[] é crucial aqui para armazenar múltiplos endereços.
-        const addEnderecosColumnQuery = `
-            ALTER TABLE clientes
-            ADD COLUMN enderecos JSONB[];
+        // 2. Recria a tabela 'clientes' com a estrutura correta.
+        // A coluna 'enderecos' é criada diretamente como JSONB[].
+        const createClientsTableQuery = `
+            CREATE TABLE clientes (
+                id VARCHAR(255) PRIMARY KEY,
+                nome VARCHAR(255) NOT NULL,
+                tipo_pessoa VARCHAR(50),
+                documento VARCHAR(255),
+                enderecos JSONB[], -- AGORA CORRETO: Array de objetos JSONB
+                telefone VARCHAR(255) NOT NULL,
+                email VARCHAR(255),
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+            );
         `;
-        await pool.query(addEnderecosColumnQuery);
-        console.log('Coluna "enderecos" adicionada como JSONB[].');
+        await pool.query(createClientsTableQuery);
+        console.log('Tabela "clientes" recriada com a coluna "enderecos" como JSONB[].');
 
-        // 3. Migra dados da antiga coluna 'endereco' (se existir) para a nova 'enderecos'.
-        // Verifica se 'endereco' existe e não é nulo, e se 'enderecos' ainda não foi preenchido.
-        // Usa array_length para verificar o comprimento do array JSONB[].
-        const migrateOldEnderecoDataQuery = `
-            UPDATE clientes
-            SET enderecos = ARRAY[endereco::jsonb]
-            WHERE endereco IS NOT NULL
-            AND (enderecos IS NULL OR array_length(enderecos, 1) IS NULL);
+        // 3. Adiciona a coluna 'updated_at' na tabela 'orcamentos' se ela não existir.
+        // Mantemos essa verificação aqui para garantir que 'orcamentos' também esteja com a coluna correta.
+        const alterOrcamentosTableQuery = `
+            ALTER TABLE orcamentos
+            ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;
         `;
-        await pool.query(migrateOldEnderecoDataQuery);
-        console.log('Dados da antiga coluna "endereco" migrados para "enderecos" (se aplicável).');
-
-        // 4. Opcional: Remover a antiga coluna 'endereco' após a migração (CUIDADO!)
-        // Descomente a linha abaixo SOMENTE se você tiver certeza que a migração foi bem-sucedida
-        // e que não precisa mais da coluna 'endereco' antiga.
-        // const dropOldEnderecoColumnQuery = `
-        //     ALTER TABLE clientes
-        //     DROP COLUMN IF EXISTS endereco;
-        // `;
-        // await pool.query(dropOldEnderecoColumnQuery);
-        // console.log('Antiga coluna "endereco" removida (se existia).');
+        await pool.query(alterOrcamentosTableQuery);
+        console.log('Coluna "updated_at" adicionada ou já existente na tabela "orcamentos".');
 
     } catch (err) {
         console.error('Erro ao conectar ou inicializar o banco de dados:', err);
@@ -62,7 +57,7 @@ async function connectDbAndAlterTable() {
     }
 }
 
-connectDbAndAlterTable(); // Chama a função para conectar e tentar alterar a tabela
+connectDbAndRecreateClientsTable(); // Chama a função para conectar e tentar recriar a tabela
 
 module.exports = {
     query: (text, params) => pool.query(text, params),

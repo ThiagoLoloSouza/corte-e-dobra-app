@@ -1,4 +1,4 @@
-// db.js - Temporário para adicionar a coluna updated_at
+// db.js - Versão original e padrão
 
 const { Pool } = require('pg');
 
@@ -9,32 +9,17 @@ const pool = new Pool({
     }
 });
 
-async function connectDbAndAlterTable() {
+async function connectDb() {
     try {
         await pool.connect();
         console.log('Conectado ao PostgreSQL!');
-
-        // Comando SQL para adicionar a coluna updated_at se ela não existir
-        // O "IF NOT EXISTS" é crucial para evitar erros se você rodar isso mais de uma vez
-        const alterTableQuery = `
-            ALTER TABLE orcamentos
-            ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;
-        `;
-        await pool.query(alterTableQuery);
-        console.log('Coluna updated_at adicionada ou já existente na tabela orcamentos.');
-
     } catch (err) {
-        console.error('Erro ao conectar ou inicializar o banco de dados:', err);
-    } finally {
-        // Não feche o pool aqui se o servidor precisar dele para outras operações.
-        // A conexão será gerenciada pelo pool.
+        console.error('Erro ao conectar ao banco de dados:', err);
     }
 }
 
-connectDbAndAlterTable(); // Chama a função para conectar e tentar alterar a tabela
+connectDb();
 
 module.exports = {
     query: (text, params) => pool.query(text, params),
-    // Não é necessário exportar connectDbAndAlterTable para uso externo,
-    // ela é executada na inicialização.
 };

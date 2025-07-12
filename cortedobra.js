@@ -1017,21 +1017,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
-     * Converte uma URL 'uploaded:' para uma Data URL (Base64) para uso no jsPDF.
-     * Esta função é um fallback, pois o ideal é que o ambiente forneça URLs diretas ou Base64.
-     * No entanto, para o ambiente Canvas, as URLs 'uploaded:' não são diretamente interpretadas pelo jsPDF.
-     * Por isso, usaremos placeholders de imagem por enquanto.
-     * @param {string} uploadedId - O ID da imagem no formato 'uploaded:filename-hash'.
-     * @returns {Promise<string|null>} Uma Promise que resolve com a Data URL ou null em caso de erro.
-     */
-    const getImageDataUrl = async (uploadedId) => {
-        // Esta função está desativada para o PDF, pois as URLs 'uploaded:' não funcionam diretamente com jsPDF.
-        // Usaremos placeholders de URLs públicas para garantir a geração do PDF.
-        console.warn(`Tentativa de carregar imagem via uploadedId: ${uploadedId}. Usando placeholder no PDF.`);
-        return null; 
-    };
-
-    /**
      * Gera um PDF do orçamento atual com layout aprimorado e horizontal.
      */
     if (btnGerarPdf) {

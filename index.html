@@ -184,17 +184,17 @@
                     <input type="text" id="nomeCliente" name="nomeCliente" required>
                 </div>
 
-                <!-- Botões de Rádio para Tipo de Pessoa -->
+                <!-- Botões de Rádio para Tipo de Pessoa - ESTRUTURA MODIFICADA AQUI -->
                 <div class="form-group radio-group-tipo-pessoa">
                     <label>Tipo de Pessoa:</label>
                     <div class="radio-options">
                         <div>
                             <input type="radio" id="radioJuridica" name="tipoPessoa" value="juridica" checked>
-                            <label for="radioJuridica">Pessoa Jurídica (CNPJ)</label>
+                            <label for="radioJuridica">CNPJ</label>
                         </div>
                         <div>
                             <input type="radio" id="radioFisica" name="tipoPessoa" value="fisica">
-                            <label for="radioFisica">Pessoa Física (CPF)</label>
+                            <label for="radioFisica">CPF</label>
                         </div>
                     </div>
                 </div>
@@ -211,10 +211,28 @@
                     <input type="text" id="cpfCliente" name="cpfCliente">
                 </div>
 
+                <!-- NOVOS CAMPOS DE ENDEREÇO -->
                 <div class="form-group">
-                    <label for="enderecoCliente">Endereço:</label>
-                    <input type="text" id="enderecoCliente" name="enderecoCliente" required>
+                    <label for="ruaCliente">Rua:</label>
+                    <input type="text" id="ruaCliente" name="ruaCliente" required>
                 </div>
+                <div class="form-group">
+                    <label for="numeroCliente">Número:</label>
+                    <input type="text" id="numeroCliente" name="numeroCliente" required>
+                </div>
+                <div class="form-group">
+                    <label for="bairroCliente">Bairro:</label>
+                    <input type="text" id="bairroCliente" name="bairroCliente" required>
+                </div>
+                <div class="form-group">
+                    <label for="cidadeCliente">Cidade:</label>
+                    <input type="text" id="cidadeCliente" name="cidadeCliente" required>
+                </div>
+                <div class="form-group">
+                    <label for="cepCliente">CEP:</label>
+                    <input type="text" id="cepCliente" name="cepCliente" required>
+                </div>
+
                 <div class="form-group">
                     <label for="telefoneCliente">Telefone:</label>
                     <input type="text" id="telefoneCliente" name="telefoneCliente" required>

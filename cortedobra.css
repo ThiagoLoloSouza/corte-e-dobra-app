@@ -405,7 +405,7 @@ section:last-of-type button {
 }
 
 .form-group-inline label {
-    margin-bottom: 5px; /* Espaçamento menor entre label e input */
+    margin-bottom: 3px; /* Reduz espaçamento entre label e input */
 }
 
 .form-group-inline input,
@@ -443,12 +443,6 @@ section:last-of-type button {
         grid-template-columns: repeat(2, 1fr); /* Duas colunas para os grupos dentro da linha */
         gap: 20px; /* Espaçamento entre as colunas */
     }
-    .form-group-inline {
-        /* Não precisa de alteração aqui, já que o flex-direction: column é o padrão */
-    }
-    #form-peca button[type="submit"] {
-        grid-column: span 2; /* Botão ocupa as duas colunas */
-    }
 }
 
 @media (min-width: 900px) {
@@ -459,15 +453,6 @@ section:last-of-type button {
         grid-column: span 1; /* Cada form-row ocupa uma coluna principal */
         grid-template-columns: 1fr; /* Volta para uma coluna interna para os grupos */
         gap: 15px;
-    }
-    .form-group-inline {
-        /* Não precisa de alteração aqui */
-    }
-    .medidas-group {
-        /* Não precisa de alteração aqui */
-    }
-    #form-peca button[type="submit"] {
-        grid-column: span 2; /* Botão ocupa as duas colunas principais */
     }
 }
 
@@ -515,22 +500,65 @@ section:last-of-type button {
     }
 }
 
-/* Estilos para a modal de cadastro de cliente em telas pequenas */
+/* Ajustes para os botões principais em telas pequenas */
+section:last-of-type {
+    display: flex;
+    flex-wrap: wrap; /* Permite que os botões quebrem linha */
+    justify-content: center; /* Centraliza os botões */
+    gap: 10px; /* Espaçamento entre os botões */
+    padding: 15px;
+    border: none; /* Remove a borda da seção de botões */
+    background-color: transparent; /* Remove o fundo */
+    box-shadow: none; /* Remove a sombra */
+}
+
+section:last-of-type button {
+    flex: 1 1 auto; /* Permite que os botões cresçam e encolham, mas com base no conteúdo */
+    min-width: 150px; /* Largura mínima para botões */
+    margin: 5px; /* Ajusta margem para o gap */
+    font-size: 0.95em; /* Ajusta tamanho da fonte */
+    padding: 10px 15px;
+}
+
+/* Estilos para a modal de cadastro de cliente */
 #formCadastroCliente {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 15px;
+    grid-template-columns: 1fr; /* Uma coluna por padrão em mobile */
+    gap: 15px; /* Espaçamento entre os grupos de formulário */
 }
+
 @media (min-width: 480px) {
     #formCadastroCliente {
         grid-template-columns: repeat(2, 1fr); /* Duas colunas em telas maiores */
+        align-items: start; /* Alinha os itens ao início de sua área de grade */
     }
+
+    /* Campos que devem ocupar a largura total (2 colunas) */
     #formCadastroCliente .form-group:nth-child(1), /* Nome/Razão Social */
-    #formCadastroCliente .form-group:nth-child(2), /* Tipo de Pessoa */
-    #formCadastroCliente .form-group:nth-child(3), /* CNPJ */
-    #formCadastroCliente .form-group:nth-child(4), /* CPF */
+    #formCadastroCliente .form-group.radio-group-tipo-pessoa, /* Tipo de Pessoa */
+    #formCadastroCliente #cnpjGroup, /* CNPJ */
+    #formCadastroCliente #cpfGroup, /* CPF */
+    #formCadastroCliente .form-group:nth-child(9), /* E-mail (opcional) - AJUSTADO O NTH-CHILD */
     #formCadastroCliente button[type="submit"] {
-        grid-column: span 2; /* Ocupam a largura total em 2 colunas */
+        grid-column: span 2;
+    }
+
+    /* Campos de Endereço (Rua, Número, Bairro, Cidade, CEP) */
+    #formCadastroCliente .form-group:nth-child(5), /* Rua */
+    #formCadastroCliente .form-group:nth-child(6), /* Número */
+    #formCadastroCliente .form-group:nth-child(7), /* Bairro */
+    #formCadastroCliente .form-group:nth-child(8) { /* Cidade */
+        grid-column: span 1; /* Cada um ocupa 1 coluna */
+    }
+    /* CEP deve ficar em uma linha própria ou ao lado de Cidade, dependendo do design.
+       Vamos colocar CEP e Telefone lado a lado, e E-mail em uma linha completa. */
+    #formCadastroCliente .form-group:nth-child(9), /* Telefone - AJUSTADO O NTH-CHILD */
+    #formCadastroCliente .form-group:nth-child(10) { /* E-mail (opcional) - AJUSTADO O NTH-CHILD */
+        grid-column: span 1;
+    }
+    /* CEP ficará em uma linha própria por enquanto para simplificar o grid */
+    #formCadastroCliente .form-group:nth-child(9) { /* CEP - AJUSTADO O NTH-CHILD */
+        grid-column: span 1;
     }
 }
 
@@ -539,6 +567,7 @@ section:last-of-type button {
     display: flex;
     flex-direction: column; /* Empilha a label "Tipo de Pessoa" e as opções */
     align-items: flex-start; /* Alinha a label à esquerda */
+    margin-bottom: 15px; /* Espaçamento da label */
 }
 
 .radio-group-tipo-pessoa .radio-options {
@@ -552,6 +581,31 @@ section:last-of-type button {
     display: flex;
     align-items: center; /* Alinha o rádio e a label na mesma linha */
     gap: 5px; /* Espaçamento entre o rádio e o texto da label */
+}
+
+
+/* Ajuste para o campo de busca de cliente */
+.cliente-info .form-group:first-child {
+    display: flex;
+    flex-wrap: wrap; /* Permite que input e botão quebrem linha */
+    gap: 10px;
+    align-items: flex-end;
+}
+.cliente-info .form-group:first-child input {
+    flex: 1 1 200px; /* Input pode crescer, mas com base mínima */
+    margin-bottom: 0; /* Remove margem inferior padrão */
+}
+.cliente-info .form-group:first-child button {
+    flex-shrink: 0; /* Botão não encolhe */
+    padding: 10px 15px;
+    font-size: 1em;
+    background-color: #17a2b8; /* Azul claro para busca */
+    color: white;
+    border-radius: 5px;
+    box-shadow: none; /* Remove sombra extra */
+}
+.cliente-info .form-group:first-child button:hover {
+    background-color: #138496;
 }
 
 

@@ -50,6 +50,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const cnpjClienteInput = document.getElementById('cnpjCliente');
     const cpfClienteInput = document.getElementById('cpfCliente');
 
+    // Novos campos de endereço
+    const ruaClienteInput = document.getElementById('ruaCliente');
+    const numeroClienteInput = document.getElementById('numeroCliente');
+    const bairroClienteInput = document.getElementById('bairroCliente');
+    const cidadeClienteInput = document.getElementById('cidadeCliente');
+    const cepClienteInput = document.getElementById('cepCliente');
+
+    const telefoneClienteInput = document.getElementById('telefoneCliente');
+    const emailClienteInput = document.getElementById('emailCliente');
+
+
     /**
      * Alterna a visibilidade dos campos CNPJ e CPF na modal de cadastro de cliente.
      */
@@ -74,6 +85,9 @@ document.addEventListener('DOMContentLoaded', function () {
     if (btnAbrirModalCadastroCliente && modalCadastroCliente) {
         btnAbrirModalCadastroCliente.addEventListener('click', function() {
             modalCadastroCliente.style.display = 'flex';
+            formCadastroCliente.reset(); // Limpa o formulário ao abrir
+            cadastroClienteFeedback.textContent = ''; // Limpa feedback
+            if (radioJuridica) radioJuridica.checked = true; // Garante Jurídica selecionada
             toggleCpfCnpjFields();
         });
     }
@@ -119,16 +133,29 @@ document.addEventListener('DOMContentLoaded', function () {
             const tipoPessoa = document.querySelector('input[name="tipoPessoa"]:checked')?.value;
             const cnpjCliente = document.getElementById('cnpjCliente')?.value;
             const cpfCliente = document.getElementById('cpfCliente')?.value;
-            const enderecoCliente = document.getElementById('enderecoCliente')?.value;
-            const telefoneCliente = document.getElementById('telefoneCliente')?.value;
-            const emailCliente = document.getElementById('emailCliente')?.value;
+            
+            const ruaCliente = ruaClienteInput?.value;
+            const numeroCliente = numeroClienteInput?.value;
+            const bairroCliente = bairroClienteInput?.value;
+            const cidadeCliente = cidadeClienteInput?.value;
+            const cepCliente = cepClienteInput?.value;
+
+            const telefoneCliente = telefoneClienteInput?.value;
+            const emailCliente = emailClienteInput?.value;
+
 
             const clientData = {
                 nomeCliente,
                 tipoPessoa,
                 cnpjCliente: tipoPessoa === 'juridica' ? cnpjCliente : null,
                 cpfCliente: tipoPessoa === 'fisica' ? cpfCliente : null,
-                enderecoCliente,
+                endereco: {
+                    rua: ruaCliente,
+                    numero: numeroCliente,
+                    bairro: bairroCliente,
+                    cidade: cidadeCliente,
+                    cep: cepCliente
+                },
                 telefoneCliente,
                 emailCliente
             };

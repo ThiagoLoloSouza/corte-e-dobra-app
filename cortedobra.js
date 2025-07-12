@@ -1074,10 +1074,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Informações do site e redes sociais (lado direito) - TEXTO BRANCO
             doc.setTextColor(255, 255, 255); // Cor branca para estes textos
             addText("ACESSE NOSSO SITE", pageWidth - marginX - 70, 7, { fontSize: 7, align: 'right' });
-            addText("WWW.DTEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, align: 'right' });
+            addText("WWW.DAFEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, align: 'right' });
             addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, align: 'right' });
             addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, align: 'right' });
-            doc.setTextColor(0, 0, 0); // Volta para preto padrão
+            doc.setTextColor('#f4f8f8ff'); // Volta para preto padrão
 
             currentY = 25; // Posição Y inicial após o cabeçalho superior
 
@@ -1131,7 +1131,7 @@ document.addEventListener('DOMContentLoaded', function () {
             addText("S/N", clientColumnX + 70, addressY, { fontSize: 8, textColor: 0 });
             addText("BAIRRO", clientColumnX + 90, addressY, { fontSize: 8, textColor: 0 });
             addText("CIDADE", clientColumnX + 130, addressY, { fontSize: 8, textColor: 0 });
-            addText("ESTADO", clientColumnX + 180, addressY, { fontSize: 8, textColor: 0 }); // POSIÇÃO AJUSTADA AINDA MAIS PARA A DIREITA
+            addText("ESTADO", clientColumnX + 210, addressY, { fontSize: 8, textColor: 0 }); // POSIÇÃO AJUSTADA AINDA MAIS PARA A DIREITA
 
             if (clienteDetalhes.enderecos && clienteDetalhes.enderecos.length > 0) {
                 const principal = clienteDetalhes.enderecos[0];
@@ -1147,7 +1147,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 let cidadeText = String(principal.cidade || ''); // DECLARADO AQUI
                 let estadoText = String(principal.estado || ''); // DECLARADO AQUI
                 addText(cidadeText, clientColumnX + 130, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
-                addText(estadoText, clientColumnX + 180, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
+                addText(estadoText, clientColumnX + 210, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
             } else {
                 addText("NENHUM ENDEREÇO PRINCIPAL.", clientColumnX + 2, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
             }
@@ -1167,7 +1167,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // --- DETALHES DOS PRODUTOS (TABELA) ---
             // Cabeçalho da tabela de produtos
             addRect(marginX, currentY, pageWidth - (2 * marginX), 8, '#ff8c00'); // Fundo laranja
-            doc.setDrawColor(0); // Cor da borda preta
+            doc.setDrawColor('#FFFFFF'); // Cor da borda preta
             doc.rect(marginX, currentY, pageWidth - (2 * marginX), 8, 'S'); // Borda para o cabeçalho
 
             doc.setTextColor(255, 255, 255); // Branco para o cabeçalho da tabela

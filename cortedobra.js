@@ -492,7 +492,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         // Crie um span para o texto clicável
                         const spanText = document.createElement('span');
                         spanText.classList.add('orcamento-text-clickable');
-                        spanText.textContent = `PEDIDO Nº: ${numPedidoDisplay} - CLIENTE: ${clienteNome} - OBRA: ${obraNome} - DATA: ${dataDisplay}`.toUpperCase();
+                        spanText.textContent = `PEDIDO Nº: ${String(numPedidoDisplay).toUpperCase()} - CLIENTE: ${String(clienteNome).toUpperCase()} - OBRA: ${String(obraNome).toUpperCase()} - DATA: ${String(dataDisplay).toUpperCase()}`;
                         
                         // Crie o botão de excluir
                         const btnExcluir = document.createElement('button');
@@ -505,7 +505,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         btnExcluir.addEventListener('click', (e) => {
                             e.stopPropagation(); // Impede que o clique no botão ative o clique no item pai
                             const idParaExcluir = e.target.dataset.orcamentoId || e.target.closest('button').dataset.orcamentoId; // Pega o ID do botão ou do pai
-                            if (confirm(`TEM CERTEZA QUE DESEJA EXCLUIR O ORÇAMENTO PEDIDO Nº: ${numPedidoDisplay}?`.toUpperCase())) {
+                            if (confirm(`TEM CERTEZA QUE DESEJA EXCLUIR O ORÇAMENTO PEDIDO Nº: ${String(numPedidoDisplay).toUpperCase()}?`)) {
                                 excluirOrcamento(idParaExcluir);
                             }
                         });
@@ -520,7 +520,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             } catch (error) {
                 console.error('Erro ao carregar orçamentos:', error);
-                listaOrcamentosDiv.innerHTML = `<p class="loading-message" style="color: red; text-align: center;">ERRO AO CARREGAR ORÇAMENTOS: ${error.message.toUpperCase()}</p>`;
+                listaOrcamentosDiv.innerHTML = `<p class="loading-message" style="color: red; text-align: center;">ERRO AO CARREGAR ORÇAMENTOS: ${String(error.message).toUpperCase()}</p>`;
             }
         }
 
@@ -703,7 +703,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (numPedidoInput) numPedidoInput.value = '';
         if (orcamentoIdInput) orcamentoIdInput.value = ''; // Limpa o ID do orçamento atual
         if (recebeCaminhaoSelect) recebeCaminhaoSelect.value = 'Sim'; // Valor padrão
-        if (dataDesejadaInput) dataDesejadaInput.value = ''; // Corrigido para dataDesejadaInput
+        if (dataDesejadaInput) dataDesejadaInput.value = '';
         if (buscarClienteInput) buscarClienteInput.value = ''; // Limpa o campo de busca de cliente
         if (resultadosBuscaClienteDiv) resultadosBuscaClienteDiv.innerHTML = ''; // Limpa resultados da busca
         if (btnEditarCliente) btnEditarCliente.style.display = 'none'; // Esconde o botão de editar cliente
@@ -989,12 +989,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ message: 'ERRO DESCONHECIDO AO CADASTRAR/ATUALIZAR ORÇAMENTO.' }));
-                    throw new Error(errorData.message || "ERRO AO CADASTRAR/ATUALIZAR ORÇAMENTO.");
+                    const errorData = await response.json().catch(() => ({ message: 'Erro desconhecido ao cadastrar/atualizar orçamento.' }));
+                    throw new Error(errorData.message || "Erro ao cadastrar/atualizar orçamento.");
                 }
 
                 const resultado = await response.json();
-                alert(`ORÇAMENTO ${method === 'POST' ? 'SALVO' : 'ATUALIZADO'} COM SUCESSO! PEDIDO Nº: ${resultado.numPedido || resultado.id}`);
+                alert(`ORÇAMENTO ${method === 'POST' ? 'SALVO' : 'ATUALIZADO'} COM SUCESSO! PEDIDO Nº: ${String(resultado.numPedido || resultado.id).toUpperCase()}`);
 
                 if (numPedidoInput) {
                     numPedidoInput.value = String(resultado.numPedido || resultado.id).toUpperCase();
@@ -1015,6 +1015,30 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+
+    /**
+     * Converte uma URL 'uploaded:' para uma Data URL (Base64) para uso no jsPDF.
+     * @param {string} uploadedId - O ID da imagem no formato 'uploaded:filename-hash'.
+     * @returns {Promise<string|null>} Uma Promise que resolve com a Data URL ou null em caso de erro.
+     */
+    const getImageDataUrl = async (uploadedId) => {
+        try {
+            const response = await fetch(uploadedId);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch image: ${uploadedId}`);
+            }
+            const blob = await response.blob();
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        } catch (error) {
+            console.error("Erro ao converter imagem para Data URL:", error);
+            return null; // Retorna null se a conversão falhar
+        }
+    };
 
     /**
      * Gera um PDF do orçamento atual com layout aprimorado e horizontal.
@@ -1060,41 +1084,40 @@ document.addEventListener('DOMContentLoaded', function () {
                 doc.text(String(text).toUpperCase(), x, y, options.align ? { align: options.align } : {}); // CONVERTE PARA MAIÚSCULAS DE FORMA SEGURA
             };
 
-            // --- IMAGENS (AGORA COM PLACEHOLDERS PARA EVITAR ERROS DE CARREGAMENTO) ---
-            // As URLs "uploaded:" não são diretamente acessíveis pelo jsPDF.
-            // Para garantir que o PDF seja gerado sem erros, usaremos placeholders.
-            // Se você precisar das imagens reais no PDF, será necessário um servidor para
-            // converter as imagens "uploaded:" para base64 ou URLs públicas.
-            const dafelLogoSuperior = "https://placehold.co/40x15/333333/FFFFFF?text=LOGO";
-            const dafelSiteLogo = "https://placehold.co/20x15/333333/FFFFFF?text=SITE";
-            const dafelMainLogo = "https://placehold.co/100x30/F0F0F0/000000?text=LOGO_PRINCIPAL";
-            const dafelSocialMediaLogo = "https://placehold.co/20x15/333333/FFFFFF?text=SOCIAL";
-            const qrCodePlaceholder = "https://placehold.co/12x12/FFFFFF/000000?text=QR";
+            // --- IMAGENS (AGORA TENTANDO CONVERTER PARA BASE64) ---
+            const dafelLogoSuperiorId = "uploaded:logo_grupo-dafel_8KDzHg.png-1b243712-8c99-4052-998d-065a76e45a90"; // Logo Grupo Dafé
+            const dafelSeriedadeNossaMarcaId = "uploaded:image_a9f29e.png-efc8ce15-6804-4153-acb6-92fa9c5952a3"; // Dafé Seriedade Nossa Marca
+            const dafelMainLogoId = "uploaded:411878334_914510800158541_3475139305395707762_n.jpg-af57b59b-3b46-49e2-bd70-6a39aedbf9ca";
+            const dafelSocialMediaLogoId = "uploaded:288802433_329085279378732_7698072396463611572_n.jpg-69f491a9-8af0-48e1-8c6b-02154d64f67f";
+            const laranjaDadosClienteId = "uploaded:image_a9dc1d.png-07d3fc01-8d67-4106-8fb8-5587e8d4b9a7"; // Imagem laranja para dados do cliente
+            const qrCodePlaceholder = "https://placehold.co/12x12/FFFFFF/000000?text=QR"; // Placeholder para QR Code
 
-            // Função para adicionar imagem (com tratamento de erro básico)
-            const addImageToPdf = (imgUrl, x, y, width, height, callback) => {
-                const img = new Image();
-                img.crossOrigin = 'Anonymous'; // Necessário para imagens de domínios diferentes
-                img.onload = () => {
-                    // Determina o formato da imagem com base na URL
-                    let format = 'PNG'; // Padrão
-                    if (imgUrl.toLowerCase().endsWith('.jpg') || imgUrl.toLowerCase().endsWith('.jpeg')) {
-                        format = 'JPEG';
-                    } else if (imgUrl.toLowerCase().endsWith('.webp')) {
-                        format = 'PNG'; // Fallback, pode não funcionar
-                        console.warn("WEBP IMAGES MIGHT NOT BE FULLY SUPPORTED BY JSPDF DIRECTLY. CONSIDER CONVERTING THEM TO PNG/JPEG FOR BETTER COMPATIBILITY.");
-                    }
-                    doc.addImage(img, format, x, y, width, height);
-                    if (callback) callback();
-                };
-                img.onerror = (e) => {
-                    console.error("ERRO AO CARREGAR IMAGEM PARA PDF:", imgUrl, e);
+            // Pré-carregar todas as imagens para Base64
+            const [
+                dafelLogoSuperiorData,
+                dafelSeriedadeNossaMarcaData,
+                dafelMainLogoData,
+                dafelSocialMediaLogoData,
+                laranjaDadosClienteData
+            ] = await Promise.all([
+                getImageDataUrl(dafelLogoSuperiorId),
+                getImageDataUrl(dafelSeriedadeNossaMarcaId),
+                getImageDataUrl(dafelMainLogoId),
+                getImageDataUrl(dafelSocialMediaLogoId),
+                getImageDataUrl(laranjaDadosClienteId)
+            ]);
+
+
+            // Função para adicionar imagem (com tratamento de erro básico e fallback)
+            const addImageToPdf = (imageData, x, y, width, height, format = 'PNG', fallbackText = 'IMG ERR') => {
+                if (imageData) {
+                    doc.addImage(imageData, format, x, y, width, height);
+                } else {
+                    console.warn(`IMAGEM NÃO CARREGADA, USANDO TEXTO DE FALLBACK: ${fallbackText}`);
                     doc.setFontSize(8);
                     doc.setTextColor(200, 0, 0);
-                    doc.text("ERRO IMAGEM", x, y + height / 2);
-                    if (callback) callback(); // Chamar callback mesmo em caso de erro
-                };
-                img.src = imgUrl;
+                    doc.text(fallbackText, x, y + height / 2);
+                }
             };
 
             // --- CABEÇALHO SUPERIOR ---
@@ -1103,19 +1126,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Texto "ORÇAMENTO"
             addText("ORÇAMENTO", marginX, 13, { fontSize: 16, textColor: 255, fontStyle: 'bold' });
-            addText("VENDA", marginX + 60, 13, { fontSize: 9, textColor: 255 });
+            
+            // Imagem "Dafé Seriedade Nossa Marca" no meio do cabeçalho
+            addImageToPdf(dafelSeriedadeNossaMarcaData, pageWidth / 2 - 30, 3, 60, 15, 'PNG', 'DAFE SERIEDADE'); // Ajuste de posição e tamanho
+            
+            // Imagem "Grupo Dafé" no canto superior direito
+            addImageToPdf(dafelLogoSuperiorData, pageWidth - marginX - 45, 3, 40, 15, 'PNG', 'GRUPO DAFE'); // Ajuste de posição e tamanho
 
-            // Logos no cabeçalho
-            addImageToPdf(dafelLogoSuperior, pageWidth / 2 - 20, 3, 40, 15); // Logo DAFEL centralizado
-            addImageToPdf(dafelSiteLogo, pageWidth - marginX - 70, 3, 20, 15); // Logo do site
-            addImageToPdf(dafelSocialMediaLogo, pageWidth - marginX - 45, 3, 20, 15); // Logo redes sociais
-            addImageToPdf(qrCodePlaceholder, pageWidth - marginX - 15, 3, 12, 12); // QR Code
-
-            // Informações do site e redes sociais (lado direito)
-            addText("ACESSE NOSSO SITE", pageWidth - marginX - 70, 7, { fontSize: 7, textColor: 255, align: 'right' });
-            addText("WWW.DTEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, textColor: 255, align: 'right' });
-            addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, textColor: 255, align: 'right' });
-            addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, textColor: 255, align: 'right' });
+            // Informações do site e redes sociais (lado direito) - TEXTO BRANCO
+            doc.setTextColor(255, 255, 255); // Cor branca para estes textos
+            addText("ACESSE NOSSO SITE", pageWidth - marginX - 70, 7, { fontSize: 7, align: 'right' });
+            addText("WWW.DTEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, align: 'right' });
+            addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, align: 'right' });
+            addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, align: 'right' });
+            doc.setTextColor(0, 0, 0); // Volta para preto padrão
 
             currentY = 25; // Posição Y inicial após o cabeçalho superior
 
@@ -1124,8 +1148,12 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.setDrawColor(0); // Cor da borda preta
             addRect(marginX, currentY, pageWidth - (2 * marginX), 45, '#FFFFFF', 'FD'); // Fundo branco e borda
 
+            // Imagem laranja na seção "Dados do Cliente"
+            addImageToPdf(laranjaDadosClienteData, marginX + 2, currentY + 2, 20, 20, 'PNG', 'IMG CLIENTE'); // Posição e tamanho da imagem laranja
+
             // Coluna da direita: DADOS DO CLIENTE (Agora ocupa a largura total do bloco)
-            const clientColumnX = marginX; // Começa na margem esquerda
+            const clientColumnXOffset = 25; // Offset para o texto devido à imagem laranja
+            const clientColumnX = marginX + clientColumnXOffset; // Começa na margem esquerda + offset
 
             addText("DADOS DO CLIENTE", clientColumnX + 2, currentY + 5, { fontSize: 8, textColor: 0 });
             addText("CÓDIGO", clientColumnX + 70, currentY + 5, { fontSize: 8, textColor: 0 });
@@ -1169,7 +1197,7 @@ document.addEventListener('DOMContentLoaded', function () {
             addText("S/N", clientColumnX + 70, addressY, { fontSize: 8, textColor: 0 });
             addText("BAIRRO", clientColumnX + 90, addressY, { fontSize: 8, textColor: 0 });
             addText("CIDADE", clientColumnX + 130, addressY, { fontSize: 8, textColor: 0 });
-            addText("ESTADO", clientColumnX + 165, addressY, { fontSize: 8, textColor: 0 }); // POSIÇÃO AJUSTADA
+            addText("ESTADO", clientColumnX + 180, addressY, { fontSize: 8, textColor: 0 }); // POSIÇÃO AJUSTADA AINDA MAIS PARA A DIREITA
 
             if (clienteDetalhes.enderecos && clienteDetalhes.enderecos.length > 0) {
                 const principal = clienteDetalhes.enderecos[0];
@@ -1186,15 +1214,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 let estadoText = String(principal.estado || '');
                 // Ajusta o posicionamento da cidade e estado para evitar embolamento
                 addText(cidadeText, clientColumnX + 130, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
-                addText(estadoText, clientColumnX + 165, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 }); // POSIÇÃO AJUSTADA
+                addText(estadoText, clientColumnX + 180, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 }); // POSIÇÃO AJUSTADA AINDA MAIS PARA A DIREITA
             } else {
                 addText("NENHUM ENDEREÇO PRINCIPAL.", clientColumnX + 2, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
             }
 
-            // Data de Impressão (no canto inferior direito do bloco)
+            // Data de Impressão (no canto inferior direito do bloco) - MAIOR E MAIS GORDINHA
             const today = new Date();
             const formattedDate = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
-            addText(formattedDate, pageWidth - marginX - 2, currentY + 40, { fontSize: 8, textColor: 0, align: 'right' });
+            addText(formattedDate, pageWidth - marginX - 2, currentY + 40, { fontSize: 12, textColor: 0, fontStyle: 'bold', align: 'right' });
 
 
             currentY += 50; // Espaço após o bloco de informações
@@ -1310,13 +1338,15 @@ document.addEventListener('DOMContentLoaded', function () {
             const previsaoEntregaData = new Date();
             previsaoEntregaData.setDate(previsaoEntregaData.getDate() + 7); // Exemplo: 7 dias a partir de hoje
             addText("PREVISÃO DE ENTREGA", rightColX, currentY + 5, { fontSize: 8, textColor: 0 });
-            addText(previsaoEntregaData.toLocaleDateString('pt-BR'), rightColX, currentY + 10, { fontSize: 14, textColor: '#ff8c00', fontStyle: 'bold' }); // Laranja
+            doc.setTextColor(255, 255, 255); // Cor branca para a previsão de entrega
+            addText(previsaoEntregaData.toLocaleDateString('pt-BR'), rightColX, currentY + 10, { fontSize: 14, fontStyle: 'bold' }); // Laranja
+            doc.setTextColor(0, 0, 0); // Volta para preto padrão
 
             currentY += 55; // Espaço após a seção inferior
 
             // --- IMAGEM PRINCIPAL NO MEIO ---
             // Posiciona a imagem principal no centro da página, abaixo das seções principais
-            addImageToPdf(dafelMainLogo, pageWidth / 2 - 50, currentY + 5, 100, 30); // Ajuste as dimensões conforme necessário
+            addImageToPdf(dafelMainLogoData, pageWidth / 2 - 50, currentY + 5, 100, 30, 'JPEG', 'LOGO PRINCIPAL'); // Ajuste as dimensões conforme necessário
 
             currentY += 40; // Espaço após a imagem principal
 

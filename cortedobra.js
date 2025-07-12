@@ -499,20 +499,20 @@ document.addEventListener('DOMContentLoaded', function () {
                         // Crie um span para o texto clicável
                         const spanText = document.createElement('span');
                         spanText.classList.add('orcamento-text-clickable');
-                        spanText.textContent = `Pedido Nº: ${numPedidoDisplay} - Cliente: ${clienteNome} - Obra: ${obraNome} - Data: ${dataDisplay}`;
+                        spanText.textContent = `PEDIDO Nº: ${numPedidoDisplay} - CLIENTE: ${clienteNome} - OBRA: ${obraNome} - DATA: ${dataDisplay}`.toUpperCase();
                         
                         // Crie o botão de excluir
                         const btnExcluir = document.createElement('button');
                         btnExcluir.classList.add('btn', 'btn-danger', 'btn-excluir-orcamento');
                         btnExcluir.dataset.orcamentoId = orcamento.id;
-                        btnExcluir.innerHTML = '<i class="fas fa-trash-alt"></i> Excluir';
+                        btnExcluir.innerHTML = '<i class="fas fa-trash-alt"></i> EXCLUIR';
 
                         // Anexe os event listeners
                         spanText.addEventListener('click', () => carregarOrcamentoNaTela(orcamento.id));
                         btnExcluir.addEventListener('click', (e) => {
                             e.stopPropagation(); // Impede que o clique no botão ative o clique no item pai
                             const idParaExcluir = e.target.dataset.orcamentoId || e.target.closest('button').dataset.orcamentoId; // Pega o ID do botão ou do pai
-                            if (confirm(`Tem certeza que deseja excluir o orçamento Pedido Nº: ${numPedidoDisplay}?`)) {
+                            if (confirm(`TEM CERTEZA QUE DESEJA EXCLUIR O ORÇAMENTO PEDIDO Nº: ${numPedidoDisplay}?`.toUpperCase())) {
                                 excluirOrcamento(idParaExcluir);
                             }
                         });
@@ -527,7 +527,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             } catch (error) {
                 console.error('Erro ao carregar orçamentos:', error);
-                listaOrcamentosDiv.innerHTML = `<p class="loading-message" style="color: red; text-align: center;">Erro ao carregar orçamentos: ${error.message}</p>`;
+                listaOrcamentosDiv.innerHTML = `<p class="loading-message" style="color: red; text-align: center;">ERRO AO CARREGAR ORÇAMENTOS: ${error.message.toUpperCase()}</p>`;
             }
         }
 
@@ -536,9 +536,9 @@ document.addEventListener('DOMContentLoaded', function () {
      * @param {string} orcamentoId - O ID numérico do orçamento a ser carregado.
      */
     async function carregarOrcamentoNaTela(orcamentoId) {
-        console.log(`Carregando orçamento ID: ${orcamentoId}`);
+        console.log(`CARREGANDO ORÇAMENTO ID: ${orcamentoId}`);
         if(visualizarOrcamentoFeedback) {
-            visualizarOrcamentoFeedback.textContent = 'Carregando detalhes do orçamento...';
+            visualizarOrcamentoFeedback.textContent = 'CARREGANDO DETALHES DO ORÇAMENTO...';
             visualizarOrcamentoFeedback.style.color = 'blue';
         }
 
@@ -548,18 +548,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 : '';
             const response = await fetch(`${urlBase}/api/orcamentos/${orcamentoId}`);
             if (!response.ok) {
-                throw new Error('Erro ao carregar detalhes do orçamento.');
+                throw new Error('ERRO AO CARREGAR DETALHES DO ORÇAMENTO.');
             }
             const orcamentoDetalhes = await response.json();
 
             // Preenche os campos do formulário principal com verificações de segurança
-            if (clienteInputPrincipal) clienteInputPrincipal.value = orcamentoDetalhes.clienteInfo?.cliente || '';
-            if (codClienteInputPrincipal) codClienteInputPrincipal.value = orcamentoDetalhes.clienteInfo?.codCliente || '';
-            if (obraInput) obraInput.value = orcamentoDetalhes.obraInfo?.nome || '';
-            if (numPedidoInput) numPedidoInput.value = orcamentoDetalhes.obraInfo?.numPedido || orcamentoDetalhes.id || '';
+            if (clienteInputPrincipal) clienteInputPrincipal.value = (orcamentoDetalhes.clienteInfo?.cliente || '').toUpperCase();
+            if (codClienteInputPrincipal) codClienteInputPrincipal.value = (orcamentoDetalhes.clienteInfo?.codCliente || '').toUpperCase();
+            if (obraInput) obraInput.value = (orcamentoDetalhes.obraInfo?.nome || '').toUpperCase();
+            if (numPedidoInput) numPedidoInput.value = (orcamentoDetalhes.obraInfo?.numPedido || orcamentoDetalhes.id || '').toUpperCase();
             if (orcamentoIdInput) orcamentoIdInput.value = orcamentoDetalhes.id; // Define o ID do orçamento para edição
-            if (recebeCaminhaoSelect) recebeCaminhaoSelect.value = orcamentoDetalhes.obraInfo?.recebeCaminhao || 'Sim';
-            if (dataDesejadaInput) dataDesejadaInput.value = orcamentoDetalhes.obraInfo?.dataDesejada || '';
+            if (recebeCaminhaoSelect) recebeCaminhaoSelect.value = (orcamentoDetalhes.obraInfo?.recebeCaminhao || 'Sim').toUpperCase();
+            if (dataDesejadaInput) dataDesejadaInput.value = (orcamentoDetalhes.obraInfo?.dataDesejada || '').toUpperCase();
             // Exibe o botão de editar cliente
             if (btnEditarCliente) btnEditarCliente.style.display = 'inline-block';
 
@@ -574,13 +574,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 orcamentoDetalhes.itensPedido.forEach(item => {
                     const novaLinhaTabela = document.createElement('tr');
                     novaLinhaTabela.innerHTML = `
-                        <td data-label="Tipo">${item.tipo || ''}</td>
-                        <td data-label="Bitola">${item.bitola || ''} mm</td>
-                        <td data-label="Medidas">${item.medidas?.a || ''}${item.medidas?.b ? '/' + item.medidas.b : ''}${item.medidas?.c ? '/' + item.medidas.c : ''}</td>
-                        <td data-label="Qtd">${item.quantidade || ''}</td>
-                        <td data-label="Comprimento">${item.comprimentoCm || ''} cm</td>
-                        <td data-label="Peso">${item.pesoKg || ''} kg</td>
-                        <td data-label="Ações"><button class="btn btn-danger btn-excluir"><i class="fas fa-trash-alt"></i> Excluir</button></td>
+                        <td data-label="Tipo">${(item.tipo || '').toUpperCase()}</td>
+                        <td data-label="Bitola">${(item.bitola || '').toUpperCase()} MM</td>
+                        <td data-label="Medidas">${(item.medidas?.a || '').toUpperCase()}${(item.medidas?.b ? '/' + item.medidas.b : '').toUpperCase()}${(item.medidas?.c ? '/' + item.medidas.c : '').toUpperCase()}</td>
+                        <td data-label="Qtd">${(item.quantidade || '').toString().toUpperCase()}</td>
+                        <td data-label="Comprimento">${(item.comprimentoCm || '').toUpperCase()} CM</td>
+                        <td data-label="Peso">${(item.pesoKg || '').toUpperCase()} KG</td>
+                        <td data-label="Ações"><button class="btn btn-danger btn-excluir"><i class="fas fa-trash-alt"></i> EXCLUIR</button></td>
                     `;
                     novaLinhaTabela.dataset.bitola = item.bitola || '';
                     novaLinhaTabela.dataset.peso = item.pesoKg || '0';
@@ -619,14 +619,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (modalVisualizarOrcamentos) modalVisualizarOrcamentos.style.display = 'none';
             if(visualizarOrcamentoFeedback) {
-                visualizarOrcamentoFeedback.textContent = 'Orçamento carregado com sucesso!';
+                visualizarOrcamentoFeedback.textContent = 'ORÇAMENTO CARREGADO COM SUCESSO!';
                 visualizarOrcamentoFeedback.style.color = 'green';
                 setTimeout(() => visualizarOrcamentoFeedback.textContent = '', 2000);
             }
         } catch (error) {
-            console.error('Erro ao carregar orçamento na tela:', error);
+            console.error('ERRO AO CARREGAR ORÇAMENTO NA TELA:', error);
             if(visualizarOrcamentoFeedback) {
-                visualizarOrcamentoFeedback.textContent = `Erro ao carregar orçamento: ${error.message}`;
+                visualizarOrcamentoFeedback.textContent = `ERRO AO CARREGAR ORÇAMENTO: ${error.message.toUpperCase()}`;
                 visualizarOrcamentoFeedback.style.color = 'red';
             }
         }
@@ -646,19 +646,19 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ message: 'Erro desconhecido ao excluir orçamento.' }));
-                throw new Error(errorData.message || "Erro ao excluir orçamento.");
+                const errorData = await response.json().catch(() => ({ message: 'ERRO DESCONHECIDO AO EXCLUIR ORÇAMENTO.' }));
+                throw new Error(errorData.message || "ERRO AO EXCLUIR ORÇAMENTO.");
             }
 
-            alert('Orçamento excluído com sucesso!');
+            alert('ORÇAMENTO EXCLUÍDO COM SUCESSO!');
             carregarOrcamentos(); // Recarrega a lista de orçamentos após a exclusão
             iniciarNovoOrcamento(); // Limpa o formulário principal caso o orçamento excluído estivesse carregado
         } catch (error) {
-                console.error('Erro ao excluir orçamento:', error);
+                console.error('ERRO AO EXCLUIR ORÇAMENTO:', error);
                 // Usar uma modal customizada em vez de alert
                 const feedbackDiv = document.getElementById('visualizarOrcamentoFeedback');
                 if (feedbackDiv) {
-                    feedbackDiv.textContent = `Erro ao excluir orçamento: ${error.message}`;
+                    feedbackDiv.textContent = `ERRO AO EXCLUIR ORÇAMENTO: ${error.message.toUpperCase()}`;
                     feedbackDiv.style.color = 'red';
                     setTimeout(() => feedbackDiv.textContent = '', 5000);
                 }
@@ -805,25 +805,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Validação adicional baseada no tipo de peça
             if (tipo === 'varaReta' && (medidaBInput.value !== '' || medidaCInput.value !== '')) {
-                alert('Para "Vara Reta", apenas a medida "a" é necessária. Por favor, limpe os campos "b" e "c".');
+                alert('PARA "VARA RETA", APENAS A MEDIDA "A" É NECESSÁRIA. POR FAVOR, LIMPE OS CAMPOS "B" E "C".');
                 return;
             }
             if ((tipo === 'varaL' || tipo === 'estribo') && medidaCInput.value !== '') {
-                alert(`Para "${tipo === 'varaL' ? 'Vara em L' : 'Estribo'}", apenas as medidas "a" e "b" são necessárias. Por favor, limpe o campo "c".`);
+                alert(`PARA "${tipo === 'varaL' ? 'VARA EM L' : 'ESTRIBO'}", APENAS AS MEDIDAS "A" E "B" SÃO NECESSÁRIAS. POR FAVOR, LIMPE O CAMPO "C".`);
                 return;
             }
             if (tipo === 'varaU' && (isNaN(b) || isNaN(c))) {
-                alert('Para "Vara em U", as medidas "a", "b" e "c" são necessárias.');
+                alert('PARA "VARA EM U", AS MEDIDAS "A", "B" E "C" SÃO NECESSÁRIAS.');
                 return;
             }
             if ((tipo === 'varaL' || tipo === 'estribo') && isNaN(b)) {
-                alert(`Para "${tipo === 'varaL' ? 'Vara em L' : 'Estribo'}", as medidas "a" e "b" são necessárias.`);
+                alert(`PARA "${tipo === 'varaL' ? 'VARA EM L' : 'ESTRIBO'}", AS MEDIDAS "A" E "B" SÃO NECESSÁRIAS.`);
                 return;
             }
 
 
             if (!tipo || !bitola || isNaN(a) || isNaN(quantidade) || quantidade <= 0) {
-                alert('Por favor, preencha Tipo, Bitola, Medida "a" e Quantidade com valores válidos.');
+                alert('POR FAVOR, PREENCHA TIPO, BITOLA, MEDIDA "A" E QUANTIDADE COM VALORES VÁLIDOS.');
                 return;
             }
 
@@ -842,13 +842,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const novaLinhaTabela = document.createElement('tr');
             novaLinhaTabela.innerHTML = `
-                <td data-label="Tipo">${tipo}</td>
-                <td data-label="Bitola">${bitola} mm</td>
-                <td data-label="Medidas">${a}${b ? '/' + b : ''}${c ? '/' + c : ''}</td>
-                <td data-label="Qtd">${quantidade}</td>
-                <td data-label="Comprimento">${comprimentoCm.toFixed(2)} cm</td>
-                <td data-label="Peso">${pesoTotalPecas.toFixed(3)} kg</td>
-                <td data-label="Ações"><button class="btn btn-danger btn-excluir"><i class="fas fa-trash-alt"></i> Excluir</button></td>
+                <td data-label="Tipo">${tipo.toUpperCase()}</td>
+                <td data-label="Bitola">${bitola.toUpperCase()} MM</td>
+                <td data-label="Medidas">${a.toString().toUpperCase()}${b ? '/' + b.toString().toUpperCase() : ''}${c ? '/' + c.toString().toUpperCase() : ''}</td>
+                <td data-label="Qtd">${quantidade.toString().toUpperCase()}</td>
+                <td data-label="Comprimento">${comprimentoCm.toFixed(2).toUpperCase()} CM</td>
+                <td data-label="Peso">${pesoTotalPecas.toFixed(3).toUpperCase()} KG</td>
+                <td data-label="Ações"><button class="btn btn-danger btn-excluir"><i class="fas fa-trash-alt"></i> EXCLUIR</button></td>
             `;
 
             novaLinhaTabela.dataset.bitola = bitola;
@@ -915,15 +915,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const linha = document.createElement("tr");
             linha.innerHTML = `
-                <td data-label="Bitola">${bitola} mm</td>
-                <td data-label="Peso Total (kg)">${peso.toFixed(3)} kg</td>
-                <td data-label="Custo Total (R$)">R$ ${custo.toFixed(2)}</td>
+                <td data-label="Bitola">${bitola.toUpperCase()} MM</td>
+                <td data-label="Peso Total (kg)">${peso.toFixed(3).toUpperCase()} KG</td>
+                <td data-label="Custo Total (R$)">R$ ${custo.toFixed(2).toUpperCase()}</td>
             `;
             resumoBitolasDisplay.appendChild(linha);
         }
 
-        pesoTotalGeralElement.textContent = pesoTotalGeral.toFixed(3) + " kg";
-        custoTotalGeralElement.textContent = "R$ " + custoTotalGeral.toFixed(2);
+        pesoTotalGeralElement.textContent = pesoTotalGeral.toFixed(3).toUpperCase() + " KG";
+        custoTotalGeralElement.textContent = "R$ " + custoTotalGeral.toFixed(2).toUpperCase();
     }
 
     /**
@@ -939,7 +939,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const recebeCaminhao = recebeCaminhaoSelect?.value || '';
         const dataDesejada = dataDesejadaInput?.value || '';
 
-        const pesoTotalGeralDisplay = pesoTotalGeralElement?.textContent || '0.00 kg';
+        const pesoTotalGeralDisplay = pesoTotalGeralElement?.textContent || '0.00 KG';
         const custoTotalGeralDisplay = custoTotalGeralElement?.textContent || 'R$ 0.00';
 
         return {
@@ -966,11 +966,11 @@ document.addEventListener('DOMContentLoaded', function () {
     if (btnSalvarOrcamento) {
         btnSalvarOrcamento.addEventListener("click", async () => {
             if (!clienteInputPrincipal.value || !codClienteInputPrincipal.value) {
-                alert('Por favor, cadastre ou selecione um cliente antes de salvar o orçamento.');
+                alert('POR FAVOR, CADASTRE OU SELECIONE UM CLIENTE ANTES DE SALVAR O ORÇAMENTO.');
                 return;
             }
             if (linhasOrcamento.length === 0) {
-                alert('Por favor, adicione pelo menos uma peça ao orçamento.');
+                alert('POR FAVOR, ADICIONE PELO MENOS UMA PEÇA AO ORÇAMENTO.');
                 return;
             }
 
@@ -996,12 +996,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ message: 'Erro desconhecido ao cadastrar/atualizar orçamento.' }));
-                    throw new Error(errorData.message || "Erro ao cadastrar/atualizar orçamento.");
+                    const errorData = await response.json().catch(() => ({ message: 'ERRO DESCONHECIDO AO CADASTRAR/ATUALIZAR ORÇAMENTO.' }));
+                    throw new Error(errorData.message || "ERRO AO CADASTRAR/ATUALIZAR ORÇAMENTO.");
                 }
 
                 const resultado = await response.json();
-                alert(`Orçamento ${method === 'POST' ? 'salvo' : 'atualizado'} com sucesso! Pedido Nº: ${resultado.numPedido || resultado.id}`);
+                alert(`ORÇAMENTO ${method === 'POST' ? 'SALVO' : 'ATUALIZADO'} COM SUCESSO! PEDIDO Nº: ${resultado.numPedido || resultado.id}`);
 
                 if (numPedidoInput) {
                     numPedidoInput.value = resultado.numPedido || resultado.id;
@@ -1017,8 +1017,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
             } catch (error) {
-                console.error("Erro ao salvar/atualizar orçamento:", error);
-                alert("Erro ao salvar/atualizar orçamento. Detalhes: " + error.message);
+                console.error("ERRO AO SALVAR/ATUALIZAR ORÇAMENTO:", error);
+                alert("ERRO AO SALVAR/ATUALIZAR ORÇAMENTO. DETALHES: " + error.message.toUpperCase());
             }
         });
     }
@@ -1030,17 +1030,17 @@ document.addEventListener('DOMContentLoaded', function () {
         btnGerarPdf.addEventListener("click", async () => {
             const { jsPDF } = window.jspdf;
             if (!jsPDF) {
-                console.error("jsPDF não está carregado.");
-                alert("Erro: A biblioteca para gerar PDF não foi carregada corretamente.");
+                console.error("JSPDF NÃO ESTÁ CARREGADO.");
+                alert("ERRO: A BIBLIOTECA PARA GERAR PDF NÃO FOI CARREGADA CORRETAMENTE.");
                 return;
             }
 
             if (!clienteInputPrincipal.value || !codClienteInputPrincipal.value) {
-                alert('Por favor, cadastre ou selecione um cliente antes de gerar o PDF.');
+                alert('POR FAVOR, CADASTRE OU SELECIONE UM CLIENTE ANTES DE GERAR O PDF.');
                 return;
             }
             if (linhasOrcamento.length === 0) {
-                alert('Por favor, adicione pelo menos uma peça ao orçamento.');
+                alert('POR FAVOR, ADICIONE PELO MENOS UMA PEÇA AO ORÇAMENTO.');
                 return;
             }
 
@@ -1055,23 +1055,23 @@ document.addEventListener('DOMContentLoaded', function () {
             let currentY = 10; // Posição Y atual para desenhar
 
             // --- FUNÇÕES AUXILIARES PARA DESENHO ---
-            const addRect = (x, y, width, height, fillColor) => {
+            const addRect = (x, y, width, height, fillColor, style = 'F') => {
                 doc.setFillColor(fillColor);
-                doc.rect(x, y, width, height, 'F');
+                doc.rect(x, y, width, height, style);
             };
 
             const addText = (text, x, y, options = {}) => {
                 doc.setFont(options.font || 'helvetica');
                 doc.setFontSize(options.fontSize || 10);
                 doc.setTextColor(options.textColor || 0, 0, 0); // Preto padrão
-                doc.text(text, x, y, options.align ? { align: options.align } : {});
+                doc.text(text.toUpperCase(), x, y, options.align ? { align: options.align } : {}); // CONVERTE PARA MAIÚSCULAS
             };
 
-            // --- IMAGENS (AGORA USANDO AS REFERÊNCIAS contentFetchId) ---
-            const dafelLogoSuperior = "uploaded:logo_grupo-dafel_8KDzHg.png-1b243712-8c99-4052-998d-065a76e45a90";
-            const dafelSiteLogo = "uploaded:ve7afy0h8caia2elqjwo.webp-b46de274-c89f-4f23-92cd-8bd782e70eea";
-            const dafelMainLogo = "uploaded:411878334_914510800158541_3475139305395707762_n.jpg-af57b59b-3b46-49e2-bd70-6a39aedbf9ca";
-            const dafelSocialMediaLogo = "uploaded:288802433_329085279378732_7698072396463611572_n.jpg-69f491a9-8af0-48e1-8c6b-02154d64f67f";
+            // --- IMAGENS (AGORA COM AS URLS CORRETAS) ---
+            const dafelLogoSuperior = "http://googleusercontent.com/file_content/10"; // logo_grupo-dafel_8KDzHg.png
+            const dafelSiteLogo = "http://googleusercontent.com/file_content/9"; // ve7afy0h8caia2elqjwo.webp
+            const dafelMainLogo = "http://googleusercontent.com/file_content/7"; // 411878334_914510800158541_3475139305395707762_n.jpg
+            const dafelSocialMediaLogo = "http://googleusercontent.com/file_content/8"; // 288802433_329085279378732_7698072396463611572_n.jpg
             const qrCodePlaceholder = "https://placehold.co/50x50/FFFFFF/000000?text=QR"; // Placeholder para QR Code
 
             // Função para adicionar imagem (com tratamento de erro básico)
@@ -1079,14 +1079,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 const img = new Image();
                 img.crossOrigin = 'Anonymous'; // Necessário para imagens de domínios diferentes
                 img.onload = () => {
-                    doc.addImage(img, 'PNG', x, y, width, height); // Assumindo PNG para todas as imagens
+                    // Determina o formato da imagem com base na URL
+                    let format = 'PNG'; // Padrão
+                    if (imgUrl.toLowerCase().endsWith('.jpg') || imgUrl.toLowerCase().endsWith('.jpeg')) {
+                        format = 'JPEG';
+                    } else if (imgUrl.toLowerCase().endsWith('.webp')) {
+                        // jsPDF não suporta WEBP nativamente, converter para PNG/JPEG ou usar uma alternativa
+                        // Para simplificar, vamos tentar PNG, mas pode falhar para WEBP.
+                        // O ideal seria converter no backend ou usar uma lib que suporte.
+                        // Por enquanto, vamos assumir que as imagens fornecidas são PNG/JPG.
+                        format = 'PNG'; // Fallback, pode não funcionar
+                        console.warn("WEBP images might not be fully supported by jsPDF directly. Consider converting them to PNG/JPEG for better compatibility.");
+                    }
+                    doc.addImage(img, format, x, y, width, height);
                     if (callback) callback();
                 };
                 img.onerror = (e) => {
-                    console.error("Erro ao carregar imagem para PDF:", imgUrl, e);
+                    console.error("ERRO AO CARREGAR IMAGEM PARA PDF:", imgUrl, e);
                     doc.setFontSize(8);
                     doc.setTextColor(200, 0, 0);
-                    doc.text("Erro imagem", x, y + height / 2);
+                    doc.text("ERRO IMAGEM", x, y + height / 2);
                     if (callback) callback(); // Chamar callback mesmo em caso de erro
                 };
                 img.src = imgUrl;
@@ -1107,21 +1119,22 @@ document.addEventListener('DOMContentLoaded', function () {
             addImageToPdf(qrCodePlaceholder, pageWidth - marginX - 15, 3, 12, 12); // QR Code
 
             // Informações do site e redes sociais (lado direito)
-            addText("acesse nosso site", pageWidth - marginX - 70, 7, { fontSize: 7, textColor: 255, align: 'right' });
-            addText("www.dtel.com.br", pageWidth - marginX - 70, 10, { fontSize: 9, textColor: 255, align: 'right' });
-            addText("redes sociais", pageWidth - marginX - 45, 14, { fontSize: 7, textColor: 255, align: 'right' });
-            addText("dafeloficial", pageWidth - marginX - 45, 17, { fontSize: 9, textColor: 255, align: 'right' });
+            addText("ACESSE NOSSO SITE", pageWidth - marginX - 70, 7, { fontSize: 7, textColor: 255, align: 'right' });
+            addText("WWW.DTEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, textColor: 255, align: 'right' });
+            addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, textColor: 255, align: 'right' });
+            addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, textColor: 255, align: 'right' });
 
             currentY = 25; // Posição Y inicial após o cabeçalho superior
 
             // --- BLOCO DE DADOS DO CLIENTE ---
-            // Retângulo principal que engloba as duas colunas
-            addRect(marginX, currentY, pageWidth - (2 * marginX), 45, '#FFFFFF'); // Fundo branco
+            // Retângulo principal que engloba as duas colunas com borda
+            doc.setDrawColor(0); // Cor da borda preta
+            addRect(marginX, currentY, pageWidth - (2 * marginX), 45, '#FFFFFF', 'FD'); // Fundo branco e borda
 
             // Coluna da direita: DADOS DO CLIENTE (Agora ocupa a largura total do bloco)
             const clientColumnX = marginX; // Começa na margem esquerda
 
-            addText("DADOS DO CLIENTE", clientColumnX, currentY + 5, { fontSize: 8, textColor: 0 });
+            addText("DADOS DO CLIENTE", clientColumnX + 2, currentY + 5, { fontSize: 8, textColor: 0 });
             addText("CÓDIGO", clientColumnX + 70, currentY + 5, { fontSize: 8, textColor: 0 });
             addText("CNPJ/CPF", clientColumnX + 110, currentY + 5, { fontSize: 8, textColor: 0 });
             addText("TELEFONE", clientColumnX + 150, currentY + 5, { fontSize: 8, textColor: 0 });
@@ -1136,7 +1149,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     clienteDetalhes = await response.json();
                 }
             } catch (e) {
-                console.error("Erro ao buscar detalhes do cliente para PDF:", e);
+                console.error("ERRO AO BUSCAR DETALHES DO CLIENTE PARA PDF:", e);
             }
 
             // Ajuste de espaçamento para os dados do cliente
@@ -1150,7 +1163,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (doc.getStringUnitWidth(clienteNomeText) * doc.internal.getFontSize() / doc.internal.scaleFactor > 60) { // Max 60mm para o nome
                 clienteNomeText = doc.splitTextToSize(clienteNomeText, 60)[0] + "...";
             }
-            addText(clienteNomeText, clientColumnX, clientDataY, { fontSize: 9, textColor: 0, fontStyle: 'bold' });
+            addText(clienteNomeText, clientColumnX + 2, clientDataY, { fontSize: 9, textColor: 0, fontStyle: 'bold' });
             addText(codClienteText, clientColumnX + 70, clientDataY, { fontSize: 9, textColor: 0 });
 
             addText(clienteDetalhes.documento || 'N/A', clientColumnX + 110, clientDataY, { fontSize: 9, textColor: 0 });
@@ -1159,11 +1172,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Endereço Principal do Cliente (ajuste de posição para evitar embolamento)
             const addressY = clientDataY + clientDataLineHeight * 2; // Pula duas linhas para o endereço
-            addText("ENDEREÇO PRINCIPAL", clientColumnX, addressY, { fontSize: 8, textColor: 0 });
+            addText("ENDEREÇO PRINCIPAL", clientColumnX + 2, addressY, { fontSize: 8, textColor: 0 });
             addText("S/N", clientColumnX + 70, addressY, { fontSize: 8, textColor: 0 });
             addText("BAIRRO", clientColumnX + 90, addressY, { fontSize: 8, textColor: 0 });
             addText("CIDADE", clientColumnX + 130, addressY, { fontSize: 8, textColor: 0 });
-            addText("ESTADO", clientColumnX + 160, addressY, { fontSize: 8, textColor: 0 });
+            addText("ESTADO", clientColumnX + 165, addressY, { fontSize: 8, textColor: 0 }); // POSIÇÃO AJUSTADA
 
             if (clienteDetalhes.enderecos && clienteDetalhes.enderecos.length > 0) {
                 const principal = clienteDetalhes.enderecos[0];
@@ -1172,7 +1185,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (doc.getStringUnitWidth(ruaText) * doc.internal.getFontSize() / doc.internal.scaleFactor > 65) { // Largura máxima para a rua
                     ruaText = doc.splitTextToSize(ruaText, 65)[0] + "..."; // Trunca se for muito longo
                 }
-                addText(ruaText, clientColumnX, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
+                addText(ruaText, clientColumnX + 2, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
                 addText(`${principal.numero || ''}`, clientColumnX + 70, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
                 addText(`${principal.bairro || ''}`, clientColumnX + 90, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
                 // Ajuste de largura para a cidade e estado
@@ -1180,15 +1193,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 let estadoText = principal.estado || '';
                 // Ajusta o posicionamento da cidade e estado para evitar embolamento
                 addText(cidadeText, clientColumnX + 130, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
-                addText(estadoText, clientColumnX + 160, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
+                addText(estadoText, clientColumnX + 165, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 }); // POSIÇÃO AJUSTADA
             } else {
-                addText("Nenhum endereço principal.", clientColumnX, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
+                addText("NENHUM ENDEREÇO PRINCIPAL.", clientColumnX + 2, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
             }
 
             // Data de Impressão (no canto inferior direito do bloco)
             const today = new Date();
             const formattedDate = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
-            addText(formattedDate, pageWidth - marginX - 5, currentY + 40, { fontSize: 8, textColor: 0, align: 'right' });
+            addText(formattedDate, pageWidth - marginX - 2, currentY + 40, { fontSize: 8, textColor: 0, align: 'right' });
 
 
             currentY += 50; // Espaço após o bloco de informações
@@ -1196,6 +1209,9 @@ document.addEventListener('DOMContentLoaded', function () {
             // --- DETALHES DOS PRODUTOS (TABELA) ---
             // Cabeçalho da tabela de produtos
             addRect(marginX, currentY, pageWidth - (2 * marginX), 8, '#ff8c00'); // Fundo laranja
+            doc.setDrawColor(0); // Cor da borda preta
+            doc.rect(marginX, currentY, pageWidth - (2 * marginX), 8, 'S'); // Borda para o cabeçalho
+
             addText("PRODUTO", marginX + 2, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
             addText("UND", marginX + 90, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
             addText("QTD", marginX + 120, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
@@ -1208,6 +1224,14 @@ document.addEventListener('DOMContentLoaded', function () {
             // Linhas dos itens do pedido
             doc.setFontSize(8);
             doc.setTextColor(0, 0, 0); // Texto preto para os itens
+
+            // Posições das linhas verticais da tabela
+            const col1X = marginX + 85; // Após PRODUTO
+            const col2X = marginX + 115; // Após UND
+            const col3X = marginX + 140; // Após QTD
+            const col4X = marginX + 195; // Após PESO (KG)
+            const col5X = marginX + 235; // Após PREÇO/KG
+
             orcamento.itensPedido.forEach((item, index) => {
                 // Fundo zebrado para as linhas
                 if (index % 2 === 0) {
@@ -1215,9 +1239,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     addRect(marginX, currentY, pageWidth - (2 * marginX), 7, '#FFFFFF'); // Branco
                 }
+                doc.setDrawColor(0); // Cor da borda preta
+                doc.rect(marginX, currentY, pageWidth - (2 * marginX), 7, 'S'); // Borda para a linha do item
 
                 const medidasStr = `${item.medidas?.a || ''}${item.medidas?.b ? '/' + item.medidas.b : ''}${item.medidas?.c ? '/' + item.medidas.c : ''}`;
-                const produtoDesc = `${item.tipo} ${item.bitola}mm (${medidasStr} cm)`; // Descrição mais completa
+                const produtoDesc = `${item.tipo} ${item.bitola}MM (${medidasStr} CM)`; // Descrição mais completa
 
                 const precoPorKgItem = (parseFloat(item.pesoKg) > 0) ? (parseFloat(item.custo) / parseFloat(item.pesoKg)) : 0;
 
@@ -1228,12 +1254,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 addText(`R$ ${precoPorKgItem.toFixed(2)}`, marginX + 210, currentY + 4.5, { align: 'right' }); // Preço/KG
                 addText(`R$ ${parseFloat(item.custo).toFixed(2)}`, pageWidth - marginX - 2, currentY + 4.5, { align: 'right' }); // Total da linha
 
+                // Linhas verticais para cada linha de item
+                doc.line(col1X, currentY, col1X, currentY + 7);
+                doc.line(col2X, currentY, col2X, currentY + 7);
+                doc.line(col3X, currentY, col3X, currentY + 7);
+                doc.line(col4X, currentY, col4X, currentY + 7);
+                doc.line(col5X, currentY, col5X, currentY + 7);
+
+
                 currentY += 7; // Altura da linha
                 if (currentY > pageHeight - 50) { // Nova página se estiver perto do final
                     doc.addPage('l', 'mm', 'a4'); // Adiciona nova página em paisagem
                     currentY = 10;
                     // Recria cabeçalho da tabela
                     addRect(marginX, currentY, pageWidth - (2 * marginX), 8, '#ff8c00'); // Fundo laranja
+                    doc.setDrawColor(0);
+                    doc.rect(marginX, currentY, pageWidth - (2 * marginX), 8, 'S'); // Borda para o cabeçalho
+
                     addText("PRODUTO", marginX + 2, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
                     addText("UND", marginX + 90, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
                     addText("QTD", marginX + 120, currentY + 5, { fontSize: 9, textColor: 255, fontStyle: 'bold' });
@@ -1248,13 +1285,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // --- TOTAIS DA TABELA (VALOR TOTAL) ---
             addRect(marginX, currentY, pageWidth - (2 * marginX), 8, '#ff8c00'); // Fundo laranja
+            doc.setDrawColor(0);
+            doc.rect(marginX, currentY, pageWidth - (2 * marginX), 8, 'S'); // Borda para o total
+
             addText(`TOTAL: ${orcamento.resumoGeral.custoTotalGeral}`, pageWidth - marginX - 2, currentY + 5, { fontSize: 12, textColor: 255, fontStyle: 'bold', align: 'right' });
 
             currentY += 13; // Espaço após os totais da tabela
 
             // --- SEÇÃO INFERIOR: ENDEREÇO ENTREGA E PREVISÃO ---
             addRect(marginX, currentY, pageWidth - (2 * marginX), 50, '#F0F0F0'); // Fundo cinza claro
-            doc.setDrawColor(200);
+            doc.setDrawColor(0);
+            doc.rect(marginX, currentY, pageWidth - (2 * marginX), 50, 'S'); // Borda para a seção inferior
+
+            doc.setDrawColor(200); // Cor da linha divisória interna
             doc.line(marginX + (pageWidth - (2 * marginX)) * 0.45, currentY, marginX + (pageWidth - (2 * marginX)) * 0.45, currentY + 50); // Linha vertical no meio
 
             // Coluna esquerda da seção inferior
@@ -1287,11 +1330,11 @@ document.addEventListener('DOMContentLoaded', function () {
             // --- RODAPÉ (Exemplo simples) ---
             doc.setFontSize(7);
             doc.setTextColor(100, 100, 100);
-            doc.text("Documento gerado por CortaFácil - Todos os direitos reservados.", pageWidth / 2, pageHeight - 5, { align: 'center' });
+            doc.text("DOCUMENTO GERADO POR CORTAFÁCIL - TODOS OS DIREITOS RESERVADOS.", pageWidth / 2, pageHeight - 5, { align: 'center' });
 
 
             // Salva o PDF
-            doc.save(`Orcamento_${orcamento.clienteInfo?.cliente?.replace(/[^a-zA-Z0-9]/g, '_') || "cliente"}_${orcamento.obraInfo?.numPedido || 'sem_pedido'}.pdf`);
+            doc.save(`ORCAMENTO_${orcamento.clienteInfo?.cliente?.replace(/[^A-Z0-9]/G, '_') || "CLIENTE"}_${orcamento.obraInfo?.numPedido || 'SEM_PEDIDO'}.PDF`);
         });
     }
 

@@ -281,8 +281,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     const numPedidoDisplay = orcamento.numPedido || orcamento.id || 'N/A';
                     const dataDisplay = orcamento.dataOrcamento || 'Data Desconhecida';
 
+                    // Modificação AQUI: Criar um span para o texto e anexar o evento a ele
                     p.innerHTML = `
-                        Pedido Nº: ${numPedidoDisplay} - Cliente: ${clienteNome} - Obra: ${obraNome} - Data: ${dataDisplay}
+                        <span class="orcamento-text-clickable">
+                            Pedido Nº: ${numPedidoDisplay} - Cliente: ${clienteNome} - Obra: ${obraNome} - Data: ${dataDisplay}
+                        </span>
                         <button class="btn-excluir-orcamento" data-orcamento-id="${orcamento.id}" style="float: right; background-color: #dc3545; color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer; font-size: 0.8em;">Excluir</button>
                     `;
                     p.classList.add('orcamento-item');
@@ -294,11 +297,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     p.addEventListener('mouseover', () => p.style.backgroundColor = '#e9ecef');
                     p.addEventListener('mouseout', () => p.style.backgroundColor = '#fefefe');
 
-                    // Event listener para carregar o orçamento (clicando no texto, não no botão de excluir)
-                    p.querySelector('span')?.addEventListener('click', () => carregarOrcamentoNaTela(orcamento.id));
+                    // Event listener para carregar o orçamento (clicando no span com o texto)
+                    p.querySelector('.orcamento-text-clickable').addEventListener('click', () => carregarOrcamentoNaTela(orcamento.id));
+                    
                     // Event listener para o botão de excluir
                     p.querySelector('.btn-excluir-orcamento').addEventListener('click', (e) => {
-                        e.stopPropagation(); // Impede que o clique no botão ative o clique no parágrafo
+                        e.stopPropagation(); // Impede que o clique no botão ative o clique no parágrafo pai
                         const idParaExcluir = e.target.dataset.orcamentoId;
                         if (confirm(`Tem certeza que deseja excluir o orçamento Pedido Nº: ${numPedidoDisplay}?`)) {
                             excluirOrcamento(idParaExcluir);

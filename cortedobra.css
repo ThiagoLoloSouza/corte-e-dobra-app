@@ -1,384 +1,208 @@
-/* cortedobra.css */
-
-/* General Body Styling for better readability */
+/* Estilos Gerais */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
-    background-color: #f4f7f6;
-    /* Light background for the page */
+    background-color: #f4f7f6; /* Um cinza claro para o fundo */
     color: #333;
+    line-height: 1.6;
 }
 
-/* Header Styling */
 header {
-    text-align: center;
-    margin-bottom: 30px;
-    background-color: #007bff;
-    /* Primary blue for header */
+    background-color: #2c3e50; /* Azul escuro */
     color: white;
-    padding: 20px 0;
+    padding: 20px;
+    text-align: center;
     border-radius: 8px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 header h1 {
-    margin: 0;
-    font-size: 2.5em;
+    margin-bottom: 10px;
+    font-size: 2.5em; /* Tamanho maior para o título */
 }
 
 header p {
-    margin: 5px 0 0;
     font-size: 1.1em;
+    opacity: 0.9;
 }
 
-/* Main content areas */
 main {
-    max-width: 1200px;
-    /* Limit content width */
-    margin: 0 auto;
-    /* Center the content */
+    max-width: 1200px; /* Largura máxima para desktops */
+    margin: 0 auto; /* Centraliza o conteúdo */
     padding: 20px;
     background-color: #ffffff;
-    /* White background for main content */
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    /* Subtle shadow */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Section headings */
+section {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fdfdfd;
+}
+
 h2 {
-    color: #0056b3;
-    /* Darker blue for section headings */
-    border-bottom: 2px solid #e0e0e0;
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db; /* Azul vibrante */
     padding-bottom: 10px;
-    margin-top: 30px;
     margin-bottom: 20px;
+    font-size: 1.8em;
 }
 
-/* Client Info and Add Piece forms */
-.cliente-info form,
-.formulario form {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    /* Responsive columns */
-    gap: 15px;
-    /* Space between form elements */
-    align-items: center;
+h3 {
+    color: #34495e;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-size: 1.4em;
 }
 
-.cliente-info label,
-.formulario label {
+hr {
+    border: 0;
+    height: 1px;
+    background-color: #ccc;
+    margin: 40px 0;
+}
+
+/* Formulários e Inputs */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
     font-weight: bold;
-    margin-bottom: 5px;
-    grid-column: span 1;
-    /* Each label takes one column */
+    color: #555;
 }
 
-.cliente-info input[type="text"],
-.cliente-info input[type="date"],
-.cliente-info select,
-.formulario input[type="number"],
-.formulario select {
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="date"],
+select {
     width: 100%;
-    /* Make inputs fill their grid space */
-    padding: 10px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-    /* Include padding in width */
+    border-radius: 5px;
+    box-sizing: border-box; /* Garante que padding e border não aumentem a largura total */
+    font-size: 1em;
 }
 
-.formulario input[type="number"][placeholder="a"],
-.formulario input[type="number"][placeholder="b"],
-.formulario input[type="number"][placeholder="c"] {
-    width: calc(33.33% - 5px);
-    /* Adjusted for 3 inputs on one line with small gap */
-    display: inline-block;
-    /* Allow them to sit side-by-side */
-    margin-right: 5px;
-
-    /* Small gap between 'a', 'b', 'c' */
-    /* Remove the last margin-right for 'c' to prevent extra space */
-    &:last-of-type {
-        margin-right: 0;
-    }
+input[type="number"]::placeholder {
+    color: #999;
 }
 
-
-.formulario button[type="submit"] {
-    grid-column: span full;
-    /* Button spans full width of its row */
-    padding: 12px 20px;
-    background-color: #28a745;
-    /* Green for add button */
+button {
+    padding: 10px 20px;
+    background-color: #3498db; /* Azul */
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1.1em;
-    transition: background-color 0.3s ease;
-    margin-top: 15px;
-    /* Space above the button */
+    font-size: 1em;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.formulario button[type="submit"]:hover {
-    background-color: #218838;
+button:hover {
+    background-color: #2980b9; /* Azul mais escuro no hover */
+    transform: translateY(-1px);
 }
 
-
-/* Horizontal Rule */
-hr {
-    border: 0;
-    height: 1px;
-    background-color: #ddd;
-    margin: 40px 0;
-    /* More vertical space around the HR */
+button:active {
+    background-color: #2471a3;
+    transform: translateY(1px);
 }
 
-/* Tables Styling */
-.resultado table {
+/* Estilos específicos para botões na seção principal */
+section button[type="submit"] {
+    background-color: #27ae60; /* Verde para adicionar */
+}
+
+section button[type="submit"]:hover {
+    background-color: #229a56;
+}
+
+/* Estilos para tabelas */
+table {
     width: 100%;
     border-collapse: collapse;
-    /* Remove double borders */
     margin-top: 20px;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    /* Subtle shadow for tables */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden; /* Para bordas arredondadas funcionarem com thead/tbody */
 }
 
-.resultado th,
-.resultado td {
-    border: 1px solid #e0e0e0;
+th,
+td {
     padding: 12px 15px;
-    /* More padding inside cells */
     text-align: left;
+    border-bottom: 1px solid #ddd;
 }
 
-.resultado th {
-    background-color: #f2f2f2;
+th {
+    background-color: #34495e; /* Azul acinzentado */
+    color: white;
     font-weight: bold;
-    color: #555;
     text-transform: uppercase;
     font-size: 0.9em;
 }
 
-.resultado tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-    /* Zebra striping for readability */
+tr:nth-child(even) {
+    background-color: #f8f8f8; /* Linhas zebradas */
 }
 
-.resultado tbody tr:hover {
-    background-color: #e9ecef;
-    /* Highlight row on hover */
+tr:hover {
+    background-color: #f1f1f1;
 }
 
-/* Action button in table */
+/* Botão de Excluir dentro da tabela */
 .btn-excluir {
-    background-color: #dc3545;
-    /* Red for delete button */
-    color: white;
-    border: none;
-    padding: 8px 12px;
+    background-color: #e74c3c; /* Vermelho */
+    padding: 6px 12px;
+    font-size: 0.85em;
     border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease;
 }
 
 .btn-excluir:hover {
-    background-color: #c82333;
+    background-color: #c0392b;
 }
 
-/* Specific styling for the summary sections */
-#resumo-bitolas {
-    margin-top: 40px;
-    /* Increased space between main table and summary */
-    padding-top: 20px;
-    border-top: 1px solid #e0e0e0;
-    /* A subtle line to separate visually */
-}
-
-#resumo-bitolas h3 {
-    color: #0056b3;
-    margin-bottom: 15px;
-    /* Space below summary heading */
-}
-
-#resumo-bitolas table {
-    width: auto;
-    /* Allow summary table to be narrower */
-    margin-left: 0;
-    margin-bottom: 20px;
-    /* Space below summary table */
-}
-
-#resumo-bitolas p {
-    font-size: 1.2em;
-    /* Slightly larger font for totals */
-    font-weight: bold;
-    margin-bottom: 8px;
-    /* Slightly less space between total lines for tighter grouping */
-    display: flex;
-    /* Use flexbox for alignment */
-    justify-content: space-between;
-    /* Push text and value to opposite ends */
-    padding-right: 15px;
-    /* Adjust padding if needed to align with table */
-    max-width: 450px;
-    /* Limit width to align with summary table more naturally */
-}
-
-/* Specific styling for the total values (the numbers themselves) */
-#resumo-bitolas p span {
-    color: #007bff;
-    /* Highlight total values with blue */
-    font-weight: bold;
-    /* Make the numbers bold as well */
-    margin-left: 10px;
-    /* Space between the label and the value */
-    text-align: right;
-    /* Ensure the number is right-aligned */
-    flex-grow: 1;
-    /* Allow the span to grow and push the value to the right */
-}
-
-#custo-total-geral p span {
-    color: #007bff;
-    /* Highlight total values with blue */
-    font-weight: bold;
-    /* Make the numbers bold as well */
-    margin-left: 10px;
-    /* Space between the label and the value */
-    text-align: right;
-    /* Ensure the number is right-aligned */
-    flex-grow: 1;
-    /* Allow the span to grow and push the value to the right */
-}
-
-#peso-total-geral p span {
-    color: #007bff;
-    /* Highlight total values with blue */
-    font-weight: bold;
-    /* Make the numbers bold as well */
-    margin-left: 10px;
-    /* Space between the label and the value */
-    text-align: right;
-    /* Ensure the number is right-aligned */
-    flex-grow: 1;
-    /* Allow the span to grow and push the value to the right */
-}
-
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-
-    .cliente-info form,
-    .formulario form {
-        grid-template-columns: 1fr;
-        /* Single column layout on smaller screens */
-    }
-
-    .formulario input[type="number"][placeholder="a"],
-    .formulario input[type="number"][placeholder="b"],
-    .formulario input[type="number"][placeholder="c"] {
-        width: 100%;
-        /* Full width on small screens */
-        margin-right: 0;
-        margin-bottom: 10px;
-        /* Add some vertical space between them */
-    }
-}
-
-
-
-/* Estilos para o botão "Cadastrar Novo Cliente" */
-#btnAbrirModalCadastroCliente {
-    background-color: #007bff; /* Azul padrão, comum para botões de ação */
-    color: white; /* Texto branco */
-    padding: 10px 15px; /* Preenchimento interno */
-    border: none; /* Sem borda */
-    border-radius: 5px; /* Bordas levemente arredondadas */
-    cursor: pointer; /* Muda o cursor para indicar clicável */
-    font-size: 20px;/*Tamanho da fonte */
-    transition: background-color 0.3s ease; /* Transição suave na cor de fundo ao passar o mouse */
-    margin: left 3px;
-justify-content: center;
-    /* Centraliza horizontalmente */
-    align-items: center;
-    /* Centraliza verticalmente *
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave para profundidade */
-}
-
-#btnAbrirModalCadastroCliente:hover {
-    background-color: #29f50e; /* Azul mais escuro ao passar o mouse */
-}
-
-#btnAbrirModalCadastroCliente:active {
-    background-color: #41f71d; /* Azul ainda mais escuro ao clicar */
-    transform: translateY(1px); /* Pequeno efeito de "pressionar" */
-}
-
-/* Se você quiser que o botão ocupe a largura total, use: */
-#btnAbrirModalCadastroCliente {
-    width: 100%;
-    box-sizing: border-box;
-    margin-top: 10px;
-}
-
-
-/* CSS para a Modal */
+/* Estilos para as modais */
 .modal {
-    display: none;
-    /* Escondido por padrão */
-    position: fixed;
-    /* Fica por cima de todo o conteúdo */
-    z-index: 1000;
-    /* Alto z-index para garantir que esteja na frente */
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
     left: 0;
     top: 0;
-    width: 100%;
-    /* Largura total */
-    height: 100%;
-    /* Altura total */
-    overflow: auto;
-    /* Habilita rolagem se o conteúdo for muito grande */
-    background-color: rgba(0, 0, 0, 0.4);
-    /* Fundo semi-transparente */
-    justify-content: center;
-    /* Centraliza horizontalmente */
-    align-items: center;
-    /* Centraliza verticalmente */
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.6); /* Black w/ opacity */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    padding: 20px; /* Espaçamento interno para evitar que o conteúdo encoste nas bordas */
+    box-sizing: border-box;
 }
 
 .modal-content {
     background-color: #fefefe;
-    margin: 15% auto;
-    /* 15% do topo e centralizado */
-    padding: 20px;
+    margin: auto;
+    padding: 30px;
     border: 1px solid #888;
-    width: 80%;
-    /* Largura do conteúdo da modal */
-    max-width: 500px;
-    /* Largura máxima para não ficar muito grande em telas grandes */
-    border-radius: 8px;
+    border-radius: 10px;
+    width: 90%; /* Largura padrão para mobile */
+    max-width: 600px; /* Largura máxima para desktop */
     position: relative;
-    /* Para posicionar o botão de fechar */
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    animation-name: animatetop;
-    animation-duration: 0.4s;
-}
-
-/* Animação para a modal aparecer */
-@keyframes animatetop {
-    from {
-        top: -300px;
-        opacity: 0
-    }
-
-    to {
-        top: 0;
-        opacity: 1
-    }
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+    overflow-y: auto; /* Permite rolagem se o conteúdo for muito grande */
+    max-height: 90vh; /* Limita a altura da modal à altura da viewport */
 }
 
 .close-button {
@@ -399,55 +223,41 @@ justify-content: center;
     cursor: pointer;
 }
 
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    display: block; /* Mantém labels de input block para quebrar linha */
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.form-group input[type="radio"] + label { /* Seleciona o label que vem imediatamente após um input radio */
-    display: inline-block; /* Faz o label se comportar como um elemento em linha */
-    margin-right: 15px; /* Espaçamento entre os labels dos rádios */
-    font-weight: normal; /* Opcional: para que o label do radio não seja negrito se a regra .form-group label for muito genérica */
-}
-
-/* Opcional: Ajusta o tamanho da bolinha se necessário */
-.form-group input[type="radio"] {
-    margin-right: 5px; /* Espaço entre a bolinha e o texto */
-}
-
-.form-group input[type="text"],
-.form-group input[type="email"] {
-    width: calc(100% - 20px);
-    /* 100% menos o padding */
-    padding: 10px;
+/* Estilos para a lista de resultados de busca de cliente e orçamentos */
+.lista-resultados {
     border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-    /* Inclui padding na largura total */
+    border-radius: 5px;
+    margin-bottom: 15px;
+    background-color: #fff;
 }
 
-.modal-content button[type="submit"] {
-    background-color: #4CAF50;
-    /* Verde */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
+.resultado-cliente-item,
+.orcamento-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
     cursor: pointer;
-    font-size: 16px;
+    transition: background-color 0.2s ease;
+    font-size: 0.95em; /* Ajuste de fonte para lista */
 }
 
-.modal-content button[type="submit"]:hover {
-    background-color: #45a049;
+.resultado-cliente-item:last-child,
+.orcamento-item:last-child {
+    border-bottom: none;
 }
 
+.resultado-cliente-item:hover,
+.orcamento-item:hover {
+    background-color: #f0f0f0;
+}
+
+/* Estilos para o botão Novo Orçamento */
+#btnNovoOrcamento {
+    background-color: #ffc107; /* Amarelo */
+    color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
 #btnNovoOrcamento:hover {
-    background-color: #e0a800; /* Cor mais escura ao passar o mouse */
+    background-color: #e0a800; /* Amarelo mais escuro */
     transform: translateY(-1px);
 }
 #btnNovoOrcamento:active {
@@ -455,3 +265,230 @@ justify-content: center;
     transform: translateY(1px);
 }
 
+/* Estilos para os outros botões principais */
+#btnSalvarOrcamento { background-color: #007bff; }
+#btnSalvarOrcamento:hover { background-color: #0056b3; }
+
+#btnGerarPdf { background-color: #28a745; }
+#btnGerarPdf:hover { background-color: #218838; }
+
+#btnAbrirModalVisualizarOrcamentos { background-color: #6c757d; }
+#btnAbrirModalVisualizarOrcamentos:hover { background-color: #5a6268; }
+
+/* Estilo para o botão de exclusão de orçamento na modal */
+.btn-excluir-orcamento {
+    background-color: #dc3545; /* Vermelho */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 0.8em;
+    margin-left: 10px; /* Espaçamento do texto */
+    transition: background-color 0.3s ease;
+}
+
+.btn-excluir-orcamento:hover {
+    background-color: #c82333;
+}
+
+/* Layout do formulário de peça para ser responsivo */
+#form-peca {
+    display: grid;
+    grid-template-columns: 1fr; /* Uma coluna por padrão */
+    gap: 15px; /* Espaçamento entre os itens */
+}
+
+/* Para telas maiores, usar 2 colunas */
+@media (min-width: 600px) {
+    #form-peca {
+        grid-template-columns: repeat(2, 1fr); /* Duas colunas */
+    }
+    #form-peca label:nth-of-type(1), /* Tipo de Peça */
+    #form-peca label:nth-of-type(2), /* Bitola */
+    #form-peca label:nth-of-type(3), /* Medidas */
+    #form-peca label:nth-of-type(4) { /* Quantidade */
+        grid-column: span 1; /* Cada label ocupa 1 coluna */
+    }
+    #form-peca button[type="submit"] {
+        grid-column: span 2; /* Botão ocupa as duas colunas */
+    }
+}
+
+/* Para telas ainda maiores, usar 3 colunas para medidas */
+@media (min-width: 900px) {
+    #form-peca {
+        grid-template-columns: repeat(4, 1fr); /* Quatro colunas */
+    }
+    #form-peca label:nth-of-type(1) { grid-column: span 1; } /* Tipo de Peça */
+    #form-peca select#tipo { grid-column: span 1; }
+
+    #form-peca label:nth-of-type(2) { grid-column: span 1; } /* Bitola */
+    #form-peca select#bitola { grid-column: span 1; }
+
+    #form-peca label:nth-of-type(3) { grid-column: span 3; } /* Medidas (a, b, c) */
+    #form-peca input#a { grid-column: span 1; }
+    #form-peca input#b { grid-column: span 1; }
+    #form-peca input#c { grid-column: span 1; }
+
+    #form-peca label:nth-of-type(4) { grid-column: span 1; } /* Quantidade */
+    #form-peca input#quantidade { grid-column: span 1; }
+
+    #form-peca button[type="submit"] {
+        grid-column: span 4; /* Botão ocupa todas as 4 colunas */
+    }
+}
+
+
+/* Ajustes para a seção de dados do cliente */
+.cliente-info form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+@media (min-width: 768px) {
+    .cliente-info form {
+        grid-template-columns: repeat(2, 1fr); /* Duas colunas */
+    }
+    .cliente-info label {
+        grid-column: span 1;
+    }
+    .cliente-info input, .cliente-info select {
+        grid-column: span 1;
+    }
+}
+
+/* Ajustes para a tabela de resultados em telas pequenas */
+@media (max-width: 767px) {
+    #tabela-resultados, #resumo-bitolas table {
+        display: block;
+        overflow-x: auto; /* Adiciona rolagem horizontal para tabelas */
+        white-space: nowrap; /* Impede que o conteúdo da célula quebre linha */
+        -webkit-overflow-scrolling: touch; /* Rolagem suave em iOS */
+    }
+
+    #tabela-resultados thead, #resumo-bitolas table thead {
+        display: none; /* Esconde o cabeçalho da tabela em telas pequenas */
+    }
+
+    #tabela-resultados tr, #resumo-bitolas table tr {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    #tabela-resultados td, #resumo-bitolas table td {
+        border-bottom: 1px solid #eee;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: auto; /* Remove largura fixa */
+    }
+
+    #tabela-resultados td:last-child, #resumo-bitolas table td:last-child {
+        border-bottom: none;
+    }
+
+    #tabela-resultados td::before, #resumo-bitolas table td::before {
+        content: attr(data-label); /* Exibe o nome da coluna como label */
+        font-weight: bold;
+        margin-right: 10px;
+        color: #555;
+    }
+
+    /* Adicionar data-label ao HTML para cada <td> */
+    /* Ex: <td data-label="Tipo">${item.tipo}</td> */
+}
+
+/* Ajustes para os botões principais em telas pequenas */
+section:last-of-type {
+    display: flex;
+    flex-wrap: wrap; /* Permite que os botões quebrem linha */
+    justify-content: center; /* Centraliza os botões */
+    gap: 10px; /* Espaçamento entre os botões */
+    padding: 15px;
+    border: none; /* Remove a borda da seção de botões */
+    background-color: transparent; /* Remove o fundo */
+    box-shadow: none; /* Remove a sombra */
+}
+
+section:last-of-type button {
+    flex: 1 1 auto; /* Permite que os botões cresçam e encolham, mas com base no conteúdo */
+    min-width: 150px; /* Largura mínima para botões */
+    margin: 5px; /* Ajusta margem para o gap */
+    font-size: 0.95em; /* Ajusta tamanho da fonte */
+    padding: 10px 15px;
+}
+
+/* Estilos para a modal de cadastro de cliente em telas pequenas */
+#formCadastroCliente {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+@media (min-width: 480px) {
+    #formCadastroCliente {
+        grid-template-columns: repeat(2, 1fr); /* Duas colunas em telas maiores */
+    }
+    #formCadastroCliente .form-group:nth-child(1), /* Nome/Razão Social */
+    #formCadastroCliente .form-group:nth-child(2), /* Tipo de Pessoa */
+    #formCadastroCliente .form-group:nth-child(3), /* CNPJ */
+    #formCadastroCliente .form-group:nth-child(4), /* CPF */
+    #formCadastroCliente button[type="submit"] {
+        grid-column: span 2; /* Ocupam a largura total em 2 colunas */
+    }
+}
+
+/* Ajuste para o campo de busca de cliente */
+.cliente-info .form-group:first-child {
+    display: flex;
+    flex-wrap: wrap; /* Permite que input e botão quebrem linha */
+    gap: 10px;
+    align-items: flex-end;
+}
+.cliente-info .form-group:first-child input {
+    flex: 1 1 200px; /* Input pode crescer, mas com base mínima */
+    margin-bottom: 0; /* Remove margem inferior padrão */
+}
+.cliente-info .form-group:first-child button {
+    flex-shrink: 0; /* Botão não encolhe */
+    margin-bottom: 0; /* Remove margem inferior padrão */
+}
+
+/* Ajuste para o filtro da modal de orçamentos */
+.modal-content .form-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-end;
+}
+.modal-content .form-group input {
+    flex: 1 1 150px;
+    margin-bottom: 0;
+}
+.modal-content .form-group button {
+    flex-shrink: 0;
+    margin-bottom: 0;
+}
+
+/* Ajuste para o texto clicável na lista de orçamentos */
+.orcamento-item .orcamento-text-clickable {
+    display: block; /* Garante que o span ocupe toda a largura disponível */
+    margin-right: 60px; /* Espaço para o botão de excluir */
+    white-space: normal; /* Permite que o texto quebre linha */
+    word-wrap: break-word; /* Garante que palavras longas quebrem */
+}
+
+/* Ajuste para o botão de exclusão flutuante na lista de orçamentos */
+.orcamento-item .btn-excluir-orcamento {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 0; /* Remove margem extra */
+}

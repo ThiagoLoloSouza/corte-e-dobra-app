@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const medidaAInput = document.getElementById('a');
     const medidaBInput = document.getElementById('b');
     const medidaCInput = document.getElementById('c');
+    const bitolaSelect = document.getElementById('bitola'); // Referência para o select da bitola
 
     if (clienteInputPrincipal) clienteInputPrincipal.readOnly = true;
     if (codClienteInputPrincipal) codClienteInputPrincipal.readOnly = true;
@@ -281,12 +282,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     const numPedidoDisplay = orcamento.numPedido || orcamento.id || 'N/A';
                     const dataDisplay = orcamento.dataOrcamento || 'Data Desconhecida';
 
-                    // Modificação AQUI: Criar um span para o texto e anexar o evento a ele
                     p.innerHTML = `
                         <span class="orcamento-text-clickable">
                             Pedido Nº: ${numPedidoDisplay} - Cliente: ${clienteNome} - Obra: ${obraNome} - Data: ${dataDisplay}
                         </span>
-                        <button class="btn-excluir-orcamento" data-orcamento-id="${orcamento.id}" style="float: right; background-color: #dc3545; color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer; font-size: 0.8em;">Excluir</button>
+                        <button class="btn-excluir-orcamento" data-orcamento-id="${orcamento.id}">Excluir</button>
                     `;
                     p.classList.add('orcamento-item');
                     p.dataset.orcamentoId = orcamento.id;
@@ -357,13 +357,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 orcamentoDetalhes.itensPedido.forEach(item => {
                     const novaLinhaTabela = document.createElement('tr');
                     novaLinhaTabela.innerHTML = `
-                        <td>${item.tipo || ''}</td>
-                        <td>${item.bitola || ''} mm</td>
-                        <td>${item.medidas?.a || ''}${item.medidas?.b ? '/' + item.medidas.b : ''}${item.medidas?.c ? '/' + item.medidas.c : ''}</td>
-                        <td>${item.quantidade || ''}</td>
-                        <td>${item.comprimentoCm || ''} cm</td>
-                        <td>${item.pesoKg || ''} kg</td>
-                        <td><button class="btn-excluir">Excluir</button></td>
+                        <td data-label="Tipo">${item.tipo || ''}</td>
+                        <td data-label="Bitola">${item.bitola || ''} mm</td>
+                        <td data-label="Medidas">${item.medidas?.a || ''}${item.medidas?.b ? '/' + item.medidas.b : ''}${item.medidas?.c ? '/' + item.medidas.c : ''}</td>
+                        <td data-label="Qtd">${item.quantidade || ''}</td>
+                        <td data-label="Comprimento">${item.comprimentoCm || ''} cm</td>
+                        <td data-label="Peso">${item.pesoKg || ''} kg</td>
+                        <td data-label="Ações"><button class="btn-excluir">Excluir</button></td>
                     `;
                     novaLinhaTabela.dataset.bitola = item.bitola || '';
                     novaLinhaTabela.dataset.peso = item.pesoKg || '0';
@@ -574,7 +574,7 @@ document.addEventListener('DOMContentLoaded', function () {
             event.preventDefault();
 
             const tipo = tipoPecaSelect.value;
-            const bitola = document.getElementById('bitola')?.value;
+            const bitola = bitolaSelect.value; // Usar a referência direta
             const a = parseFloat(medidaAInput.value) || 0;
             const b = parseFloat(medidaBInput.value) || 0;
             const c = parseFloat(medidaCInput.value) || 0;
@@ -613,19 +613,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const comprimentoM = comprimentoCm / 100;
             const pesoPorMetro = pesosPorMetro[bitola];
-            const pesoTotalPecas = comprimentoM * pesoPorMetro * quantidade;
+            const pesoTotalPecas = pesoPorMetro * comprimentoM * quantidade; // Corrigido a ordem da multiplicação
             const precoPorKgDaBitola = precosPorKg[bitola] || 0;
             const custoTotalPecas = pesoTotalPecas * precoPorKgDaBitola;
 
             const novaLinhaTabela = document.createElement('tr');
             novaLinhaTabela.innerHTML = `
-                <td>${tipo}</td>
-                <td>${bitola} mm</td>
-                <td>${a}${b ? '/' + b : ''}${c ? '/' + c : ''}</td>
-                <td>${quantidade}</td>
-                <td>${comprimentoCm.toFixed(2)} cm</td>
-                <td>${pesoTotalPecas.toFixed(3)} kg</td>
-                <td><button class="btn-excluir">Excluir</button></td>
+                <td data-label="Tipo">${tipo}</td>
+                <td data-label="Bitola">${bitola} mm</td>
+                <td data-label="Medidas">${a}${b ? '/' + b : ''}${c ? '/' + c : ''}</td>
+                <td data-label="Qtd">${quantidade}</td>
+                <td data-label="Comprimento">${comprimentoCm.toFixed(2)} cm</td>
+                <td data-label="Peso">${pesoTotalPecas.toFixed(3)} kg</td>
+                <td data-label="Ações"><button class="btn-excluir">Excluir</button></td>
             `;
 
             novaLinhaTabela.dataset.bitola = bitola;
@@ -692,9 +692,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const linha = document.createElement("tr");
             linha.innerHTML = `
-                <td>${bitola} mm</td>
-                <td>${peso.toFixed(3)} kg</td>
-                <td>R$ ${custo.toFixed(2)}</td>
+                <td data-label="Bitola">${bitola} mm</td>
+                <td data-label="Peso Total (kg)">${peso.toFixed(3)} kg</td>
+                <td data-label="Custo Total (R$)">R$ ${custo.toFixed(2)}</td>
             `;
             resumoBitolasDisplay.appendChild(linha);
         }
@@ -883,7 +883,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             for (const bitola in orcamento.resumoBitolas) {
                 const resumo = orcamento.resumoBitolas[bitola];
-                doc.text(`Bitola ${bitola}mm: Peso ${resumo.peso?.toFixed(3) || '0.000'} kg - Custo R$ ${resumo.custo?.toFixed(2) || '0.00'}`, 10, y);
+                doc.text(`Bitola ${bitola}mm: Peso ${resumo.toFixed(3) || '0.000'} kg - Custo R$ ${orcamento.resumoCustos[bitola]?.toFixed(2) || '0.00'}`, 10, y); // Corrigido para usar resumoCustos[bitola]
                 y += lineHeight;
                 if (y > 280) { doc.addPage(); y = 10; }
             }

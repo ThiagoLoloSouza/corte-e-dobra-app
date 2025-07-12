@@ -1067,13 +1067,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 doc.text(text, x, y, options.align ? { align: options.align } : {});
             };
 
-            // --- IMAGENS ---
-            // URLs de exemplo. Você precisará substituir estas pelas URLs das suas imagens hospedadas.
-            const dafelLogoSuperior = "https://lh3.googleusercontent.com/file_content/10"; // logo_grupo-dafel_8KDzHg.png
-            const dafelSiteLogo = "https://lh3.googleusercontent.com/file_content/9"; // ve7afy0h8caia2elqjwo.webp
-            const dafelMainLogo = "https://lh3.googleusercontent.com/file_content/7"; // 411878334_914510800158541_3475139305395707762_n.jpg
-            const dafelSocialMediaLogo = "https://lh3.googleusercontent.com/file_content/8"; // 288802433_329085279378732_7698072396463611572_n.jpg
-            const dafelWebsiteLogo = "https://lh3.googleusercontent.com/file_content/6"; // client-4.png
+            // --- IMAGENS (AGORA USANDO AS REFERÊNCIAS contentFetchId) ---
+            const dafelLogoSuperior = "uploaded:logo_grupo-dafel_8KDzHg.png-1b243712-8c99-4052-998d-065a76e45a90";
+            const dafelSiteLogo = "uploaded:ve7afy0h8caia2elqjwo.webp-b46de274-c89f-4f23-92cd-8bd782e70eea";
+            const dafelMainLogo = "uploaded:411878334_914510800158541_3475139305395707762_n.jpg-af57b59b-3b46-49e2-bd70-6a39aedbf9ca";
+            const dafelSocialMediaLogo = "uploaded:288802433_329085279378732_7698072396463611572_n.jpg-69f491a9-8af0-48e1-8c6b-02154d64f67f";
             const qrCodePlaceholder = "https://placehold.co/50x50/FFFFFF/000000?text=QR"; // Placeholder para QR Code
 
             // Função para adicionar imagem (com tratamento de erro básico)
@@ -1081,12 +1079,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 const img = new Image();
                 img.crossOrigin = 'Anonymous'; // Necessário para imagens de domínios diferentes
                 img.onload = () => {
-                    doc.addImage(img, 'PNG', x, y, width, height);
+                    doc.addImage(img, 'PNG', x, y, width, height); // Assumindo PNG para todas as imagens
                     if (callback) callback();
                 };
                 img.onerror = (e) => {
                     console.error("Erro ao carregar imagem para PDF:", imgUrl, e);
-                    // Opcional: Adicionar um texto de placeholder se a imagem falhar
                     doc.setFontSize(8);
                     doc.setTextColor(200, 0, 0);
                     doc.text("Erro imagem", x, y + height / 2);

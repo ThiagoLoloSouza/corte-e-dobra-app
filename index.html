@@ -78,6 +78,8 @@
 
                 <!-- Botão para abrir a modal de cadastro de cliente -->
                 <button id="btnAbrirModalCadastroCliente" type="button" class="btn btn-primary btn-cliente-action"><i class="fas fa-user-plus"></i> Cadastrar Novo Cliente</button>
+                <!-- NOVO BOTÃO: Editar Cliente -->
+                <button id="btnEditarCliente" type="button" class="btn btn-info btn-cliente-action" style="display: none;"><i class="fas fa-user-edit"></i> Editar Cliente</button>
             </div>
         </section>
 
@@ -195,15 +197,16 @@
         <button type="button" id="btnAbrirModalVisualizarOrcamentos" class="btn btn-action btn-view"><i class="fas fa-eye"></i> Visualizar Orçamentos</button>
     </section>
 
-    <!-- Estrutura da Modal de Cadastro de Cliente -->
+    <!-- Estrutura da Modal de Cadastro/Edição de Cliente -->
     <div id="modalCadastroCliente" class="modal">
         <div class="modal-content">
             <span class="close-button" id="closeModalCadastroCliente">&times;</span>
             <div class="modal-header">
-                <h2>Cadastrar Novo Cliente</h2>
+                <h2 id="modalClienteTitle">Cadastrar Novo Cliente</h2>
             </div>
             <div class="modal-body">
                 <form id="formCadastroCliente">
+                    <input type="hidden" id="clienteIdParaEdicao" name="clienteIdParaEdicao" value="">
                     <div class="form-group">
                         <label for="nomeCliente">Nome/Razão Social:</label>
                         <input type="text" id="nomeCliente" name="nomeCliente" required>
@@ -236,38 +239,6 @@
                         <input type="text" id="cpfCliente" name="cpfCliente">
                     </div>
 
-                    <!-- Campos de Endereço Detalhados -->
-                    <h3>Endereço Principal</h3>
-                    <div class="form-group">
-                        <label for="ruaCliente">Rua:</label>
-                        <input type="text" id="ruaCliente" name="ruaCliente" required>
-                    </div>
-                    <div class="form-row-grid">
-                        <div class="form-group-grid">
-                            <label for="numeroCliente">Número:</label>
-                            <input type="text" id="numeroCliente" name="numeroCliente">
-                        </div>
-                        <div class="form-group-grid">
-                            <label for="bairroCliente">Bairro:</label>
-                            <input type="text" id="bairroCliente" name="bairroCliente">
-                        </div>
-                    </div>
-                    <div class="form-row-grid">
-                        <div class="form-group-grid">
-                            <label for="cidadeCliente">Cidade:</label>
-                            <input type="text" id="cidadeCliente" name="cidadeCliente" required>
-                        </div>
-                        <div class="form-group-grid">
-                            <label for="estadoCliente">Estado (UF):</label>
-                            <input type="text" id="estadoCliente" name="estadoCliente" maxlength="2" required>
-                        </div>
-                        <div class="form-group-grid">
-                            <label for="cepCliente">CEP:</label>
-                            <input type="text" id="cepCliente" name="cepCliente">
-                        </div>
-                    </div>
-                    <!-- Fim dos Campos de Endereço Detalhados -->
-
                     <div class="form-group">
                         <label for="telefoneCliente">Telefone:</label>
                         <input type="text" id="telefoneCliente" name="telefoneCliente" required>
@@ -276,6 +247,13 @@
                         <label for="emailCliente">E-mail (opcional):</label>
                         <input type="email" id="emailCliente" name="emailCliente">
                     </div>
+
+                    <h3>Endereços</h3>
+                    <div id="enderecosContainer">
+                        <!-- Endereços serão adicionados dinamicamente aqui -->
+                    </div>
+                    <button type="button" id="btnAddEndereco" class="btn btn-secondary"><i class="fas fa-plus"></i> Adicionar Endereço</button>
+                    
                     <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i> Salvar Cliente</button>
                 </form>
                 <div id="cadastroClienteFeedback" class="feedback-message"></div>

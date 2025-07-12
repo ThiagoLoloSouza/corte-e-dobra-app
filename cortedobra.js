@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Referência para o botão "Cadastrar Novo Cliente"
     const btnAbrirModalCadastroCliente = document.getElementById('btnAbrirModalCadastroCliente');
+    // NOVO: Referência para o botão "Editar Cliente"
+    const btnEditarCliente = document.getElementById('btnEditarCliente');
 
 
     if (clienteInputPrincipal) clienteInputPrincipal.readOnly = true;
@@ -37,11 +39,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const resumoCustosCalculo = {};
     const linhasOrcamento = []; // Armazena os dados das peças adicionadas
 
-    // --- REFERÊNCIAS E LÓGICA DA MODAL DE CADASTRO DE CLIENTE ---
+    // --- REFERÊNCIAS E LÓGICA DA MODAL DE CADASTRO/EDIÇÃO DE CLIENTE ---
     const modalCadastroCliente = document.getElementById('modalCadastroCliente');
     const closeModalCadastroCliente = document.getElementById('closeModalCadastroCliente');
     const formCadastroCliente = document.getElementById('formCadastroCliente');
     const cadastroClienteFeedback = document.getElementById('cadastroClienteFeedback');
+    const modalClienteTitle = document.getElementById('modalClienteTitle'); // Título da modal
 
     const radioJuridica = document.getElementById('radioJuridica');
     const radioFisica = document.getElementById('radioFisica');
@@ -50,16 +53,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const cnpjClienteInput = document.getElementById('cnpjCliente');
     const cpfClienteInput = document.getElementById('cpfCliente');
 
-    // Novos campos de endereço detalhados
-    const ruaClienteInput = document.getElementById('ruaCliente');
-    const numeroClienteInput = document.getElementById('numeroCliente');
-    const bairroClienteInput = document.getElementById('bairroCliente');
-    const cidadeClienteInput = document.getElementById('cidadeCliente');
-    const estadoClienteInput = document.getElementById('estadoCliente');
-    const cepClienteInput = document.getElementById('cepCliente');
-
+    // Campos da modal para edição/cadastro
+    const nomeClienteInput = document.getElementById('nomeCliente');
+    const clienteIdParaEdicaoInput = document.getElementById('clienteIdParaEdicao'); // Campo oculto para ID do cliente
     const telefoneClienteInput = document.getElementById('telefoneCliente');
     const emailClienteInput = document.getElementById('emailCliente');
+
+    // NOVO: Container para múltiplos endereços
+    const enderecosContainer = document.getElementById('enderecosContainer');
+    const btnAddEndereco = document.getElementById('btnAddEndereco');
+
+    // Array para armazenar os endereços da modal antes de enviar
+    let currentClientAddresses = [];
 
 
     /**
@@ -82,14 +87,93 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    /**
+     * Adiciona um novo bloco de campos de endereço na modal.
+     * @param {object} [addressData={}] - Dados do endereço para preencher os campos (opcional).
+     * @param {boolean} [isPrimary=false] - Indica se é o endereço principal (para desabilitar remoção).
+     */
+    function addEnderecoField(addressData = {}, isPrimary = false) {
+        const index = enderecosContainer.children.length; // Usar o número de filhos como índice
+        const addressDiv = document.createElement('div');
+        addressDiv.classList.add('endereco-group');
+        addressDiv.dataset.index = index; // Adiciona um data attribute para fácil referência
+
+        addressDiv.innerHTML = `
+            <h4 class="endereco-title">${isPrimary ? 'Endereço Principal' : `Endereço ${index + 1}`}</h4>
+            <div class="form-group-grid">
+                <label for="ruaCliente_${index}">Rua:</label>
+                <input type="text" id="ruaCliente_${index}" name="ruaCliente_${index}" value="${addressData.rua || ''}" required>
+            </div>
+            <div class="form-row-grid">
+                <div class="form-group-grid">
+                    <label for="numeroCliente_${index}">Número:</label>
+                    <input type="text" id="numeroCliente_${index}" name="numeroCliente_${index}" value="${addressData.numero || ''}">
+                </div>
+                <div class="form-group-grid">
+                    <label for="bairroCliente_${index}">Bairro:</label>
+                    <input type="text" id="bairroCliente_${index}" name="bairroCliente_${index}" value="${addressData.bairro || ''}">
+                </div>
+            </div>
+            <div class="form-row-grid">
+                <div class="form-group-grid">
+                    <label for="cidadeCliente_${index}">Cidade:</label>
+                    <input type="text" id="cidadeCliente_${index}" name="cidadeCliente_${index}" value="${addressData.cidade || ''}" required>
+                </div>
+                <div class="form-group-grid">
+                    <label for="estadoCliente_${index}">Estado (UF):</label>
+                    <input type="text" id="estadoCliente_${index}" name="estadoCliente_${index}" maxlength="2" value="${addressData.estado || ''}" required>
+                </div>
+                <div class="form-group-grid">
+                    <label for="cepCliente_${index}">CEP:</label>
+                    <input type="text" id="cepCliente_${index}" name="cepCliente_${index}" value="${addressData.cep || ''}">
+                </div>
+            </div>
+            ${!isPrimary ? `<button type="button" class="btn btn-danger btn-remove-endereco" data-index="${index}"><i class="fas fa-minus-circle"></i> Remover Endereço</button>` : ''}
+        `;
+        enderecosContainer.appendChild(addressDiv);
+
+        // Adiciona listener para o botão de remover
+        if (!isPrimary) {
+            addressDiv.querySelector('.btn-remove-endereco').addEventListener('click', function() {
+                addressDiv.remove();
+                updateEnderecoTitles(); // Atualiza os títulos após remover
+            });
+        }
+    }
+
+    /**
+     * Atualiza os títulos dos endereços após adição/remoção.
+     */
+    function updateEnderecoTitles() {
+        const enderecoGroups = enderecosContainer.querySelectorAll('.endereco-group');
+        enderecoGroups.forEach((group, i) => {
+            const titleElement = group.querySelector('.endereco-title');
+            if (titleElement) {
+                titleElement.textContent = i === 0 ? 'Endereço Principal' : `Endereço ${i + 1}`;
+            }
+            // Atualiza o data-index e o data-index do botão de remover
+            group.dataset.index = i;
+            const removeBtn = group.querySelector('.btn-remove-endereco');
+            if (removeBtn) {
+                removeBtn.dataset.index = i;
+            }
+        });
+    }
+
+
     // Event listeners para abrir/fechar a modal de cadastro de cliente
     if (btnAbrirModalCadastroCliente && modalCadastroCliente) {
         btnAbrirModalCadastroCliente.addEventListener('click', function() {
             modalCadastroCliente.style.display = 'flex';
+            modalClienteTitle.textContent = 'Cadastrar Novo Cliente';
             formCadastroCliente.reset(); // Limpa o formulário ao abrir
+            clienteIdParaEdicaoInput.value = ''; // Garante que o ID de edição esteja vazio
             cadastroClienteFeedback.textContent = ''; // Limpa feedback
             if (radioJuridica) radioJuridica.checked = true; // Garante Jurídica selecionada
             toggleCpfCnpjFields();
+            enderecosContainer.innerHTML = ''; // Limpa endereços anteriores
+            addEnderecoField({}, true); // Adiciona um endereço principal vazio
+            currentClientAddresses = []; // Reseta o array de endereços
         });
     }
 
@@ -97,9 +181,12 @@ document.addEventListener('DOMContentLoaded', function () {
         closeModalCadastroCliente.addEventListener('click', function() {
             modalCadastroCliente.style.display = 'none';
             formCadastroCliente.reset();
+            clienteIdParaEdicaoInput.value = '';
             cadastroClienteFeedback.textContent = '';
             if (radioJuridica) radioJuridica.checked = true;
             toggleCpfCnpjFields();
+            enderecosContainer.innerHTML = '';
+            currentClientAddresses = [];
         });
     }
 
@@ -108,9 +195,12 @@ document.addEventListener('DOMContentLoaded', function () {
             if (event.target === modalCadastroCliente) {
                 modalCadastroCliente.style.display = 'none';
                 formCadastroCliente.reset();
+                clienteIdParaEdicaoInput.value = '';
                 cadastroClienteFeedback.textContent = '';
                 if (radioJuridica) radioJuridica.checked = true;
                 toggleCpfCnpjFields();
+                enderecosContainer.innerHTML = '';
+                currentClientAddresses = [];
             }
         });
     }
@@ -120,8 +210,14 @@ document.addEventListener('DOMContentLoaded', function () {
         radio.addEventListener('change', toggleCpfCnpjFields);
     });
 
+    // Event listener para adicionar novo endereço
+    if (btnAddEndereco) {
+        btnAddEndereco.addEventListener('click', () => addEnderecoField({}));
+    }
+
+
     /**
-     * Envia os dados do novo cliente para o backend.
+     * Envia os dados do novo/editado cliente para o backend.
      */
     if (formCadastroCliente && cadastroClienteFeedback && clienteInputPrincipal && codClienteInputPrincipal) {
         formCadastroCliente.addEventListener('submit', async function(event) {
@@ -130,30 +226,32 @@ document.addEventListener('DOMContentLoaded', function () {
             cadastroClienteFeedback.textContent = 'Salvando cliente...';
             cadastroClienteFeedback.style.color = 'blue';
 
-            const nomeCliente = document.getElementById('nomeCliente')?.value;
+            const idParaEdicao = clienteIdParaEdicaoInput?.value;
+            const nomeCliente = nomeClienteInput?.value;
             const tipoPessoa = document.querySelector('input[name="tipoPessoa"]:checked')?.value;
-            const cnpjCliente = document.getElementById('cnpjCliente')?.value;
-            const cpfCliente = document.getElementById('cpfCliente')?.value;
-            
-            // Coleta os valores dos campos de endereço detalhados
-            const endereco = {
-                rua: ruaClienteInput?.value || '',
-                numero: numeroClienteInput?.value || '',
-                bairro: bairroClienteInput?.value || '',
-                cidade: cidadeClienteInput?.value || '',
-                estado: estadoClienteInput?.value || '',
-                cep: cepClienteInput?.value || ''
-            };
-
+            const cnpjCliente = cnpjClienteInput?.value;
+            const cpfCliente = cpfClienteInput?.value;
             const telefoneCliente = telefoneClienteInput?.value;
             const emailCliente = emailClienteInput?.value;
+
+            // Coleta todos os endereços dos campos dinâmicos
+            const collectedAddresses = [];
+            enderecosContainer.querySelectorAll('.endereco-group').forEach((group, index) => {
+                const rua = document.getElementById(`ruaCliente_${index}`)?.value || '';
+                const numero = document.getElementById(`numeroCliente_${index}`)?.value || '';
+                const bairro = document.getElementById(`bairroCliente_${index}`)?.value || '';
+                const cidade = document.getElementById(`cidadeCliente_${index}`)?.value || '';
+                const estado = document.getElementById(`estadoCliente_${index}`)?.value || '';
+                const cep = document.getElementById(`cepCliente_${index}`)?.value || '';
+                collectedAddresses.push({ rua, numero, bairro, cidade, estado, cep });
+            });
 
             const clientData = {
                 nomeCliente,
                 tipoPessoa,
                 cnpjCliente: tipoPessoa === 'juridica' ? cnpjCliente : null,
                 cpfCliente: tipoPessoa === 'fisica' ? cpfCliente : null,
-                endereco: endereco, // Envia o objeto de endereço detalhado
+                enderecos: collectedAddresses, // Envia o array de endereços
                 telefoneCliente,
                 emailCliente
             };
@@ -162,40 +260,128 @@ document.addEventListener('DOMContentLoaded', function () {
                 ? 'http://localhost:3000'
                 : '';
 
+            let method = 'POST';
+            let url = `${urlBase}/api/clientes`;
+            if (idParaEdicao) {
+                method = 'PUT';
+                url = `${urlBase}/api/clientes/${idParaEdicao}`;
+            }
+
             try {
-                const response = await fetch(`${urlBase}/api/clientes`, {
-                    method: 'POST',
+                const response = await fetch(url, {
+                    method: method,
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(clientData)
                 });
 
                 if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ message: 'Erro desconhecido ao cadastrar cliente.' }));
-                    throw new Error(errorData.message || "Erro ao cadastrar cliente.");
+                    const errorData = await response.json().catch(() => ({ message: 'Erro desconhecido ao cadastrar/atualizar cliente.' }));
+                    throw new Error(errorData.message || "Erro ao cadastrar/atualizar cliente.");
                 }
 
                 const newClient = await response.json();
 
-                cadastroClienteFeedback.textContent = `Cliente "${newClient.nome}" cadastrado com sucesso! Código: ${newClient.id}`;
+                cadastroClienteFeedback.textContent = `Cliente "${newClient.nome}" ${method === 'POST' ? 'cadastrado' : 'atualizado'} com sucesso! Código: ${newClient.id}`;
                 cadastroClienteFeedback.style.color = 'green';
 
-                clienteInputPrincipal.value = newClient.nome;
-                codClienteInputPrincipal.value = newClient.id;
+                // Atualiza os campos principais se for um novo cadastro ou se o cliente editado for o atual
+                if (method === 'POST' || (clienteInputPrincipal.value === '' && codClienteInputPrincipal.value === '') || codClienteInputPrincipal.value === newClient.id) {
+                    clienteInputPrincipal.value = newClient.nome;
+                    codClienteInputPrincipal.value = newClient.id;
+                }
 
                 setTimeout(() => {
                     if (modalCadastroCliente) modalCadastroCliente.style.display = 'none';
                     formCadastroCliente.reset();
+                    clienteIdParaEdicaoInput.value = '';
                     cadastroClienteFeedback.textContent = '';
                     if (radioJuridica) radioJuridica.checked = true;
                     toggleCpfCnpjFields();
+                    enderecosContainer.innerHTML = '';
+                    currentClientAddresses = [];
                 }, 2000);
             } catch (error) {
-                console.error("Erro ao cadastrar cliente:", error);
-                cadastroClienteFeedback.textContent = "Erro ao cadastrar cliente. Detalhes: " + error.message;
+                console.error("Erro ao cadastrar/atualizar cliente:", error);
+                cadastroClienteFeedback.textContent = "Erro ao cadastrar/atualizar cliente. Detalhes: " + error.message;
                 cadastroClienteFeedback.style.color = 'red';
             }
         });
     }
+
+    // NOVO: Lógica para carregar cliente para edição
+    if (btnEditarCliente) {
+        btnEditarCliente.addEventListener('click', async function() {
+            const currentClientId = codClienteInputPrincipal.value;
+            if (!currentClientId) {
+                alert('Por favor, selecione ou cadastre um cliente primeiro para poder editá-lo.');
+                return;
+            }
+            await carregarClienteParaEdicao(currentClientId);
+        });
+    }
+
+    /**
+     * Carrega os dados de um cliente específico na modal de cadastro/edição.
+     * @param {string} clientId - O ID do cliente a ser editado.
+     */
+    async function carregarClienteParaEdicao(clientId) {
+        if (!clientId) return;
+
+        modalCadastroCliente.style.display = 'flex';
+        modalClienteTitle.textContent = 'Editar Cliente';
+        formCadastroCliente.reset();
+        cadastroClienteFeedback.textContent = 'Carregando dados do cliente...';
+        cadastroClienteFeedback.style.color = 'blue';
+        enderecosContainer.innerHTML = ''; // Limpa endereços anteriores
+        currentClientAddresses = []; // Reseta o array de endereços
+
+        const urlBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000'
+            : '';
+
+        try {
+            const response = await fetch(`${urlBase}/api/clientes/${clientId}`);
+            if (!response.ok) {
+                throw new Error('Erro ao carregar dados do cliente para edição.');
+            }
+            const cliente = await response.json();
+
+            // Preenche os campos da modal
+            clienteIdParaEdicaoInput.value = cliente.id;
+            nomeClienteInput.value = cliente.nome;
+            telefoneClienteInput.value = cliente.telefone || '';
+            emailClienteInput.value = cliente.email || '';
+
+            if (cliente.tipo_pessoa === 'fisica') {
+                radioFisica.checked = true;
+                cpfClienteInput.value = cliente.documento || '';
+            } else {
+                radioJuridica.checked = true;
+                cnpjClienteInput.value = cliente.documento || '';
+            }
+            toggleCpfCnpjFields(); // Garante a visibilidade correta do CNPJ/CPF
+
+            // Preenche os endereços
+            if (cliente.enderecos && cliente.enderecos.length > 0) {
+                cliente.enderecos.forEach((addr, i) => {
+                    addEnderecoField(addr, i === 0); // O primeiro é o principal
+                });
+                currentClientAddresses = [...cliente.enderecos]; // Salva para controle
+            } else {
+                addEnderecoField({}, true); // Adiciona um endereço principal vazio se não houver
+            }
+
+            cadastroClienteFeedback.textContent = 'Dados do cliente carregados.';
+            cadastroClienteFeedback.style.color = 'green';
+            setTimeout(() => cadastroClienteFeedback.textContent = '', 2000);
+
+        } catch (error) {
+            console.error("Erro ao carregar cliente para edição:", error);
+            cadastroClienteFeedback.textContent = "Erro ao carregar cliente. Detalhes: " + error.message;
+            cadastroClienteFeedback.style.color = 'red';
+        }
+    }
+
 
     // --- LÓGICA DE BUSCA DE CLIENTE EXISTENTE ---
     const buscarClienteInput = document.getElementById('buscarCliente');
@@ -209,7 +395,7 @@ document.addEventListener('DOMContentLoaded', function () {
         btnBuscarCliente.addEventListener('click', async () => {
             const searchTerm = buscarClienteInput.value.trim();
             if (!searchTerm) {
-                resultadosBuscaClienteDiv.innerHTML = '<p style="color: gray; font-style: italic;">Digite um termo para buscar (nome, código ou documento).</p>';
+                resultadosBuscaClienteDiv.innerHTML = '<p class="loading-message" style="color: gray; font-style: italic;">Digite um termo para buscar (nome, código ou documento).</p>';
                 return;
             }
 
@@ -226,23 +412,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 resultadosBuscaClienteDiv.innerHTML = '';
                 if (clientesEncontrados.length === 0) {
-                    resultadosBuscaClienteDiv.innerHTML = '<p style="color: orange; font-weight: bold;">Nenhum cliente encontrado.</p>';
+                    resultadosBuscaClienteDiv.innerHTML = '<p class="loading-message" style="color: orange; font-weight: bold;">Nenhum cliente encontrado.</p>';
                 } else {
                     clientesEncontrados.forEach(cliente => {
                         const p = document.createElement('p');
                         p.textContent = `${cliente.nome} (Cód: ${cliente.id}) ${cliente.documento ? ` - Doc: ${cliente.documento}` : ''}`;
                         p.classList.add('resultado-cliente-item');
-                        p.style.cursor = 'pointer';
-                        p.style.padding = '5px';
-                        p.style.borderBottom = '1px solid #eee';
-                        p.style.backgroundColor = '#f9f9f9';
-                        p.addEventListener('mouseover', () => p.style.backgroundColor = '#e0e0e0');
-                        p.addEventListener('mouseout', () => p.style.backgroundColor = '#f9f9f9');
-                        
                         p.addEventListener('click', () => {
                             // Preenche os campos do formulário principal com os dados do cliente selecionado
                             if (clienteInputPrincipal) clienteInputPrincipal.value = cliente.nome;
                             if (codClienteInputPrincipal) codClienteInputPrincipal.value = cliente.id;
+                            // Exibe o botão de editar cliente
+                            if (btnEditarCliente) btnEditarCliente.style.display = 'inline-block';
+
                             // Limpa os campos de obra e pedido para um novo orçamento
                             if (obraInput) obraInput.value = '';
                             if (numPedidoInput) numPedidoInput.value = '';
@@ -265,7 +447,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             } catch (error) {
                 console.error('Erro na busca de clientes:', error);
-                resultadosBuscaClienteDiv.innerHTML = `<p style="color: red; font-weight: bold;">Erro na busca: ${error.message}</p>`;
+                resultadosBuscaClienteDiv.innerHTML = `<p class="loading-message" style="color: red; font-weight: bold;">Erro na busca: ${error.message}</p>`;
             }
         });
     }
@@ -285,7 +467,7 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     async function carregarOrcamentos(filtro = '') {
         if (!listaOrcamentosDiv) return;
-        listaOrcamentosDiv.innerHTML = '<p style="text-align: center; color: gray;">Carregando orçamentos...</p>';
+        listaOrcamentosDiv.innerHTML = '<p class="loading-message">Carregando orçamentos...</p>';
         if(visualizarOrcamentoFeedback) visualizarOrcamentoFeedback.textContent = '';
 
         try {
@@ -301,7 +483,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             listaOrcamentosDiv.innerHTML = '';
             if (orcamentos.length === 0) {
-                listaOrcamentosDiv.innerHTML = '<p style="text-align: center; color: orange; font-weight: bold;">Nenhum orçamento encontrado.</p>';
+                listaOrcamentosDiv.innerHTML = '<p class="loading-message" style="color: orange; font-weight: bold;">Nenhum orçamento encontrado.</p>';
             } else {
                 orcamentos.forEach(orcamento => {
                     // Crie uma div para cada item do orçamento para melhor controle de layout
@@ -321,15 +503,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     
                     // Crie o botão de excluir
                     const btnExcluir = document.createElement('button');
-                    btnExcluir.classList.add('btn-excluir-orcamento');
+                    btnExcluir.classList.add('btn', 'btn-danger', 'btn-excluir-orcamento');
                     btnExcluir.dataset.orcamentoId = orcamento.id;
-                    btnExcluir.textContent = 'Excluir';
+                    btnExcluir.innerHTML = '<i class="fas fa-trash-alt"></i> Excluir';
 
                     // Anexe os event listeners
                     spanText.addEventListener('click', () => carregarOrcamentoNaTela(orcamento.id));
                     btnExcluir.addEventListener('click', (e) => {
                         e.stopPropagation(); // Impede que o clique no botão ative o clique no item pai
-                        const idParaExcluir = e.target.dataset.orcamentoId;
+                        const idParaExcluir = e.target.dataset.orcamentoId || e.target.closest('button').dataset.orcamentoId; // Pega o ID do botão ou do pai
                         if (confirm(`Tem certeza que deseja excluir o orçamento Pedido Nº: ${numPedidoDisplay}?`)) {
                             excluirOrcamento(idParaExcluir);
                         }
@@ -345,7 +527,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         } catch (error) {
             console.error('Erro ao carregar orçamentos:', error);
-            listaOrcamentosDiv.innerHTML = `<p style="color: red; text-align: center;">Erro ao carregar orçamentos: ${error.message}</p>`;
+            listaOrcamentosDiv.innerHTML = `<p class="loading-message" style="color: red; text-align: center;">Erro ao carregar orçamentos: ${error.message}</p>`;
         }
     }
 
@@ -378,6 +560,9 @@ document.addEventListener('DOMContentLoaded', function () {
             if (orcamentoIdInput) orcamentoIdInput.value = orcamentoDetalhes.id; // Define o ID do orçamento para edição
             if (recebeCaminhaoSelect) recebeCaminhaoSelect.value = orcamentoDetalhes.obraInfo?.recebeCaminhao || 'Sim';
             if (dataDesejadaInput) dataDesejadaInput.value = orcamentoDetalhes.obraInfo?.dataDesejada || '';
+            // Exibe o botão de editar cliente
+            if (btnEditarCliente) btnEditarCliente.style.display = 'inline-block';
+
 
             // Limpa e preenche a tabela de peças
             linhasOrcamento.length = 0;
@@ -395,7 +580,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <td data-label="Qtd">${item.quantidade || ''}</td>
                         <td data-label="Comprimento">${item.comprimentoCm || ''} cm</td>
                         <td data-label="Peso">${item.pesoKg || ''} kg</td>
-                        <td data-label="Ações"><button class="btn-excluir">Excluir</button></td>
+                        <td data-label="Ações"><button class="btn btn-danger btn-excluir"><i class="fas fa-trash-alt"></i> Excluir</button></td>
                     `;
                     novaLinhaTabela.dataset.bitola = item.bitola || '';
                     novaLinhaTabela.dataset.peso = item.pesoKg || '0';
@@ -529,6 +714,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (dataDesejadaInput) dataDesejadaInput.value = '';
         if (buscarClienteInput) buscarClienteInput.value = ''; // Limpa o campo de busca de cliente
         if (resultadosBuscaClienteDiv) resultadosBuscaClienteDiv.innerHTML = ''; // Limpa resultados da busca
+        if (btnEditarCliente) btnEditarCliente.style.display = 'none'; // Esconde o botão de editar cliente
 
         // Limpar tabela de peças
         tabelaResultados.innerHTML = '';
@@ -663,7 +849,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <td data-label="Qtd">${quantidade}</td>
                 <td data-label="Comprimento">${comprimentoCm.toFixed(2)} cm</td>
                 <td data-label="Peso">${pesoTotalPecas.toFixed(3)} kg</td>
-                <td data-label="Ações"><button class="btn-excluir">Excluir</button></td>
+                <td data-label="Ações"><button class="btn btn-danger btn-excluir"><i class="fas fa-trash-alt"></i> Excluir</button></td>
             `;
 
             novaLinhaTabela.dataset.bitola = bitola;
@@ -886,6 +1072,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
             doc.text(`Data Desejada: ${orcamento.obraInfo?.dataDesejada || 'N/A'}`, 10, y);
             y += lineHeight * 2;
+
+            // NOVO: Adiciona endereços do cliente ao PDF
+            if (currentClientAddresses && currentClientAddresses.length > 0) {
+                doc.text("Endereços do Cliente:", 10, y);
+                y += lineHeight;
+                currentClientAddresses.forEach((addr, i) => {
+                    const addrLine = `${i === 0 ? 'Principal: ' : `Endereço ${i + 1}: `} ${addr.rua || ''}, ${addr.numero || ''} - ${addr.bairro || ''}, ${addr.cidade || ''}/${addr.estado || ''} - CEP: ${addr.cep || ''}`;
+                    doc.text(addrLine, 10, y);
+                    y += lineHeight;
+                    if (y > 280) { doc.addPage(); y = 10; }
+                });
+                y += lineHeight; // Espaço após os endereços
+            }
+
 
             doc.text("Detalhes das Peças:", 10, y);
             y += lineHeight;

@@ -36,16 +36,16 @@ app.get('/', (req, res) => {
 
 // ROTA: POST /api/clientes - Para cadastrar um novo cliente
 app.post('/api/clientes', async (req, res) => {
-    const { nomeCliente, tipoPessoa, cnpjCliente, cpfCliente, endereco, telefoneCliente, emailCliente } = req.body;
+    const { nomeCliente, tipoPessoa, cnpjCliente, cpfCliente, enderecos, telefoneCliente, emailCliente } = req.body;
     console.log('Recebendo requisição POST para /api/clientes. Dados:', req.body);
 
     // Validação dos dados recebidos
-    if (!nomeCliente || !endereco || !telefoneCliente || (!cnpjCliente && !cpfCliente)) {
+    if (!nomeCliente || !telefoneCliente || (!cnpjCliente && !cpfCliente) || !enderecos || enderecos.length === 0) {
         let missingFields = [];
         if (!nomeCliente) missingFields.push('Nome');
-        if (!endereco) missingFields.push('Endereço');
         if (!telefoneCliente) missingFields.push('Telefone');
         if (!cnpjCliente && !cpfCliente) missingFields.push('CNPJ/CPF');
+        if (!enderecos || enderecos.length === 0) missingFields.push('Endereço');
 
         console.log('Dados do cliente incompletos. Faltando:', missingFields.join(', '));
         return res.status(400).json({
@@ -61,16 +61,16 @@ app.post('/api/clientes', async (req, res) => {
         nome: nomeCliente,
         tipo_pessoa: tipoPessoa,
         documento: tipoPessoa === 'juridica' ? cnpjCliente : cpfCliente,
-        endereco: endereco,
+        enderecos: enderecos, // Agora é um array de objetos JSON
         telefone: telefoneCliente,
         email: emailCliente || null
     };
 
     try {
         const result = await db.query(
-            `INSERT INTO clientes (id, nome, tipo_pessoa, documento, endereco, telefone, email)
+            `INSERT INTO clientes (id, nome, tipo_pessoa, documento, enderecos, telefone, email)
              VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, nome`,
-            [newClientData.id, newClientData.nome, newClientData.tipo_pessoa, newClientData.documento, newClientData.endereco, newClientData.telefone, newClientData.email]
+            [newClientData.id, newClientData.nome, newClientData.tipo_pessoa, newClientData.documento, JSON.stringify(newClientData.enderecos), newClientData.telefone, newClientData.email]
         );
         console.log('Cliente salvo no banco de dados:', result.rows[0]);
         res.status(201).json(result.rows[0]);
@@ -79,6 +79,56 @@ app.post('/api/clientes', async (req, res) => {
         return res.status(500).json({ error: 'Erro interno do servidor ao cadastrar cliente.', details: err.message });
     }
 });
+
+// ROTA: PUT /api/clientes/:id - Para atualizar um cliente existente
+app.put('/api/clientes/:id', async (req, res) => {
+    const clientId = req.params.id;
+    const { nomeCliente, tipoPessoa, cnpjCliente, cpfCliente, enderecos, telefoneCliente, emailCliente } = req.body;
+    console.log(`Recebendo requisição PUT para /api/clientes/${clientId}. Dados:`, req.body);
+
+    if (!nomeCliente || !telefoneCliente || (!cnpjCliente && !cpfCliente) || !enderecos || enderecos.length === 0) {
+        let missingFields = [];
+        if (!nomeCliente) missingFields.push('Nome');
+        if (!telefoneCliente) missingFields.push('Telefone');
+        if (!cnpjCliente && !cpfCliente) missingFields.push('CNPJ/CPF');
+        if (!enderecos || enderecos.length === 0) missingFields.push('Endereço');
+
+        console.log('Dados do cliente incompletos para atualização. Faltando:', missingFields.join(', '));
+        return res.status(400).json({
+            message: `Dados do cliente incompletos para atualização. Os seguintes campos são obrigatórios: ${missingFields.join(', ')}.`,
+            details: req.body
+        });
+    }
+
+    const updatedClientData = {
+        nome: nomeCliente,
+        tipo_pessoa: tipoPessoa,
+        documento: tipoPessoa === 'juridica' ? cnpjCliente : cpfCliente,
+        enderecos: enderecos, // Agora é um array de objetos JSON
+        telefone: telefoneCliente,
+        email: emailCliente || null
+    };
+
+    try {
+        const result = await db.query(
+            `UPDATE clientes
+             SET nome = $1, tipo_pessoa = $2, documento = $3, enderecos = $4, telefone = $5, email = $6
+             WHERE id = $7 RETURNING id, nome`,
+            [updatedClientData.nome, updatedClientData.tipo_pessoa, updatedClientData.documento, JSON.stringify(updatedClientData.enderecos), updatedClientData.telefone, updatedClientData.email, clientId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Cliente não encontrado para atualização.' });
+        }
+
+        console.log('Cliente atualizado no banco de dados:', result.rows[0]);
+        res.status(200).json(result.rows[0]);
+    } catch (err) {
+        console.error('Erro ao atualizar cliente no banco de dados:', err);
+        return res.status(500).json({ error: 'Erro interno do servidor ao atualizar cliente.', details: err.message });
+    }
+});
+
 
 // ROTA: GET /api/clientes/buscar - Para buscar clientes existentes
 app.get('/api/clientes/buscar', async (req, res) => {
@@ -91,7 +141,7 @@ app.get('/api/clientes/buscar', async (req, res) => {
 
     try {
         const result = await db.query(
-            `SELECT id, nome, documento, endereco, telefone, email, tipo_pessoa
+            `SELECT id, nome, documento, enderecos, telefone, email, tipo_pessoa
              FROM clientes
              WHERE nome ILIKE $1 OR id ILIKE $1 OR documento ILIKE $1
              ORDER BY nome
@@ -104,6 +154,31 @@ app.get('/api/clientes/buscar', async (req, res) => {
         res.status(500).json({ error: 'Erro ao buscar clientes.', details: err.message });
     }
 });
+
+// ROTA: GET /api/clientes/:id - Para obter detalhes de um cliente específico
+app.get('/api/clientes/:id', async (req, res) => {
+    const clientId = req.params.id;
+    console.log(`Recebendo requisição GET para /api/clientes/${clientId}`);
+
+    try {
+        const result = await db.query(
+            `SELECT id, nome, tipo_pessoa, documento, enderecos, telefone, email
+             FROM clientes
+             WHERE id = $1`,
+            [clientId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Cliente não encontrado.' });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error('Erro ao buscar detalhes do cliente:', err);
+        res.status(500).json({ error: 'Erro ao buscar detalhes do cliente.', details: err.message });
+    }
+});
+
 
 // ROTA: POST /api/orcamentos - Para salvar um novo orçamento
 app.post('/api/orcamentos', async (req, res) => {

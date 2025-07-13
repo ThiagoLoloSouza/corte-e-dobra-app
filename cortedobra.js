@@ -1255,7 +1255,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Linhas verticais para cada linha de item
                 doc.line(col1X, currentY, col1X, currentY + 7);
                 doc.line(col2X, currentY, col2X, currentY + 7);
-                doc.line(col3X, currentY, col3X, currentY + 7);
+                doc.line(col3X, currentY, col3X, current3Y + 7);
                 doc.line(col4X, currentY, col4X, currentY + 7);
                 doc.line(col5X, currentY, col5X, currentY + 7);
 

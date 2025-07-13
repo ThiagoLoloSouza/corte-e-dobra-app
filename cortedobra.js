@@ -1064,10 +1064,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // IMPORTANTE: As URLs abaixo são de placeholders. Para que suas imagens reais apareçam no PDF,
             // você deve hospedá-las em um serviço público (Google Drive, Dropbox, Imgur, etc.)
             // e substituir estas URLs pelas URLs diretas das suas imagens.
-            const dafelLogoSuperiorPDF = "https://drive.google.com/uc?export=download&id=1XDjJ0A3Y9qPCD5VEKDgbWJT1WiAKfS9C"; // Para logo_grupo-dafel_8KDzHg.png
-            const dafelSeriedadeNossaMarcaPDF = "https://drive.google.com/uc?export=download&id=1egIQnFMur-Zbzgj0xvKAOhwQYz0ZygJT"; // Para image_a9f29e.png
-            const laranjaDadosClientePDF = "https://drive.google.com/uc?export=download&id=1vxJqw0-cpvILfbJXGWq939FYhAUjyotn"; // Para image_a9dc1d.png
-            const dafelMainLogoPDF = "https://drive.google.com/uc?export=download&id=1vUrMdDXQwACVoPpOmMzHWDlle3nrdFAm"; // Para 411878334_914510800158541_3475139305395707762_n.jpg
+            const dafelLogoSuperiorPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/grupo-dafel-squarelogo-1724229844318.webp";
+            const dafelSeriedadeNossaMarcaPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/client-4.png";
+            const laranjaDadosClientePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/411878334_914510800158541_3475139305395707762_n.jpg";
+            const dafelMainLogoPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/images%20(1).jpg";
 
             // Função para adicionar imagem ao PDF
             const addImageToPdfDirect = (imgUrl, x, y, width, height, format = 'PNG') => {
@@ -1095,15 +1095,18 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.setFont('helvetica', 'normal'); // Volta ao padrão
 
             // Imagem "Dafé Seriedade Nossa Marca" no meio do cabeçalho
-            addImageToPdfDirect(dafelSeriedadeNossaMarcaPDF, pageWidth / 2 - 30, 3, 60, 15, 'PNG'); // Ajuste de posição e tamanho
+            // Verifique o formato da imagem (PNG, JPEG, WEBP). O jsPDF precisa do formato correto.
+            // Para .webp, o jsPDF pode precisar de um polyfill ou conversão.
+            // Se for .webp, considere converter para PNG/JPG ou usar um polyfill.
+            addImageToPdfDirect(dafelSeriedadeNossaMarcaPDF, pageWidth / 2 - 30, 3, 60, 15, 'PNG'); 
             
             // Imagem "Grupo Dafé" no canto superior direito
-            addImageToPdfDirect(dafelLogoSuperiorPDF, pageWidth - marginX - 45, 3, 40, 15, 'PNG'); // Ajuste de posição e tamanho
+            addImageToPdfDirect(dafelLogoSuperiorPDF, pageWidth - marginX - 45, 3, 40, 15, 'WEBP'); // Use 'WEBP' se o formato for .webp
 
             // Informações do site e redes sociais (lado direito) - TEXTO BRANCO
             doc.setTextColor(255, 255, 255); // Cor branca para estes textos
             addText("ACESSE NOSSO SITE", pageWidth - marginX - 70, 7, { fontSize: 7, align: 'right' });
-            addText("WWW.DAFEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, align: 'right' });
+            addText("WWW.DTEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, align: 'right' });
             addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, align: 'right' });
             addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, align: 'right' });
             doc.setTextColor(0, 0, 0); // Volta para preto padrão
@@ -1116,7 +1119,7 @@ document.addEventListener('DOMContentLoaded', function () {
             addRect(marginX, currentY, pageWidth - (2 * marginX), 45, '#FFFFFF', 'FD'); // Fundo branco e borda
 
             // Imagem laranja na seção "Dados do Cliente"
-            addImageToPdfDirect(laranjaDadosClientePDF, marginX + 2, currentY + 2, 20, 20, 'PNG'); // Posição e tamanho da imagem laranja
+            addImageToPdfDirect(laranjaDadosClientePDF, marginX + 2, currentY + 2, 20, 20, 'JPEG'); // Use 'JPEG' se o formato for .jpg
 
             // Coluna da direita: DADOS DO CLIENTE (Agora com offset para a imagem)
             const clientColumnXOffset = 25; // Offset para o texto devido à imagem laranja

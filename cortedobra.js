@@ -504,8 +504,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         spanText.addEventListener('click', () => carregarOrcamentoNaTela(orcamento.id));
                         btnExcluir.addEventListener('click', (e) => {
                             e.stopPropagation(); // Impede que o clique no botão ative o clique no item pai
-                            const idParaExcluir = e.target.dataset.orcamentoId || e.target.closest('button').dataset.orcamentoId; // Pega o ID do botão ou do pai
                             if (confirm(`TEM CERTEZA QUE DESEJA EXCLUIR O ORÇAMENTO PEDIDO Nº: ${String(numPedidoDisplay).toUpperCase()}?`)) {
+                                const idParaExcluir = e.target.dataset.orcamentoId || e.target.closest('button').dataset.orcamentoId; // Pega o ID do botão ou do pai
                                 excluirOrcamento(idParaExcluir);
                             }
                         });
@@ -1255,7 +1255,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Linhas verticais para cada linha de item
                 doc.line(col1X, currentY, col1X, currentY + 7);
                 doc.line(col2X, currentY, col2X, currentY + 7);
-                doc.line(col3X, currentY, col3X, current3Y + 7);
+                doc.line(col3X, currentY, col3X, currentY + 7); // LINHA CORRIGIDA AQUI
                 doc.line(col4X, currentY, col4X, currentY + 7);
                 doc.line(col5X, currentY, col5X, currentY + 7);
 
@@ -1356,3 +1356,4 @@ document.addEventListener('DOMContentLoaded', function () {
     // Valida os campos de medida ao carregar a página
     validarCamposMedida();
 }); // FIM DO DOMContentLoaded (ÚNICO FECHAMENTO)
+

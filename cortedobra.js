@@ -1062,12 +1062,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // --- IMAGENS (PARA PDF - SUBSTITUA COM SUAS URLs PÚBLICAS) ---
             // URLs RAW do GitHub do seu repositório.
-            // Certifique-se de que o formato (PNG, JPEG, WEBP) está correto para cada imagem.
-            // Se as imagens WEBP continuarem dando problema, converta-as para PNG ou JPG.
-            const dafelLogoSuperiorPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/grupo-dafel-squarelogo-1724229844318.webp"; // Logo Dafel (direita -> centro)
-            const dafelSeriedadeNossaMarcaPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/client-4.png"; // Logo Seriedade Nossa Marca (meio -> ponta direita)
-            const laranjaDadosClientePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/411878334_914510800158541_3475139305395707762_n.jpg"; // Imagem laranja (seção cliente)
-            const dafelMainLogoPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/images%20(1).jpg"; // Logo Principal (rodapé)
+            // ATENÇÃO: A imagem 'grupo-dafel-squarelogo-1724229844318.webp' deve ser convertida para PNG/JPG.
+            // Por favor, atualize esta URL e o formato ('PNG' ou 'JPEG') após a conversão.
+            const dafelLogoSuperiorPDF = "https://github.com/ThiagoLoloSouza/corte-e-dobra-app/blob/main/288802433_329085279378732_7698072396463611572_n.jpg"; // <-- MUDEI A EXTENSÃO PARA .png (ASSUMINDO CONVERSÃO)
+            const dafelSeriedadeNossaMarcaPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/client-4.png";
+            const laranjaDadosClientePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/411878334_914510800158541_3475139305395707762_n.jpg";
+            const dafelMainLogoPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/images%20(1).jpg";
 
             // Função para adicionar imagem ao PDF
             const addImageToPdfDirect = (imgUrl, x, y, width, height, format = 'PNG') => {
@@ -1095,15 +1095,15 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.setFont('helvetica', 'normal'); // Volta ao padrão
 
             // AJUSTES DE POSICIONAMENTO DAS IMAGENS DO CABEÇALHO
-            // 1. Logo "Grupo Dafel" (originalmente superior direito, agora no centro)
+            // 1. Logo "Grupo Dafel" (dafelLogoSuperiorPDF) - no centro
             // Calculando o centro: (largura da página / 2) - (largura da imagem / 2)
             const dafelLogoSuperiorWidth = 40; // Largura da imagem
             const dafelLogoSuperiorHeight = 15; // Altura da imagem
             const dafelLogoSuperiorX = (pageWidth / 2) - (dafelLogoSuperiorWidth / 2);
             const dafelLogoSuperiorY = 3; // Mantém a mesma altura
-            addImageToPdfDirect(dafelLogoSuperiorPDF, dafelLogoSuperiorX, dafelLogoSuperiorY, dafelLogoSuperiorWidth, dafelLogoSuperiorHeight, 'WEBP'); 
-            
-            // 2. Logo "Dafé Seriedade Nossa Marca" (originalmente no meio, agora na ponta direita)
+            addImageToPdfDirect(dafelLogoSuperiorPDF, dafelLogoSuperiorX, dafelLogoSuperiorY, dafelLogoSuperiorWidth, dafelLogoSuperiorHeight, 'PNG'); // <-- MUDEI O FORMATO PARA 'PNG'
+
+            // 2. Logo "Dafé Seriedade Nossa Marca" (dafelSeriedadeNossaMarcaPDF) - na ponta direita, mais quadradinha
             // Posicionando à direita: largura da página - margemX - largura da imagem
             const dafelSeriedadeWidth = 40; // Largura ajustada para ser mais "quadradinha"
             const dafelSeriedadeHeight = 15; // Altura ajustada (pode ser 20 ou 25 se quiser mais quadrada)
@@ -1114,10 +1114,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Informações do site e redes sociais (lado esquerdo do cabeçalho) - TEXTO BRANCO
             // Ajustando a posição para não colidir com a nova imagem à direita
             doc.setTextColor(255, 255, 255); // Cor branca para estes textos
-            addText("ACESSE NOSSO SITE", pageWidth - marginX - 100, 7, { fontSize: 7, align: 'right', textColor: [255, 255, 255] }); // Explicitamente branco
-            addText("WWW.DAFEL.COM.BR", pageWidth - marginX - 100, 10, { fontSize: 9, align: 'right', textColor: [255, 255, 255] }); // Explicitamente branco
-            addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, align: 'right', textColor: [255, 255, 255] }); // Explicitamente branco
-            addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, align: 'right', textColor: [255, 255, 255] }); // Explicitamente branco
+            addText("ACESSE NOSSO SITE", pageWidth - marginX - 100, 7, { fontSize: 7, align: 'right', textColor: [255, 255, 255] }); 
+            addText("WWW.DTEL.COM.BR", pageWidth - marginX - 100, 10, { fontSize: 9, align: 'right', textColor: [255, 255, 255] }); 
+            addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, align: 'right', textColor: [255, 255, 255] }); 
+            addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, align: 'right', textColor: [255, 255, 255] }); 
             doc.setTextColor(0, 0, 0); // Volta para preto padrão
 
             currentY = 25; // Posição Y inicial após o cabeçalho superior

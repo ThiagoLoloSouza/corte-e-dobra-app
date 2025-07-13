@@ -1061,13 +1061,13 @@ document.addEventListener('DOMContentLoaded', function () {
             };
 
             // --- IMAGENS (PARA PDF - SUBSTITUA COM SUAS URLs PÚBLICAS) ---
-            // IMPORTANTE: As URLs abaixo são de placeholders. Para que suas imagens reais apareçam no PDF,
-            // você deve hospedá-las em um serviço público (Google Drive, Dropbox, Imgur, etc.)
-            // e substituir estas URLs pelas URLs diretas das suas imagens.
-            const dafelLogoSuperiorPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/grupo-dafel-squarelogo-1724229844318.webp";
-            const dafelSeriedadeNossaMarcaPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/client-4.png";
-            const laranjaDadosClientePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/411878334_914510800158541_3475139305395707762_n.jpg";
-            const dafelMainLogoPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/images%20(1).jpg";
+            // URLs RAW do GitHub do seu repositório.
+            // Certifique-se de que o formato (PNG, JPEG, WEBP) está correto para cada imagem.
+            // Se as imagens WEBP continuarem dando problema, converta-as para PNG ou JPG.
+            const dafelLogoSuperiorPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/grupo-dafel-squarelogo-1724229844318.webp"; // Logo Dafel (direita -> centro)
+            const dafelSeriedadeNossaMarcaPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/client-4.png"; // Logo Seriedade Nossa Marca (meio -> ponta direita)
+            const laranjaDadosClientePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/411878334_914510800158541_3475139305395707762_n.jpg"; // Imagem laranja (seção cliente)
+            const dafelMainLogoPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/images%20(1).jpg"; // Logo Principal (rodapé)
 
             // Função para adicionar imagem ao PDF
             const addImageToPdfDirect = (imgUrl, x, y, width, height, format = 'PNG') => {
@@ -1094,21 +1094,30 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.setFontSize(10); // Volta ao padrão
             doc.setFont('helvetica', 'normal'); // Volta ao padrão
 
-            // Imagem "Dafé Seriedade Nossa Marca" no meio do cabeçalho
-            // Verifique o formato da imagem (PNG, JPEG, WEBP). O jsPDF precisa do formato correto.
-            // Para .webp, o jsPDF pode precisar de um polyfill ou conversão.
-            // Se for .webp, considere converter para PNG/JPG ou usar um polyfill.
-            addImageToPdfDirect(dafelSeriedadeNossaMarcaPDF, pageWidth / 2 - 30, 3, 60, 15, 'PNG'); 
+            // AJUSTES DE POSICIONAMENTO DAS IMAGENS DO CABEÇALHO
+            // 1. Logo "Grupo Dafel" (originalmente superior direito, agora no centro)
+            // Calculando o centro: (largura da página / 2) - (largura da imagem / 2)
+            const dafelLogoSuperiorWidth = 40; // Largura da imagem
+            const dafelLogoSuperiorHeight = 15; // Altura da imagem
+            const dafelLogoSuperiorX = (pageWidth / 2) - (dafelLogoSuperiorWidth / 2);
+            const dafelLogoSuperiorY = 3; // Mantém a mesma altura
+            addImageToPdfDirect(dafelLogoSuperiorPDF, dafelLogoSuperiorX, dafelLogoSuperiorY, dafelLogoSuperiorWidth, dafelLogoSuperiorHeight, 'WEBP'); 
             
-            // Imagem "Grupo Dafé" no canto superior direito
-            addImageToPdfDirect(dafelLogoSuperiorPDF, pageWidth - marginX - 45, 3, 40, 15, 'WEBP'); // Use 'WEBP' se o formato for .webp
+            // 2. Logo "Dafé Seriedade Nossa Marca" (originalmente no meio, agora na ponta direita)
+            // Posicionando à direita: largura da página - margemX - largura da imagem
+            const dafelSeriedadeWidth = 40; // Largura ajustada para ser mais "quadradinha"
+            const dafelSeriedadeHeight = 15; // Altura ajustada (pode ser 20 ou 25 se quiser mais quadrada)
+            const dafelSeriedadeX = pageWidth - marginX - dafelSeriedadeWidth;
+            const dafelSeriedadeY = 3; // Mantém a mesma altura
+            addImageToPdfDirect(dafelSeriedadeNossaMarcaPDF, dafelSeriedadeX, dafelSeriedadeY, dafelSeriedadeWidth, dafelSeriedadeHeight, 'PNG'); 
 
-            // Informações do site e redes sociais (lado direito) - TEXTO BRANCO
+            // Informações do site e redes sociais (lado esquerdo do cabeçalho) - TEXTO BRANCO
+            // Ajustando a posição para não colidir com a nova imagem à direita
             doc.setTextColor(255, 255, 255); // Cor branca para estes textos
-            addText("ACESSE NOSSO SITE", pageWidth - marginX - 70, 7, { fontSize: 7, align: 'right' });
-            addText("WWW.DTEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, align: 'right' });
-            addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, align: 'right' });
-            addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, align: 'right' });
+            addText("ACESSE NOSSO SITE", pageWidth - marginX - 100, 7, { fontSize: 7, align: 'right', textColor: [255, 255, 255] }); // Explicitamente branco
+            addText("WWW.DAFEL.COM.BR", pageWidth - marginX - 100, 10, { fontSize: 9, align: 'right', textColor: [255, 255, 255] }); // Explicitamente branco
+            addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, align: 'right', textColor: [255, 255, 255] }); // Explicitamente branco
+            addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, align: 'right', textColor: [255, 255, 255] }); // Explicitamente branco
             doc.setTextColor(0, 0, 0); // Volta para preto padrão
 
             currentY = 25; // Posição Y inicial após o cabeçalho superior
@@ -1119,7 +1128,7 @@ document.addEventListener('DOMContentLoaded', function () {
             addRect(marginX, currentY, pageWidth - (2 * marginX), 45, '#FFFFFF', 'FD'); // Fundo branco e borda
 
             // Imagem laranja na seção "Dados do Cliente"
-            addImageToPdfDirect(laranjaDadosClientePDF, marginX + 2, currentY + 2, 20, 20, 'JPEG'); // Use 'JPEG' se o formato for .jpg
+            addImageToPdfDirect(laranjaDadosClientePDF, marginX + 2, currentY + 2, 20, 20, 'JPEG'); // Posição e tamanho da imagem laranja
 
             // Coluna da direita: DADOS DO CLIENTE (Agora com offset para a imagem)
             const clientColumnXOffset = 25; // Offset para o texto devido à imagem laranja
@@ -1255,7 +1264,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Linhas verticais para cada linha de item
                 doc.line(col1X, currentY, col1X, currentY + 7);
                 doc.line(col2X, currentY, col2X, currentY + 7);
-                doc.line(col3X, currentY, col3X, currentY + 7); // LINHA CORRIGIDA AQUI
+                doc.line(col3X, currentY, col3X, currentY + 7); 
                 doc.line(col4X, currentY, col4X, currentY + 7);
                 doc.line(col5X, currentY, col5X, currentY + 7);
 
@@ -1333,7 +1342,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // --- IMAGEM PRINCIPAL NO MEIO (RODAPÉ) ---
             // Posiciona a imagem principal no centro da página, abaixo das seções principais
-            addImageToPdfDirect(dafelMainLogoPDF, pageWidth / 2 - 50, currentY + 5, 100, 30, 'JPEG'); // Ajuste as dimensões conforme necessário
+            // Ajustando largura e altura para tentar melhorar a qualidade e evitar esticamento
+            const dafelMainLogoWidth = 120; // Aumentei a largura
+            const dafelMainLogoHeight = 40; // Aumentei a altura, mantendo proporção se possível
+            const dafelMainLogoX = (pageWidth / 2) - (dafelMainLogoWidth / 2);
+            addImageToPdfDirect(dafelMainLogoPDF, dafelMainLogoX, currentY + 5, dafelMainLogoWidth, dafelMainLogoHeight, 'JPEG'); 
 
             currentY += 40; // Espaço após a imagem principal
 
@@ -1356,4 +1369,3 @@ document.addEventListener('DOMContentLoaded', function () {
     // Valida os campos de medida ao carregar a página
     validarCamposMedida();
 }); // FIM DO DOMContentLoaded (ÚNICO FECHAMENTO)
-

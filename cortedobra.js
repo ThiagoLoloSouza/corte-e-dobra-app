@@ -1065,9 +1065,9 @@ document.addEventListener('DOMContentLoaded', function () {
             // você deve hospedá-las em um serviço público (Google Drive, Dropbox, Imgur, etc.)
             // e substituir estas URLs pelas URLs diretas das suas imagens.
             const dafelLogoSuperiorPDF = "https://drive.google.com/uc?export=download&id=1XDjJ0A3Y9qPCD5VEKDgbWJT1WiAKfS9C"; // Para logo_grupo-dafel_8KDzHg.png
-            const dafelSeriedadeNossaMarcaPDF = "https://placehold.co/60x15/333333/FFFFFF?text=DAFE_SERIEDADE_PDF"; // Para image_a9f29e.png
-            const laranjaDadosClientePDF = "https://placehold.co/20x20/FF8C00/FFFFFF?text=IMG_CLIENTE_PDF"; // Para image_a9dc1d.png
-            const dafelMainLogoPDF = "https://placehold.co/100x30/F0F0F0/000000?text=LOGO_PRINCIPAL_PDF"; // Para 411878334_914510800158541_3475139305395707762_n.jpg
+            const dafelSeriedadeNossaMarcaPDF = "https://drive.google.com/uc?export=download&id=1egIQnFMur-Zbzgj0xvKAOhwQYz0ZygJT"; // Para image_a9f29e.png
+            const laranjaDadosClientePDF = "https://drive.google.com/uc?export=download&id=1vxJqw0-cpvILfbJXGWq939FYhAUjyotn"; // Para image_a9dc1d.png
+            const dafelMainLogoPDF = "https://drive.google.com/uc?export=download&id=1vUrMdDXQwACVoPpOmMzHWDlle3nrdFAm"; // Para 411878334_914510800158541_3475139305395707762_n.jpg
 
             // Função para adicionar imagem ao PDF
             const addImageToPdfDirect = (imgUrl, x, y, width, height, format = 'PNG') => {

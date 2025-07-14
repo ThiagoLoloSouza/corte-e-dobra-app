@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const pesoTotalGeralElement = document.getElementById("peso-total-geral");
     const custoTotalGeralElement = document.getElementById("custo-total-geral");
     const btnSalvarOrcamento = document.getElementById("btnSalvarOrcamento");
-    const btnGerarPdf = document.getElementById("btnGerarPdf");
+    const btnGerarPdf = document = document.getElementById("btnGerarPdf");
     const btnNovoOrcamento = document.getElementById("btnNovoOrcamento");
 
     const clienteInputPrincipal = document.getElementById('cliente');
@@ -1071,14 +1071,16 @@ document.addEventListener('DOMContentLoaded', function () {
             };
 
             // --- IMAGENS (PARA PDF - SUBSTITUA COM SUAS URLs PÚBLICAS DO GITHUB PAGES) ---
-            // ATENÇÃO: As URLs abaixo são exemplos. VOCÊ DEVE SUBSTITUÍ-LAS PELAS SUAS PRÓPRIAS URLs
-            // DE IMAGENS HOSPEDADAS NO GITHUB PAGES.
-            // Certifique-se de que o formato (PNG, JPEG) está correto para cada imagem.
-            const dafelLogoSuperiorPDF = "https://thiagololosouza.github.io/corte-e-dobra-app/grupo-dafel-squarelogo-1724229844318.png"; // Exemplo: URL do GitHub Pages
-            const dafelSeriedadeNossaMarcaPDF = "https://thiagololosouza.github.io/corte-e-dobra-app/client-4.png"; // Exemplo: URL do GitHub Pages
-            const laranjaDadosClientePDF = "https://thiagololosouza.github.io/corte-e-dobra-app/411878334_914510800158541_3475139305395707762_n.jpg"; // Exemplo: URL do GitHub Pages
-            const dafelMainLogoPDF = "https://thiagololosouza.github.io/corte-e-dobra-app/images-1.jpg"; // Exemplo: URL do GitHub Pages (renomeei images (1).jpg para images-1.jpg)
-            const qrCodePDF = "https://thiagololosouza.github.io/corte-e-dobra-app/qrcode.png"; // Exemplo: QR Code
+            // ATENÇÃO: As URLs abaixo são **APENAS EXEMPLOS**. VOCÊ DEVE SUBSTITUÍ-LAS PELAS SUAS PRÓPRIAS URLs
+            // DE IMAGENS HOSPEDADAS NO SEU GITHUB PAGES, VERIFICANDO CADA UMA DELAS.
+            // Acesse seu repositório no GitHub, vá para Settings > Pages, e veja qual branch e pasta está configurada.
+            // Se as imagens estão na branch 'main' na raiz, as URLs devem ser como os exemplos abaixo.
+            // Para obter a URL EXATA de uma imagem: vá para a imagem no GitHub, clique nela, e depois clique no botão 'Raw'.
+            const dafelLogoSuperiorPDF = "https://thiagololosouza.github.io/corte-e-dobra-app/grupo-dafel-squarelogo-1724229844318.png"; // COLOQUE SUA URL AQUI
+            const dafelSeriedadeNossaMarcaPDF = "https://thiagololosouza.github.io/corte-e-dobra-app/client-4.png"; // COLOQUE SUA URL AQUI
+            const laranjaDadosClientePDF = "https://thiagololosouza.github.io/corte-e-dobra-app/411878334_914510800158541_3475139305395707762_n.jpg"; // COLOQUE SUA URL AQUI
+            const dafelMainLogoPDF = "https://thiagololosouza.github.io/corte-e-dobra-app/images-1.jpg"; // COLOQUE SUA URL AQUI (se renomeou images (1).jpg)
+            const qrCodePDF = "https://thiagololosouza.github.io/corte-e-dobra-app/qrcode.png"; // COLOQUE SUA URL AQUI (ou remova se não tiver)
 
             // Função para adicionar imagem ao PDF
             const addImageToPdfDirect = (imgUrl, x, y, width, height, format = 'PNG') => {
@@ -1155,7 +1157,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const clientCol1X = marginX + 25; // Após a imagem laranja
             const clientCol2X = marginX + 90;
             const clientCol3X = marginX + 155;
-            const clientColWidth = (pageWidth - (2 * marginX) - clientCol1X + marginX) / 3; // Largura aproximada para cada coluna
+            // A largura das colunas será implicitamente definida pelo espaçamento do texto
 
             // Cabeçalhos da seção do cliente (laranja)
             doc.setFillColor(255, 140, 0); // Laranja
@@ -1197,10 +1199,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (clienteDetalhes.enderecos && clienteDetalhes.enderecos.length > 0) {
                 const principal = clienteDetalhes.enderecos[0];
                 let ruaNumero = `${String(principal.rua || '')}, ${String(principal.numero || '')}`;
-                if (doc.getStringUnitWidth(ruaNumero.toUpperCase()) * doc.internal.getFontSize() / doc.internal.scaleFactor > 60) {
-                    ruaNumero = doc.splitTextToSize(ruaNumero.toUpperCase(), 60)[0] + "...";
-                }
-                addText(ruaNumero, clientCol1X + 2, clientDataY3 + 4.5, { fontSize: 9 });
+                // Ajustar a largura para o texto do endereço para quebrar a linha se necessário
+                const maxTextWidth = (clientCol2X - clientCol1X) - 4; // Largura da primeira coluna de dados - padding
+                const splitAddress = doc.splitTextToSize(ruaNumero.toUpperCase(), maxTextWidth);
+                doc.text(splitAddress, clientCol1X + 2, clientDataY3 + 4.5, { fontSize: 9 });
+                
                 addText(String(principal.bairro || 'N/A'), clientCol2X + 2, clientDataY3 + 4.5, { fontSize: 9 });
                 addText(`${String(principal.cidade || 'N/A')}/${String(principal.estado || 'N/A')}`, clientCol3X + 2, clientDataY3 + 4.5, { fontSize: 9 });
             } else {

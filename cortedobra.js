@@ -1064,13 +1064,18 @@ document.addEventListener('DOMContentLoaded', function () {
             // IMPORTANTE: As URLs abaixo são de placeholders. Para que suas imagens reais apareçam no PDF,
             // você deve hospedá-las em um serviço público (Google Drive, Dropbox, Imgur, etc.)
             // e substituir estas URLs pelas URLs diretas das suas imagens.
-            const dafelLogoSuperiorPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/grupo-dafel-squarelogo-1724229844318.webp";
-            const dafelSeriedadeNossaMarcaPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/client-4.png";
+            const dafelLogoSuperiorPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/client-4.png"
+            const dafelSeriedadeNossaMarcaPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/grupo-dafel-squarelogo-1724229844318.webp";
             const laranjaDadosClientePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/411878334_914510800158541_3475139305395707762_n.jpg";
             const dafelMainLogoPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/images%20(1).jpg";
 
+
+
+
+
+            
             // Função para adicionar imagem ao PDF
-            const addImageToPdfDirect = (imgUrl, x, y, width, height, format = 'PNG') => {
+             const addImageToPdfDirect = (imgUrl, x, y, width, height, format = 'PNG') => {
                 // Tentar adicionar imagem. Se a URL for inválida, a imagem não aparecerá, mas o PDF será gerado.
                 try {
                     doc.addImage(imgUrl, format, x, y, width, height);
@@ -1353,6 +1358,7 @@ document.addEventListener('DOMContentLoaded', function () {
     toggleCpfCnpjFields();
     // Atualiza o resumo inicial (pode ser 0.00 kg, R$ 0.00)
     atualizarResumoBitolas();
+
     // Valida os campos de medida ao carregar a página
     validarCamposMedida();
 }); // FIM DO DOMContentLoaded (ÚNICO FECHAMENTO)

@@ -1080,9 +1080,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const dafelSeriedadeNossaMarcaPDF = "https://thiagololosouza.github.io/corte-e-dobra-app/client-4.png"; // COLOQUE SUA URL AQUI
             const laranjaDadosClientePDF = "https://thiagololosouza.github.io/corte-e-dobra-app/411878334_914510800158541_3475139305395707762_n.jpg"; // COLOQUE SUA URL AQUI
             const dafelMainLogoPDF = "https://thiagololosouza.github.io/corte-e-dobra-app/images-1.jpg"; // COLOQUE SUA URL AQUI (se renomeou images (1).jpg)
-            const qrCodePDF = "https://thiagololosouza.github.io/corte-e-dobra-app/qrcode.png"; // COLOQUE SUA URL AQUI (ou remova se não tiver)
-
-            // Função para adicionar imagem ao PDF
+           
             const addImageToPdfDirect = (imgUrl, x, y, width, height, format = 'PNG') => {
                 // Tentar adicionar imagem. Se a URL for inválida, a imagem não aparecerá, mas o PDF será gerado.
                 try {

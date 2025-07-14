@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const pesoTotalGeralElement = document.getElementById("peso-total-geral");
     const custoTotalGeralElement = document.getElementById("custo-total-geral");
     const btnSalvarOrcamento = document.getElementById("btnSalvarOrcamento");
-    const btnGerarPdf = document = document.getElementById("btnGerarPdf");
+    const btnGerarPdf = document.getElementById("btnGerarPdf");
     const btnNovoOrcamento = document.getElementById("btnNovoOrcamento");
 
     const clienteInputPrincipal = document.getElementById('cliente');
@@ -1073,14 +1073,15 @@ document.addEventListener('DOMContentLoaded', function () {
             // --- IMAGENS (PARA PDF - SUBSTITUA COM SUAS URLs PÚBLICAS DO GITHUB PAGES) ---
             // ATENÇÃO: As URLs abaixo são **APENAS EXEMPLOS**. VOCÊ DEVE SUBSTITUÍ-LAS PELAS SUAS PRÓPRIAS URLs
             // DE IMAGENS HOSPEDADAS NO SEU GITHUB PAGES, VERIFICANDO CADA UMA DELAS.
-            // Acesse seu repositório no GitHub, vá para Settings > Pages, e veja qual branch e pasta está configurada.
-            // Se as imagens estão na branch 'main' na raiz, as URLs devem ser como os exemplos abaixo.
-            // Para obter a URL EXATA de uma imagem: vá para a imagem no GitHub, clique nela, e depois clique no botão 'Raw'.
+            // Acesse seu repositório no GitHub, vá para a branch 'principal', clique na imagem e depois no botão 'Raw'
+            // para obter a URL correta de cada imagem.
             const dafelLogoSuperiorPDF = "https://thiagololosouza.github.io/corte-e-dobra-app/grupo-dafel-squarelogo-1724229844318.png"; // COLOQUE SUA URL AQUI
             const dafelSeriedadeNossaMarcaPDF = "https://thiagololosouza.github.io/corte-e-dobra-app/client-4.png"; // COLOQUE SUA URL AQUI
             const laranjaDadosClientePDF = "https://thiagololosouza.github.io/corte-e-dobra-app/411878334_914510800158541_3475139305395707762_n.jpg"; // COLOQUE SUA URL AQUI
-            const dafelMainLogoPDF = "https://thiagololosouza.github.io/corte-e-dobra-app/images-1.jpg"; // COLOQUE SUA URL AQUI (se renomeou images (1).jpg)
-           
+            const dafelMainLogoPDF = "https://thiagololosouza.github.io/corte-e-dobra-app/images-1.jpg"; // COLOQUE SUA URL AQUI (AGORA QUE VOCÊ RENOMEU images (1).jpg para images-1.jpg)
+            // const qrCodePDF = "https://thiagololosouza.github.io/corte-e-dobra-app/qrcode.png"; // REMOVIDO: QR Code, conforme sua solicitação
+
+            // Função para adicionar imagem ao PDF
             const addImageToPdfDirect = (imgUrl, x, y, width, height, format = 'PNG') => {
                 // Tentar adicionar imagem. Se a URL for inválida, a imagem não aparecerá, mas o PDF será gerado.
                 try {
@@ -1123,7 +1124,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Informações do site e redes sociais (lado esquerdo do cabeçalho) - TEXTO BRANCO
             doc.setTextColor(255, 255, 255); // Cor branca para estes textos
             addText("ACESSE NOSSO SITE", pageWidth - marginX - 100, 7, { fontSize: 7, align: 'right', textColor: [255, 255, 255] }); 
-            addText("WWW.DAFEL.COM.BR", pageWidth - marginX - 100, 10, { fontSize: 9, align: 'right', textColor: [255, 255, 255] }); 
+            addText("WWW.DTEL.COM.BR", pageWidth - marginX - 100, 10, { fontSize: 9, align: 'right', textColor: [255, 255, 255] }); 
             addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, align: 'right', textColor: [255, 255, 255] }); 
             addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, align: 'right', textColor: [255, 255, 255] }); 
             doc.setTextColor(0, 0, 0); // Volta para preto padrão
@@ -1374,11 +1375,9 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.setTextColor(100, 100, 100);
             doc.text("DOCUMENTO GERADO POR CORTAFÁCIL - TODOS OS DIREITOS RESERVADOS.", pageWidth / 2, pageHeight - 5, { align: 'center' });
 
-            // Adiciona QR Code no rodapé (exemplo)
-            const qrCodeSize = 25;
-            const qrCodeX = pageWidth - marginX - qrCodeSize;
-            const qrCodeY = pageHeight - marginX - qrCodeSize + 5; // Ajustado para ficar mais acima do rodapé
-            addImageToPdfDirect(qrCodePDF, qrCodeX, qrCodeY, qrCodeSize, qrCodeSize, 'PNG');
+            // REMOVIDO: QR Code, conforme sua solicitação
+            // const qrCodePDF = "https://thiagololosouza.github.io/corte-e-dobra-app/qrcode.png"; 
+            // addImageToPdfDirect(qrCodePDF, qrCodeX, qrCodeY, qrCodeSize, qrCodeSize, 'PNG');
 
 
             // Salva o PDF

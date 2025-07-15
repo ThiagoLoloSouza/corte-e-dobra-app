@@ -1074,10 +1074,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // ATENÇÃO: As URLs abaixo são APENAS EXEMPLOS. VOCÊ DEVE SUBSTITUÍ-LAS PELAS SUAS PRÓPRIAS URLs
             // DE IMAGENS HOSPEDADAS NO SEU GITHUB, OBTIDAS CLICANDO NO ARQUIVO E DEPOIS NO BOTÃO 'RAW'.
             // CERTIFIQUE-SE DE QUE AS IMAGENS ESTÃO NO FORMATO PNG!
-            const dafelLogoSuperiorPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/images.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
-            const dafelSeriedadeNossaMarcaPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/client-4.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
-            const laranjaDadosClientePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/dafellaranja.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
-            const dafelMainLogoPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/grupodafel.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
+            const dafelLogoSuperiorPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/grupo-dafel-squarelogo-1724229844318.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
+            const dafelSeriedadeNossaMarcaPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/client-4.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
+            const laranjaDadosClientePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/411878334_914510800158541_3475139305395707762_n.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
+            const dafelMainLogoPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/images-1.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
             // const qrCodePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/qrcode.png"; // REMOVIDO: QR Code, conforme sua solicitação
 
             // Função para adicionar imagem ao PDF com tratamento de erro e log
@@ -1086,8 +1086,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     doc.addImage(imgUrl, 'PNG', x, y, width, height); // Força o formato para PNG
                 } catch (e) {
                     console.error(`ERRO AO ADICIONAR IMAGEM AO PDF: URL: ${imgUrl}, Erro: ${e.message}`, e);
-                    // Opcional: Adicionar um texto placeholder ou um retângulo para indicar a falha da imagem
-                    // doc.text("IMAGEM INVÁLIDA", x + width / 2, y + height / 2, { align: 'center', fontSize: 6, textColor: [255,0,0] });
+                    // Desenha um retângulo vermelho para indicar a falha da imagem no PDF
+                    doc.setFillColor(255, 0, 0); // Vermelho
+                    doc.rect(x, y, width, height, 'F');
+                    doc.setTextColor(255, 255, 255); // Branco
+                    doc.setFontSize(6);
+                    doc.text("IMAGEM FALHOU", x + width / 2, y + height / 2, { align: 'center' });
+                    doc.setTextColor(0, 0, 0); // Volta para preto padrão
+                    doc.setFontSize(10); // Volta ao padrão
                 }
             };
 
@@ -1122,7 +1128,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Informações do site e redes sociais (lado esquerdo do cabeçalho) - TEXTO BRANCO
             doc.setTextColor(255, 255, 255); // Cor branca para estes textos
             addText("ACESSE NOSSO SITE", pageWidth - marginX - 100, 7, { fontSize: 7, align: 'right', textColor: [255, 255, 255] }); 
-            addText("WWW.DAFEL.COM.BR", pageWidth - marginX - 100, 10, { fontSize: 9, align: 'right', textColor: [255, 255, 255] }); 
+            addText("WWW.DTEL.COM.BR", pageWidth - marginX - 100, 10, { fontSize: 9, align: 'right', textColor: [255, 255, 255] }); 
             addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, align: 'right', textColor: [255, 255, 255] }); 
             addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, align: 'right', textColor: [255, 255, 255] }); 
             doc.setTextColor(0, 0, 0); // Volta para preto padrão

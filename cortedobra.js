@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Campos de medida da peça
     const tipoPecaSelect = document.getElementById('tipo');
     const medidaAInput = document.getElementById('a');
-    const medidaBInput = document.getElementById('b');
+    const medidaBInput = document = document.getElementById('b');
     const medidaCInput = document.getElementById('c');
     const bitolaSelect = document.getElementById('bitola'); // Referência para o select da bitola
 
@@ -1070,16 +1070,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 }).format(value);
             };
 
-            // --- IMAGENS (PARA PDF - SUBSTITUA COM SUAS URLs PÚBLICAS DO GITHUB PAGES) ---
+            // --- IMAGENS (PARA PDF - SUBSTITUA COM SUAS URLs PÚBLICAS DO GITHUB RAW) ---
             // ATENÇÃO: As URLs abaixo são **APENAS EXEMPLOS**. VOCÊ DEVE SUBSTITUÍ-LAS PELAS SUAS PRÓPRIAS URLs
-            // DE IMAGENS HOSPEDADAS NO SEU GITHUB PAGES, VERIFICANDO CADA UMA DELAS.
-            // Acesse seu repositório no GitHub, vá para a branch 'principal', clique na imagem e depois no botão 'Raw'
-            // para obter a URL correta de cada imagem.
-            const dafelLogoSuperiorPDF = "https://thiagololosouza.github.io/corte-e-dobra-app/grupo-dafel-squarelogo-1724229844318.png"; // COLOQUE SUA URL AQUI
-            const dafelSeriedadeNossaMarcaPDF = "https://thiagololosouza.github.io/corte-e-dobra-app/client-4.png"; // COLOQUE SUA URL AQUI
-            const laranjaDadosClientePDF = "https://thiagololosouza.github.io/corte-e-dobra-app/411878334_914510800158541_3475139305395707762_n.jpg"; // COLOQUE SUA URL AQUI
-            const dafelMainLogoPDF = "https://thiagololosouza.github.io/corte-e-dobra-app/images-1.jpg"; // COLOQUE SUA URL AQUI (AGORA QUE VOCÊ RENOMEU images (1).jpg para images-1.jpg)
-            // const qrCodePDF = "https://thiagololosouza.github.io/corte-e-dobra-app/qrcode.png"; // REMOVIDO: QR Code, conforme sua solicitação
+            // DE IMAGENS HOSPEDADAS NO SEU GITHUB, OBTIDAS CLICANDO NO ARQUIVO E DEPOIS NO BOTÃO 'RAW'.
+            const dafelLogoSuperiorPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/grupo-dafel-squarelogo-1724229844318.webp"; // COLOQUE SUA URL RAW AQUI
+            const dafelSeriedadeNossaMarcaPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/ve7afy0h8caia2elqjwo.webp"; // COLOQUE SUA URL RAW AQUI
+            const laranjaDadosClientePDF = "https://github.com/ThiagoLoloSouza/corte-e-dobra-app/blob/main/411878334_914510800158541_3475139305395707762_n.jpg"; // COLOQUE SUA URL RAW AQUI
+            const dafelMainLogoPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/images-1.jpg"; // COLOQUE SUA URL RAW AQUI (AGORA QUE VOCÊ RENOMEU images (1).jpg para images-1.jpg)
+           
+
+
+
+
+
 
             // Função para adicionar imagem ao PDF
             const addImageToPdfDirect = (imgUrl, x, y, width, height, format = 'PNG') => {
@@ -1376,7 +1379,7 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.text("DOCUMENTO GERADO POR CORTAFÁCIL - TODOS OS DIREITOS RESERVADOS.", pageWidth / 2, pageHeight - 5, { align: 'center' });
 
             // REMOVIDO: QR Code, conforme sua solicitação
-            // const qrCodePDF = "https://thiagololosouza.github.io/corte-e-dobra-app/qrcode.png"; 
+            // const qrCodePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/qrcode.png"; 
             // addImageToPdfDirect(qrCodePDF, qrCodeX, qrCodeY, qrCodeSize, qrCodeSize, 'PNG');
 
 

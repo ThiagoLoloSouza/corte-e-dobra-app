@@ -1074,11 +1074,11 @@ document.addEventListener('DOMContentLoaded', function () {
             // ATENÇÃO: As URLs abaixo são APENAS EXEMPLOS. VOCÊ DEVE SUBSTITUÍ-LAS PELAS SUAS PRÓPRIAS URLs
             // DE IMAGENS HOSPEDADAS NO SEU GITHUB, OBTIDAS CLICANDO NO ARQUIVO E DEPOIS NO BOTÃO 'RAW'.
             // CERTIFIQUE-SE DE QUE AS IMAGENS ESTÃO NO FORMATO PNG!
-            const dafelLogoSuperiorPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/images.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
-            const dafelSeriedadeNossaMarcaPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/client-4.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
-            const laranjaDadosClientePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/dafellaranja.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
-            const dafelMainLogoPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/grupodafel.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
-            // const qrCodePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/qrcode.png"; // REMOVIDO: QR Code, conforme sua solicitação
+            const dafelLogoSuperiorPDF = "https://github.com/ThiagoLoloSouza/corte-e-dobra-app/blob/main/images.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
+            const dafelSeriedadeNossaMarcaPDF = "https://github.com/ThiagoLoloSouza/corte-e-dobra-app/blob/main/client-4.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
+            const laranjaDadosClientePDF = "https://github.com/ThiagoLoloSouza/corte-e-dobra-app/blob/main/dafellaranja.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
+            const dafelMainLogoPDF = "https://github.com/ThiagoLoloSouza/corte-e-dobra-app/blob/main/grupodafel.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
+       
 
             // Função para adicionar imagem ao PDF com tratamento de erro e log
             const addImageToPdfDirect = (imgUrl, x, y, width, height) => { // Removido 'format' do parâmetro, agora é sempre PNG

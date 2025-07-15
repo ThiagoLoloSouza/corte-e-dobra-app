@@ -1073,10 +1073,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // --- IMAGENS (PARA PDF - SUBSTITUA COM SUAS URLs PÚBLICAS DO GITHUB RAW) ---
             // ATENÇÃO: As URLs abaixo são **APENAS EXEMPLOS**. VOCÊ DEVE SUBSTITUÍ-LAS PELAS SUAS PRÓPRIAS URLs
             // DE IMAGENS HOSPEDADAS NO SEU GITHUB, OBTIDAS CLICANDO NO ARQUIVO E DEPOIS NO BOTÃO 'RAW'.
-             const dafelLogoSuperiorPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/client-4.png"
-            const dafelSeriedadeNossaMarcaPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/grupo-dafel-squarelogo-1724229844318.webp";
-            const laranjaDadosClientePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/411878334_914510800158541_3475139305395707762_n.jpg";
-            const dafelMainLogoPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/images-1.jpg"; // COLOQUE SUA URL RAW AQUI (AGORA QUE VOCÊ RENOMEU images (1).jpg para images-1.jpg)
+             const dafelLogoSuperiorPDF = ""
+            const dafelSeriedadeNossaMarcaPDF = "";
+            const laranjaDadosClientePDF = "";
+            const dafelMainLogoPDF = ""; // COLOQUE SUA URL RAW AQUI (AGORA QUE VOCÊ RENOMEU images (1).jpg para images-1.jpg)
             // const qrCodePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/qrcode.png"; // REMOVIDO: QR Code, conforme sua solicitação
 
 

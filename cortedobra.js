@@ -682,7 +682,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 modalVisualizarOrcamentos.style.display = 'none';
                 filtroOrcamentoInput.value = '';
                 listaOrcamentosDiv.innerHTML = '';
-                addEnderecoField.textContent = '';
+                visualizarOrcamentoFeedback.textContent = '';
             }
         });
     }
@@ -1070,24 +1070,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 }).format(value);
             };
 
-            // --- IMAGENS (PARA PDF - SUBSTITUA COM SUAS URLs PÚBLICAS DO GITHUB RAW) ---
-            // ATENÇÃO: As URLs abaixo são **APENAS EXEMPLOS**. VOCÊ DEVE SUBSTITUÍ-LAS PELAS SUAS PRÓPRIAS URLs
+            // --- IMAGENS (PARA PDF - SUBSTITUA COM SUAS URLs PÚBLICAS DO GITHUB RAW, AGORA EM PNG) ---
+            // ATENÇÃO: As URLs abaixo são APENAS EXEMPLOS. VOCÊ DEVE SUBSTITUÍ-LAS PELAS SUAS PRÓPRIAS URLs
             // DE IMAGENS HOSPEDADAS NO SEU GITHUB, OBTIDAS CLICANDO NO ARQUIVO E DEPOIS NO BOTÃO 'RAW'.
-             const dafelLogoSuperiorPDF = ""
-            const dafelSeriedadeNossaMarcaPDF = "";
-            const laranjaDadosClientePDF = "";
-            const dafelMainLogoPDF = ""; // COLOQUE SUA URL RAW AQUI (AGORA QUE VOCÊ RENOMEU images (1).jpg para images-1.jpg)
+            // CERTIFIQUE-SE DE QUE AS IMAGENS ESTÃO NO FORMATO PNG!
+            const dafelLogoSuperiorPDF = "https://github.com/ThiagoLoloSouza/corte-e-dobra-app/blob/main/client-4.png?raw=true"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
+            const dafelSeriedadeNossaMarcaPDF = "https://github.com/ThiagoLoloSouza/corte-e-dobra-app/blob/main/images.png?raw=true"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
+            const laranjaDadosClientePDF = "https://github.com/ThiagoLoloSouza/corte-e-dobra-app/blob/main/dafellaranja.png?raw=true"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
+            const dafelMainLogoPDF = "https://github.com/ThiagoLoloSouza/corte-e-dobra-app/blob/main/grupodafel.png?raw=true"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
             // const qrCodePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/qrcode.png"; // REMOVIDO: QR Code, conforme sua solicitação
 
-
-
-
-            
-
             // Função para adicionar imagem ao PDF com tratamento de erro e log
-            const addImageToPdfDirect = (imgUrl, x, y, width, height, format = 'PNG') => {
+            const addImageToPdfDirect = (imgUrl, x, y, width, height) => { // Removido 'format' do parâmetro, agora é sempre PNG
                 try {
-                    doc.addImage(imgUrl, format, x, y, width, height);
+                    doc.addImage(imgUrl, 'PNG', x, y, width, height); // Força o formato para PNG
                 } catch (e) {
                     console.error(`ERRO AO ADICIONAR IMAGEM AO PDF: URL: ${imgUrl}, Erro: ${e.message}`, e);
                     // Opcional: Adicionar um texto placeholder ou um retângulo para indicar a falha da imagem
@@ -1114,19 +1110,19 @@ document.addEventListener('DOMContentLoaded', function () {
             const dafelLogoSuperiorHeight = 15; 
             const dafelLogoSuperiorX = (pageWidth / 2) - (dafelLogoSuperiorWidth / 2);
             const dafelLogoSuperiorY = 3; 
-            addImageToPdfDirect(dafelLogoSuperiorPDF, dafelLogoSuperiorX, dafelLogoSuperiorY, dafelLogoSuperiorWidth, dafelLogoSuperiorHeight, 'PNG'); 
+            addImageToPdfDirect(dafelLogoSuperiorPDF, dafelLogoSuperiorX, dafelLogoSuperiorY, dafelLogoSuperiorWidth, dafelLogoSuperiorHeight); 
             
             // 2. Logo "Dafé Seriedade Nossa Marca" (dafelSeriedadeNossaMarcaPDF) - na ponta direita, mais quadradinha
             const dafelSeriedadeWidth = 40; 
             const dafelSeriedadeHeight = 15; 
             const dafelSeriedadeX = pageWidth - marginX - dafelSeriedadeWidth;
             const dafelSeriedadeY = 3; 
-            addImageToPdfDirect(dafelSeriedadeNossaMarcaPDF, dafelSeriedadeX, dafelSeriedadeY, dafelSeriedadeWidth, dafelSeriedadeHeight, 'PNG'); 
+            addImageToPdfDirect(dafelSeriedadeNossaMarcaPDF, dafelSeriedadeX, dafelSeriedadeY, dafelSeriedadeWidth, dafelSeriedadeHeight); 
 
             // Informações do site e redes sociais (lado esquerdo do cabeçalho) - TEXTO BRANCO
             doc.setTextColor(255, 255, 255); // Cor branca para estes textos
             addText("ACESSE NOSSO SITE", pageWidth - marginX - 100, 7, { fontSize: 7, align: 'right', textColor: [255, 255, 255] }); 
-            addText("WWW.DTEL.COM.BR", pageWidth - marginX - 100, 10, { fontSize: 9, align: 'right', textColor: [255, 255, 255] }); 
+            addText("WWW.DAFEL.COM.BR", pageWidth - marginX - 100, 10, { fontSize: 9, align: 'right', textColor: [255, 255, 255] }); 
             addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, align: 'right', textColor: [255, 255, 255] }); 
             addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, align: 'right', textColor: [255, 255, 255] }); 
             doc.setTextColor(0, 0, 0); // Volta para preto padrão
@@ -1139,8 +1135,7 @@ document.addEventListener('DOMContentLoaded', function () {
             addRect(marginX, currentY, pageWidth - (2 * marginX), 45, '#FFFFFF', 'FD'); // Fundo branco e borda
 
             // Imagem laranja na seção "Dados do Cliente"
-            addImageToPdfDirect(laranjaDadosClientePDF, marginX + 2, currentY + 2, 20, 20, 'JPEG'); // Posição e tamanho da imagem laranja
-
+            addImageToPdfDirect(laranjaDadosClientePDF, marginX + 2, currentY + 2, 20, 20); // Removido 'format'
             // Buscar documento e endereços do cliente (assíncrono)
             const urlBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : '';
             let clienteDetalhes = { documento: 'N/A', telefone: 'N/A', enderecos: [] };
@@ -1368,7 +1363,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const dafelMainLogoWidth = 100; // Largura ajustada
             const dafelMainLogoHeight = 30; // Altura ajustada
             const dafelMainLogoX = (pageWidth / 2) - (dafelMainLogoWidth / 2);
-            addImageToPdfDirect(dafelMainLogoPDF, dafelMainLogoX, currentY + 5, dafelMainLogoWidth, dafelMainLogoHeight, 'JPEG'); 
+            addImageToPdfDirect(dafelMainLogoPDF, dafelMainLogoX, currentY + 5, dafelMainLogoWidth, dafelMainLogoHeight); 
 
             currentY += 40; // Espaço após a imagem principal
 
@@ -1379,7 +1374,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // REMOVIDO: QR Code, conforme sua solicitação
             // const qrCodePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/qrcode.png"; 
-            // addImageToPdfDirect(qrCodePDF, qrCodeX, qrCodeY, qrCodeSize, qrCodeSize, 'PNG');
+            // addImageToPdfDirect(qrCodePDF, qrCodeX, qrCodeY, qrCodeSize, qrCodeSize);
 
 
             // Salva o PDF

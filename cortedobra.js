@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (clienteInputPrincipal) clienteInputPrincipal.readOnly = true;
     if (codClienteInputPrincipal) codClienteInputPrincipal.readOnly = true;
     if (numPedidoInput) numPedidoInput.readOnly = true;
-
     // Variáveis para armazenar dados do orçamento e cálculos
     const resumoBitolasCalculo = {};
     const resumoCustosCalculo = {};
@@ -52,20 +51,16 @@ document.addEventListener('DOMContentLoaded', function () {
     const cpfGroup = document.getElementById('cpfGroup');
     const cnpjClienteInput = document.getElementById('cnpjCliente');
     const cpfClienteInput = document.getElementById('cpfCliente');
-
     // Campos da modal para edição/cadastro
     const nomeClienteInput = document.getElementById('nomeCliente');
     const clienteIdParaEdicaoInput = document.getElementById('clienteIdParaEdicao'); // Campo oculto para ID do cliente
     const telefoneClienteInput = document.getElementById('telefoneCliente');
     const emailClienteInput = document.getElementById('emailCliente');
-
     // NOVO: Container para múltiplos endereços
     const enderecosContainer = document.getElementById('enderecosContainer');
     const btnAddEndereco = document.getElementById('btnAddEndereco');
-
     // Array para armazenar os endereços da modal antes de enviar
     let currentClientAddresses = [];
-
 
     /**
      * Alterna a visibilidade dos campos CNPJ e CPF na modal de cadastro de cliente.
@@ -202,7 +197,6 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('input[name="tipoPessoa"]').forEach(radio => {
         radio.addEventListener('change', toggleCpfCnpjFields);
     });
-
     // Event listener para adicionar novo endereço
     if (btnAddEndereco) {
         btnAddEndereco.addEventListener('click', () => addEnderecoField({}));
@@ -248,11 +242,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 telefoneCliente,
                 emailCliente
             };
-
             const urlBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
                 ? 'http://localhost:3000'
                 : '';
-
             let method = 'POST';
             let url = `${urlBase}/api/clientes`;
             if (idParaEdicao) {
@@ -266,17 +258,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(clientData)
                 });
-
                 if (!response.ok) {
                     const errorData = await response.json().catch(() => ({ message: 'Erro desconhecido ao cadastrar/atualizar cliente.' }));
                     throw new Error(errorData.message || "Erro ao cadastrar/atualizar cliente.");
                 }
 
                 const newClient = await response.json();
-
                 cadastroClienteFeedback.textContent = `Cliente "${newClient.nome}" ${method === 'POST' ? 'cadastrado' : 'atualizado'} com sucesso! Código: ${newClient.id}`;
                 cadastroClienteFeedback.style.color = 'green';
-
                 // Atualiza os campos principais se for um novo cadastro ou se o cliente editado for o atual
                 if (method === 'POST' || (clienteInputPrincipal.value === '' && codClienteInputPrincipal.value === '') || codClienteInputPrincipal.value === newClient.id) {
                     clienteInputPrincipal.value = newClient.nome;
@@ -319,7 +308,6 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     async function carregarClienteParaEdicao(clientId) {
         if (!clientId) return;
-
         modalCadastroCliente.style.display = 'flex';
         modalClienteTitle.textContent = 'Editar Cliente';
         formCadastroCliente.reset();
@@ -331,20 +319,17 @@ document.addEventListener('DOMContentLoaded', function () {
         const urlBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
             ? 'http://localhost:3000'
             : '';
-
         try {
             const response = await fetch(`${urlBase}/api/clientes/${clientId}`);
             if (!response.ok) {
                 throw new Error('Erro ao carregar dados do cliente para edição.');
             }
             const cliente = await response.json();
-
             // Preenche os campos da modal
             clienteIdParaEdicaoInput.value = cliente.id;
             nomeClienteInput.value = cliente.nome;
             telefoneClienteInput.value = cliente.telefone || '';
             emailClienteInput.value = cliente.email || '';
-
             if (cliente.tipo_pessoa === 'fisica') {
                 radioFisica.checked = true;
                 cpfClienteInput.value = cliente.documento || '';
@@ -477,7 +462,7 @@ document.addEventListener('DOMContentLoaded', function () {
             listaOrcamentosDiv.innerHTML = '';
             if (orcamentos.length === 0) {
                 listaOrcamentosDiv.innerHTML = '<p class="loading-message" style="color: orange; font-weight: bold;">Nenhum orçamento encontrado.</p>';
-                } else {
+            } else {
                     orcamentos.forEach(orcamento => {
                         // Crie uma div para cada item do orçamento para melhor controle de layout
                         const divItem = document.createElement('div');
@@ -493,13 +478,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         const spanText = document.createElement('span');
                         spanText.classList.add('orcamento-text-clickable');
                         spanText.textContent = `PEDIDO Nº: ${String(numPedidoDisplay).toUpperCase()} - CLIENTE: ${String(clienteNome).toUpperCase()} - OBRA: ${String(obraNome).toUpperCase()} - DATA: ${String(dataDisplay).toUpperCase()}`;
-                        
                         // Crie o botão de excluir
                         const btnExcluir = document.createElement('button');
                         btnExcluir.classList.add('btn', 'btn-danger', 'btn-excluir-orcamento');
                         btnExcluir.dataset.orcamentoId = orcamento.id;
                         btnExcluir.innerHTML = '<i class="fas fa-trash-alt"></i> EXCLUIR';
-
                         // Anexe os event listeners
                         spanText.addEventListener('click', () => carregarOrcamentoNaTela(orcamento.id));
                         btnExcluir.addEventListener('click', (e) => {
@@ -509,7 +492,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                 excluirOrcamento(idParaExcluir);
                             }
                         });
-
                         // Adicione o texto e o botão à div do item
                         divItem.appendChild(spanText);
                         divItem.appendChild(btnExcluir);
@@ -544,7 +526,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 throw new Error('ERRO AO CARREGAR DETALHES DO ORÇAMENTO.');
             }
             const orcamentoDetalhes = await response.json();
-
             // Preenche os campos do formulário principal com verificações de segurança
             if (clienteInputPrincipal) clienteInputPrincipal.value = (String(orcamentoDetalhes.clienteInfo?.cliente || '')).toUpperCase();
             if (codClienteInputPrincipal) codClienteInputPrincipal.value = (String(orcamentoDetalhes.clienteInfo?.codCliente || '')).toUpperCase();
@@ -555,14 +536,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (dataDesejadaInput) dataDesejadaInput.value = (String(orcamentoDetalhes.obraInfo?.dataDesejada || '')).toUpperCase();
             // Exibe o botão de editar cliente
             if (btnEditarCliente) btnEditarCliente.style.display = 'inline-block';
-
-
             // Limpa e preenche a tabela de peças
             linhasOrcamento.length = 0;
             tabelaResultados.innerHTML = '';
             Object.keys(resumoBitolasCalculo).forEach(key => delete resumoBitolasCalculo[key]);
             Object.keys(resumoCustosCalculo).forEach(key => delete resumoCustosCalculo[key]);
-
             if (orcamentoDetalhes.itensPedido && orcamentoDetalhes.itensPedido.length > 0) {
                 orcamentoDetalhes.itensPedido.forEach(item => {
                     const novaLinhaTabela = document.createElement('tr');
@@ -580,7 +558,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     novaLinhaTabela.dataset.custo = item.custo || '0';
                     // Armazena os dados originais da peça para facilitar a remoção do array
                     novaLinhaTabela.orcamentoData = item;
-
                     novaLinhaTabela.querySelector(".btn-excluir").addEventListener("click", function () {
                         const bitolaExcluir = novaLinhaTabela.dataset.bitola;
                         const pesoExcluir = parseFloat(novaLinhaTabela.dataset.peso);
@@ -600,7 +577,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         novaLinhaTabela.remove(); // Remove a linha da tabela HTML
                         atualizarResumoBitolas(); // Recalcula e atualiza o resumo
                     });
-
                     linhasOrcamento.push(item);
                     tabelaResultados.appendChild(novaLinhaTabela);
 
@@ -637,7 +613,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const response = await fetch(`${urlBase}/api/orcamentos/${id}`, {
                 method: 'DELETE'
             });
-
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({ message: 'Erro desconhecido ao excluir orçamento.' }));
                 throw new Error(errorData.message || "Erro ao excluir orçamento.");
@@ -722,7 +697,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Garante que os campos de medida estejam corretos para o tipo padrão (Vara em U)
         if (tipoPecaSelect) tipoPecaSelect.value = 'varaU';
         validarCamposMedida(); // Chama a validação para resetar os campos b e c
-        
+
         // Opcional: Focar no primeiro campo para nova entrada
         if (clienteInputPrincipal) clienteInputPrincipal.focus();
     }
@@ -732,17 +707,28 @@ document.addEventListener('DOMContentLoaded', function () {
         btnNovoOrcamento.addEventListener('click', iniciarNovoOrcamento);
     }
 
-
     // --- LÓGICA DE CÁLCULO DE PEÇAS E RESUMO DO ORÇAMENTO ---
-
     const pesosPorMetro = {
-        "4.2": 0.109, "5.0": 0.154, "6.3": 0.249, "8.0": 0.395, "10.0": 0.617,
-        "12.5": 0.962, "16.0": 1.578, "20.0": 2.466, "25.0": 7.30
+        "4.2": 0.109,
+        "5.0": 0.154,
+        "6.3": 0.249,
+        "8.0": 0.395,
+        "10.0": 0.617,
+        "12.5": 0.962,
+        "16.0": 1.578,
+        "20.0": 2.466,
+        "25.0": 7.30
     };
-
     const precosPorKg = {
-        "4.2": 8.50, "5.0": 8.20, "6.3": 7.90, "8.0": 7.80, "10.0": 7.70,
-        "12.5": 7.60, "16.0": 7.50, "20.0": 7.40, "25.0": 7.30
+        "4.2": 8.50,
+        "5.0": 8.20,
+        "6.3": 7.90,
+        "8.0": 7.80,
+        "10.0": 7.70,
+        "12.5": 7.60,
+        "16.0": 7.50,
+        "20.0": 7.40,
+        "25.0": 7.30
     };
 
     /**
@@ -751,7 +737,6 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     function validarCamposMedida() {
         const tipoSelecionado = tipoPecaSelect.value;
-
         // Resetar todos os campos e estados primeiro
         medidaBInput.value = '';
         medidaCInput.value = '';
@@ -774,8 +759,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 medidaBInput.required = true;
                 medidaCInput.required = true;
                 break;
-            default:
-                // Caso padrão, todos habilitados ou desabilitados conforme sua lógica inicial
+            default: // Caso padrão, todos habilitados ou desabilitados conforme sua lógica inicial
                 break;
         }
     }
@@ -798,7 +782,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Validação adicional baseada no tipo de peça
             if (tipo === 'varaReta' && (medidaBInput.value !== '' || medidaCInput.value !== '')) {
-                alert('PARA "VARA RETA", APENAS A MEDIDA "A" É NECESSÁRIA. POR FAVOR, LIMPE OS CAMPOS "B" E "C".');
+                alert('PARA "VARA RETA", APENAS A MEDIDA "A" É NECESSÁRIA. POR FAVOR, LIMPE OS CAMPO "B" E "C".');
                 return;
             }
             if ((tipo === 'varaL' || tipo === 'estribo') && medidaCInput.value !== '') {
@@ -813,7 +797,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert(`PARA "${tipo === 'varaL' ? 'VARA EM L' : 'ESTRIBO'}", AS MEDIDAS "A" E "B" SÃO NECESSÁRIAS.`);
                 return;
             }
-
 
             if (!tipo || !bitola || isNaN(a) || isNaN(quantidade) || quantidade <= 0) {
                 alert('POR FAVOR, PREENCHA TIPO, BITOLA, MEDIDA "A" E QUANTIDADE COM VALORES VÁLIDOS.');
@@ -830,535 +813,599 @@ document.addEventListener('DOMContentLoaded', function () {
             const comprimentoM = comprimentoCm / 100;
             const pesoPorMetro = pesosPorMetro[bitola];
             const pesoTotalPecas = pesoPorMetro * comprimentoM * quantidade;
-            const precoPorKgDaBitola = precosPorKg[bitola] || 0;
-            const custoTotalPecas = pesoTotalPecas * precoPorKgDaBitola;
+            const precoPorKg = precosPorKg[bitola];
+            const custoTotalPecas = precoPorKg * pesoTotalPecas;
 
             const novaLinhaTabela = document.createElement('tr');
             novaLinhaTabela.innerHTML = `
                 <td data-label="Tipo">${tipo.toUpperCase()}</td>
-                <td data-label="Bitola">${bitola.toUpperCase()} MM</td>
-                <td data-label="Medidas">${String(a).toUpperCase()}${b ? '/' + String(b).toUpperCase() : ''}${c ? '/' + String(c).toUpperCase() : ''}</td>
-                <td data-label="Qtd">${String(quantidade).toUpperCase()}</td>
-                <td data-label="Comprimento">${comprimentoCm.toFixed(2).toUpperCase()} CM</td>
-                <td data-label="Peso">${pesoTotalPecas.toFixed(3).toUpperCase()} KG</td>
+                <td data-label="Bitola">${bitola} MM</td>
+                <td data-label="Medidas">${a}${b ? '/' + b : ''}${c ? '/' + c : ''}</td>
+                <td data-label="Qtd">${quantidade}</td>
+                <td data-label="Comprimento">${comprimentoCm.toFixed(2)} CM</td>
+                <td data-label="Peso">${pesoTotalPecas.toFixed(2)} KG</td>
                 <td data-label="Ações"><button class="btn btn-danger btn-excluir"><i class="fas fa-trash-alt"></i> EXCLUIR</button></td>
             `;
 
             novaLinhaTabela.dataset.bitola = bitola;
-            novaLinhaTabela.dataset.peso = pesoTotalPecas;
-            novaLinhaTabela.dataset.custo = custoTotalPecas;
-            // Armazena os dados originais da peça para facilitar a remoção do array
-            const dadosPeca = {
-                tipo, bitola, medidas: { a, b, c }, quantidade,
-                comprimentoCm: comprimentoCm.toFixed(2),
-                pesoKg: pesoTotalPecas.toFixed(3),
-                custo: custoTotalPecas.toFixed(2)
-            };
-            linhasOrcamento.push(dadosPeca); // Adiciona ao array global de peças
+            novaLinhaTabela.dataset.peso = pesoTotalPecas.toFixed(2);
+            novaLinhaTabela.dataset.custo = custoTotalPecas.toFixed(2); // Armazena o custo para facilitar o recalculo
 
             novaLinhaTabela.querySelector(".btn-excluir").addEventListener("click", function () {
                 const bitolaExcluir = novaLinhaTabela.dataset.bitola;
                 const pesoExcluir = parseFloat(novaLinhaTabela.dataset.peso);
                 const custoExcluir = parseFloat(novaLinhaTabela.dataset.custo);
 
-                if (resumoBitolasCalculo[bitolaExcluir]) { resumoBitolasCalculo[bitolaExcluir] -= pesoExcluir; if (resumoBitolasCalculo[bitolaExcluir] < 0.001) { delete resumoBitolasCalculo[bitolaExcluir]; } }
-                if (resumoCustosCalculo[bitolaExcluir]) { resumoCustosCalculo[bitolaExcluir] -= custoExcluir; if (resumoCustosCalculo[bitolaExcluir] < 0.001) { delete resumoCustosCalculo[bitolaExcluir]; } }
+                // Subtrai do resumo de bitolas
+                if (resumoBitolasCalculo[bitolaExcluir]) {
+                    resumoBitolasCalculo[bitolaExcluir] -= pesoExcluir;
+                    if (resumoBitolasCalculo[bitolaExcluir] < 0.001) { // Remove se for muito pequeno
+                        delete resumoBitolasCalculo[bitolaExcluir];
+                    }
+                }
+                // Subtrai do resumo de custos
+                if (resumoCustosCalculo[bitolaExcluir]) {
+                    resumoCustosCalculo[bitolaExcluir] -= custoExcluir;
+                    if (resumoCustosCalculo[bitolaExcluir] < 0.001) { // Remove se for muito pequeno
+                        delete resumoCustosCalculo[bitolaExcluir];
+                    }
+                }
 
-                // Encontra e remove a peça do array linhasOrcamento
+                // Remove do array linhasOrcamento
                 const index = linhasOrcamento.findIndex(item =>
-                    item.tipo === dadosPeca.tipo && // Use dadosPeca aqui para se referir à peça original desta linha
-                    item.bitola === dadosPeca.bitola &&
-                    item.comprimentoCm === dadosPeca.comprimentoCm &&
-                    item.quantidade === dadosPeca.quantidade
+                    item.tipo === tipo &&
+                    item.bitola === bitola &&
+                    item.medidas.a === a &&
+                    item.medidas.b === b &&
+                    item.medidas.c === c &&
+                    item.quantidade === quantidade
                 );
-                if (index > -1) { linhasOrcamento.splice(index, 1); }
+                if (index > -1) {
+                    linhasOrcamento.splice(index, 1);
+                }
 
                 novaLinhaTabela.remove(); // Remove a linha da tabela HTML
                 atualizarResumoBitolas(); // Recalcula e atualiza o resumo
             });
 
+            // Adiciona a peça ao array para geração do PDF
+            linhasOrcamento.push({
+                tipo,
+                bitola,
+                medidas: { a, b, c },
+                quantidade,
+                comprimentoCm,
+                pesoKg: pesoTotalPecas,
+                custo: custoTotalPecas
+            });
+
             tabelaResultados.appendChild(novaLinhaTabela);
 
+            // Atualiza os totais para o resumo
             resumoBitolasCalculo[bitola] = (resumoBitolasCalculo[bitola] || 0) + pesoTotalPecas;
             resumoCustosCalculo[bitola] = (resumoCustosCalculo[bitola] || 0) + custoTotalPecas;
 
             atualizarResumoBitolas();
+
+            // Limpa os campos do formulário para a próxima adição
             formPeca.reset();
-            validarCamposMedida(); // Reseta os campos b e c após adicionar a peça
+            validarCamposMedida(); // Reseta os campos b e c
         });
     }
 
-    /**
-     * Atualiza o resumo de pesos e custos por bitola e os totais gerais.
-     */
+
     function atualizarResumoBitolas() {
         if (!resumoBitolasDisplay || !pesoTotalGeralElement || !custoTotalGeralElement) return;
 
-        resumoBitolasDisplay.innerHTML = "";
+        resumoBitolasDisplay.innerHTML = '';
         let pesoTotalGeral = 0;
         let custoTotalGeral = 0;
 
-        const bitolas = Object.keys(resumoBitolasCalculo).sort((a, b) => parseFloat(a) - parseFloat(b));
-        for (const bitola of bitolas) {
-            const peso = resumoBitolasCalculo[bitola];
-            const custo = resumoCustosCalculo[bitola] || 0;
+        for (const bitola in resumoBitolasCalculo) {
+            if (resumoBitolasCalculo.hasOwnProperty(bitola)) {
+                const peso = resumoBitolasCalculo[bitola];
+                const custo = resumoCustosCalculo[bitola];
 
-            pesoTotalGeral += peso;
-            custoTotalGeral += custo;
-
-            const linha = document.createElement("tr");
-            linha.innerHTML = `
-                <td data-label="Bitola">${bitola.toUpperCase()} MM</td>
-                <td data-label="Peso Total (kg)">${peso.toFixed(3).toUpperCase()} KG</td>
-                <td data-label="Custo Total (R$)">R$ ${custo.toFixed(2).toUpperCase()}</td>
-            `;
-            resumoBitolasDisplay.appendChild(linha);
+                if (peso > 0) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${bitola} MM</td>
+                        <td>${formatWeight(peso)}</td>
+                        <td>${formatCurrency(custo)}</td>
+                    `;
+                    resumoBitolasDisplay.appendChild(row);
+                    pesoTotalGeral += peso;
+                    custoTotalGeral += custo;
+                }
+            }
         }
-
-        pesoTotalGeralElement.textContent = pesoTotalGeral.toFixed(3).toUpperCase() + " KG";
-        custoTotalGeralElement.textContent = "R$ " + custoTotalGeral.toFixed(2).toUpperCase();
+        pesoTotalGeralElement.textContent = formatWeight(pesoTotalGeral);
+        custoTotalGeralElement.textContent = formatCurrency(custoTotalGeral);
     }
 
-    /**
-     * Monta um objeto de orçamento com os dados atuais do formulário.
-     * @returns {object} Objeto contendo todos os dados do orçamento.
-     */
-    function montarOrcamento() {
-        const clienteNome = clienteInputPrincipal?.value || '';
-        const codCliente = codClienteInputPrincipal?.value || '';
-        const obra = obraInput?.value || '';
-        const numPedido = numPedidoInput?.value || '';
-        const orcamentoId = orcamentoIdInput?.value || ''; // Pega o ID do orçamento para edição
-        const recebeCaminhao = recebeCaminhaoSelect?.value || '';
-        const dataDesejada = dataDesejadaInput?.value || '';
+    // --- Lógica para o campo de busca de cliente (autocomplete/datalist) ---
+    const clienteDatalist = document.getElementById('clientesDatalist'); // O datalist em si
+    const clienteBuscaInput = document.getElementById('cliente'); // O input ao qual o datalist está vinculado
 
-        const pesoTotalGeralDisplay = pesoTotalGeralElement?.textContent || '0.00 KG';
-        const custoTotalGeralDisplay = custoTotalGeralElement?.textContent || 'R$ 0.00';
-
-        return {
-            id: orcamentoId, // Inclui o ID para operações de PUT (edição)
-            clienteInfo: { cliente: clienteNome, codCliente: codCliente },
-            obraInfo: { nome: obra, numPedido: numPedido, recebeCaminhao: recebeCaminhao, dataDesejada: dataDesejada },
-            itensPedido: linhasOrcamento.map(item => ({ ...item, medidas: { ...item.medidas } })),
-            resumoBitolas: { ...resumoBitolasCalculo },
-            resumoCustos: { ...resumoCustosCalculo },
-            resumoGeral: {
-                pesoTotalGeral: pesoTotalGeralDisplay,
-                custoTotalGeral: custoTotalGeralDisplay,
-                custoTotalGeralNumerico: parseFloat(custoTotalGeralDisplay.replace('R$ ', '').replace(',', '.')) || 0
-            },
-            dataOrcamento: new Date().toLocaleDateString('pt-BR')
-        };
-    }
-
-    // --- EVENT LISTENERS PARA SALVAR E GERAR PDF ---
-
-    /**
-     * Salva ou atualiza um orçamento no backend.
-     */
-    if (btnSalvarOrcamento) {
-        btnSalvarOrcamento.addEventListener("click", async () => {
-            if (!clienteInputPrincipal.value || !codClienteInputPrincipal.value) {
-                alert('POR FAVOR, CADASTRE OU SELECIONE UM CLIENTE ANTES DE SALVAR O ORÇAMENTO.');
-                return;
-            }
-            if (linhasOrcamento.length === 0) {
-                alert('POR FAVOR, ADICIONE PELO MENOS UMA PEÇA AO ORÇAMENTO.');
+    if (clienteBuscaInput && clienteDatalist) {
+        clienteBuscaInput.addEventListener('input', async function() {
+            const searchTerm = clienteBuscaInput.value.trim();
+            if (searchTerm.length < 3) { // Só busca se tiver 3 ou mais caracteres
+                clienteDatalist.innerHTML = '';
                 return;
             }
 
-            const orcamentoParaSalvar = montarOrcamento();
             const urlBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
                 ? 'http://localhost:3000'
                 : '';
 
-            let method = 'POST';
-            let url = `${urlBase}/api/orcamentos`;
-
-            // Se orcamentoIdInput.value tem um valor, é uma edição (PUT)
-            if (orcamentoParaSalvar.id) {
-                method = 'PUT';
-                url = `${urlBase}/api/orcamentos/${orcamentoParaSalvar.id}`;
-            }
-
             try {
-                const response = await fetch(url, {
-                    method: method,
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(orcamentoParaSalvar)
-                });
-
+                const response = await fetch(`${urlBase}/api/clientes/buscar?q=${encodeURIComponent(searchTerm)}`);
                 if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ message: 'Erro desconhecido ao cadastrar/atualizar orçamento.' }));
-                    throw new Error(errorData.message || "Erro ao cadastrar/atualizar orçamento.");
+                    throw new Error('Erro ao buscar clientes.');
                 }
+                const clientes = await response.json();
 
-                const resultado = await response.json();
-                alert(`ORÇAMENTO ${method === 'POST' ? 'SALVO' : 'ATUALIZADO'} COM SUCESSO! PEDIDO Nº: ${String(resultado.numPedido || resultado.id).toUpperCase()}`);
+                clienteDatalist.innerHTML = ''; // Limpa as opções anteriores
+                clientes.forEach(cliente => {
+                    const option = document.createElement('option');
+                    option.value = cliente.nome; // Exibe o nome no input
+                    option.dataset.id = cliente.id; // Armazena o ID no dataset
+                    option.dataset.documento = cliente.documento || ''; // Armazena o documento
+                    option.dataset.telefone = cliente.telefone || ''; // Armazena o telefone
+                    option.dataset.email = cliente.email || ''; // Armazena o email
 
-                if (numPedidoInput) {
-                    numPedidoInput.value = String(resultado.numPedido || resultado.id).toUpperCase();
-                }
-                if (orcamentoIdInput && method === 'POST') {
-                    orcamentoIdInput.value = resultado.id; // Define o ID para o novo orçamento salvo
-                }
+                    // Adiciona os endereços ao dataset como JSON string
+                    if (cliente.enderecos && cliente.enderecos.length > 0) {
+                        option.dataset.enderecos = JSON.stringify(cliente.enderecos);
+                    } else {
+                        option.dataset.enderecos = '[]';
+                    }
 
-                // Após salvar/atualizar, inicia um novo orçamento automaticamente
-                // ou mantém o atual se for edição e o usuário quiser continuar trabalhando nele
-                if (method === 'POST') { // Apenas limpa para um novo orçamento se for um POST
-                    iniciarNovoOrcamento();
-                }
-
+                    clienteDatalist.appendChild(option);
+                });
             } catch (error) {
-                console.error("ERRO AO SALVAR/ATUALIZAR ORÇAMENTO:", error);
-                alert("ERRO AO SALVAR/ATUALIZAR ORÇAMENTO. DETALHES: " + String(error.message).toUpperCase());
+                console.error('Erro no autocomplete de clientes:', error);
+                // Pode adicionar um feedback visual aqui se desejar
+            }
+        });
+
+        // Evento para quando uma opção do datalist é selecionada (ou o valor é digitado e sai do foco)
+        clienteBuscaInput.addEventListener('change', function() {
+            const selectedOption = Array.from(clienteDatalist.options).find(
+                option => option.value === clienteBuscaInput.value
+            );
+
+            if (selectedOption) {
+                codClienteInputPrincipal.value = selectedOption.dataset.id || '';
+                // Limpa campos de obra e pedido para um novo orçamento ao selecionar um cliente
+                if (obraInput) obraInput.value = '';
+                if (numPedidoInput) numPedidoInput.value = '';
+                if (orcamentoIdInput) orcamentoIdInput.value = ''; // Garante que o ID do orçamento seja limpo
+                if (recebeCaminhaoSelect) recebeCaminhaoSelect.value = 'Sim';
+                if (dataDesejadaInput) dataDesejadaInput.value = '';
+
+                // Exibe o botão de editar cliente
+                if (btnEditarCliente) btnEditarCliente.style.display = 'inline-block';
+                
+                // Limpa a tabela de peças e o resumo para um novo orçamento
+                tabelaResultados.innerHTML = '';
+                Object.keys(resumoBitolasCalculo).forEach(key => delete resumoBitolasCalculo[key]);
+                Object.keys(resumoCustosCalculo).forEach(key => delete resumoCustosCalculo[key]);
+                linhasOrcamento.length = 0;
+                atualizarResumoBitolas();
+
+            } else {
+                // Se o valor não corresponde a uma opção existente, limpa o código do cliente
+                codClienteInputPrincipal.value = '';
+                if (btnEditarCliente) btnEditarCliente.style.display = 'none'; // Esconde o botão
             }
         });
     }
 
-    /**
-     * Gera um PDF do orçamento atual com layout aprimorado e horizontal.
-     */
-    if (btnGerarPdf) {
-        btnGerarPdf.addEventListener("click", async () => {
-            const { jsPDF } = window.jspdf;
-            if (!jsPDF) {
-                console.error("JSPDF NÃO ESTÁ CARREGADO.");
-                alert("ERRO: A BIBLIOTECA PARA GERAR PDF NÃO FOI CARREGADA CORRETAMENTE.");
-                return;
-            }
+    // --- FUNÇÕES DE FORMATAÇÃO ---
+    function formatCurrency(value) {
+        if (typeof value !== 'number' || isNaN(value)) {
+            return 'R$ 0,00';
+        }
+        return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
 
-            if (!clienteInputPrincipal.value || !codClienteInputPrincipal.value) {
-                alert('POR FAVOR, CADASTRE OU SELECIONE UM CLIENTE ANTES DE GERAR O PDF.');
-                return;
-            }
-            if (linhasOrcamento.length === 0) {
-                alert('POR FAVOR, ADICIONE PELO MENOS UMA PEÇA AO ORÇAMENTO.');
-                return;
-            }
-
-            const orcamento = montarOrcamento();
-            // Define o PDF em modo paisagem (horizontal)
-            const doc = new jsPDF('l', 'mm', 'a4'); // 'l' para paisagem (landscape)
-
-            // Dimensões da página A4 em mm no modo paisagem
-            const pageWidth = doc.internal.pageSize.getWidth(); // 297mm
-            const pageHeight = doc.internal.pageSize.getHeight(); // 210mm
-            const marginX = 10; // Margem lateral
-            let currentY = 10; // Posição Y atual para desenhar
-
-            // --- FUNÇÕES AUXILIARES PARA DESENHO ---
-            const addRect = (x, y, width, height, fillColor, style = 'F') => {
-                doc.setFillColor(fillColor);
-                doc.rect(x, y, width, height, style);
-            };
-
-            const addText = (text, x, y, options = {}) => {
-                doc.setFont(options.font || 'helvetica');
-                doc.setFontSize(options.fontSize || 10);
-                doc.setTextColor(options.textColor || 0, 0, 0); // Preto padrão
-                doc.text(String(text).toUpperCase(), x, y, options.align ? { align: options.align } : {}); // CONVERTE PARA MAIÚSCULAS DE FORMA SEGURA
-            };
-
-            // --- IMAGENS (PARA PDF - SUBSTITUA COM SUAS URLs PÚBLICAS) ---
-            // IMPORTANTE: As URLs abaixo são de placeholders. Para que suas imagens reais apareçam no PDF,
-            // você deve hospedá-las em um serviço público (Google Drive, Dropbox, Imgur, etc.)
-            // e substituir estas URLs pelas URLs diretas das suas imagens.
-            const dafelLogoSuperiorPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/client-4.png"
-            const dafelSeriedadeNossaMarcaPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/images.png";
-            const laranjaDadosClientePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/dafellaranja.png";
-            const dafelMainLogoPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/grupodafel.png";
+    function formatWeight(value) {
+        if (typeof value !== 'number' || isNaN(value)) {
+            return '0,000 Kg'; // Padrão com 3 casas decimais para peso
+        }
+        // Garante 3 casas decimais para peso
+        return value.toLocaleString('pt-BR', {
+            minimumFractionDigits: 3,
+            maximumFractionDigits: 3
+        }) + ' Kg';
+    }
 
 
+    // --- GERAÇÃO DE PDF (jsPDF) ---
+    // Adiciona o script jsPDF dinamicamente se ainda não estiver carregado
+    function loadJsPDF(callback) {
+        if (typeof jsPDF !== 'undefined') {
+            callback();
+            return;
+        }
+        const script = document.createElement('script');
+        script.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+        script.onload = () => {
+            console.log("jsPDF loaded successfully!");
+            callback();
+        };
+        script.onerror = () => {
+            console.error("Failed to load jsPDF script.");
+            alert("Erro ao carregar a biblioteca de PDF. Por favor, tente novamente.");
+        };
+        document.head.appendChild(script);
+    }
 
+    // Garante que o html2canvas está carregado
+    function loadHtml2Canvas(callback) {
+        if (typeof html2canvas !== 'undefined') {
+            callback();
+            return;
+        }
+        const script = document.createElement('script');
+        script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+        script.onload = () => {
+            console.log("html2canvas loaded successfully!");
+            callback();
+        };
+        script.onerror = () => {
+            console.error("Failed to load html2canvas script.");
+            alert("Erro ao carregar a biblioteca de captura de tela. Por favor, tente novamente.");
+        };
+        document.head.appendChild(script);
+    }
 
-
-            
-            // Função para adicionar imagem ao PDF
-             const addImageToPdfDirect = (imgUrl, x, y, width, height, format = 'PNG') => {
-                // Tentar adicionar imagem. Se a URL for inválida, a imagem não aparecerá, mas o PDF será gerado.
-                try {
-                    doc.addImage(imgUrl, format, x, y, width, height);
-                } catch (e) {
-                    console.warn(`Não foi possível adicionar a imagem ${imgUrl} ao PDF. Erro: ${e.message}`);
-                    // Opcional: Adicionar um texto placeholder ou um retângulo para indicar a falha da imagem
-                    // doc.text("IMAGEM INVÁLIDA", x + width / 2, y + height / 2, { align: 'center' });
-                }
-            };
-
-
-            // --- CABEÇALHO SUPERIOR ---
-            // Fundo azul escuro para o cabeçalho superior
-            addRect(0, 0, pageWidth, 20, '#333333'); // Ajustado para a largura da página horizontal
-
-            // Texto "ORÇAMENTO" - MAIOR E MAIS GORDINHO (BOLD)
-            doc.setFontSize(16);
-            doc.setTextColor(255, 255, 255); // Branco
-            doc.setFont('helvetica', 'bold');
-            doc.text("ORÇAMENTO", marginX, 13);
-            doc.setFontSize(10); // Volta ao padrão
-            doc.setFont('helvetica', 'normal'); // Volta ao padrão
-
-            // Imagem "Dafé Seriedade Nossa Marca" no meio do cabeçalho
-            // Verifique o formato da imagem (PNG, JPEG, WEBP). O jsPDF precisa do formato correto.
-            // Para .webp, o jsPDF pode precisar de um polyfill ou conversão.
-            // Se for .webp, considere converter para PNG/JPG ou usar um polyfill.
-            addImageToPdfDirect(dafelSeriedadeNossaMarcaPDF, pageWidth / 2 - 30, 3, 60, 15, 'PNG'); 
-            
-            // Imagem "Grupo Dafé" no canto superior direito
-            addImageToPdfDirect(dafelLogoSuperiorPDF, pageWidth - marginX - 45, 3, 40, 15, 'WEBP'); // Use 'WEBP' se o formato for .webp
-
-            // Informações do site e redes sociais (lado direito) - TEXTO BRANCO
-            doc.setTextColor(255, 255, 255); // Cor branca para estes textos
-            addText("ACESSE NOSSO SITE", pageWidth - marginX - 70, 7, { fontSize: 7, align: 'right' });
-            addText("WWW.DAFEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, align: 'right' });
-            addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, align: 'right' });
-            addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, align: 'right' });
-            doc.setTextColor(0, 0, 0); // Volta para preto padrão
-
-            currentY = 25; // Posição Y inicial após o cabeçalho superior
-
-            // --- BLOCO DE DADOS DO CLIENTE ---
-            // Retângulo principal que engloba as duas colunas com borda
-            doc.setDrawColor(0); // Cor da borda preta
-            addRect(marginX, currentY, pageWidth - (2 * marginX), 45, '#FFFFFF', 'FD'); // Fundo branco e borda
-
-            // Imagem laranja na seção "Dados do Cliente"
-            addImageToPdfDirect(laranjaDadosClientePDF, marginX + 2, currentY + 2, 20, 20, 'JPEG'); // Use 'JPEG' se o formato for .jpg
-
-            // Coluna da direita: DADOS DO CLIENTE (Agora com offset para a imagem)
-            const clientColumnXOffset = 25; // Offset para o texto devido à imagem laranja
-            const clientColumnX = marginX + clientColumnXOffset; // Começa na margem esquerda + offset
-
-            addText("DADOS DO CLIENTE", clientColumnX + 2, currentY + 5, { fontSize: 8, textColor: 0 });
-            addText("CÓDIGO", clientColumnX + 70, currentY + 5, { fontSize: 8, textColor: 0 });
-            addText("CNPJ/CPF", clientColumnX + 110, currentY + 5, { fontSize: 8, textColor: 0 });
-            addText("TELEFONE", clientColumnX + 150, currentY + 5, { fontSize: 8, textColor: 0 });
-            addText("CEP", clientColumnX + 190, currentY + 5, { fontSize: 8, textColor: 0 });
-
-            // Buscar documento e endereços do cliente (assíncrono)
-            const urlBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : '';
-            let clienteDetalhes = { documento: 'N/A', telefone: 'N/A', enderecos: [] };
+    // Função para adicionar imagem ao PDF diretamente (sem html2canvas)
+    function addImageToPdfDirect(doc, imageUrl, x, y, width, height, format = 'JPEG') {
+        if (imageUrl) {
             try {
-                const response = await fetch(`${urlBase}/api/clientes/${orcamento.clienteInfo?.codCliente}`);
-                if (response.ok) {
-                    clienteDetalhes = await response.json();
-                }
+                // `doc.addImage` pode aceitar base64 ou URL de imagem se CORS permitir
+                doc.addImage(imageUrl, format, x, y, width, height);
             } catch (e) {
-                console.error("ERRO AO BUSCAR DETALHES DO CLIENTE PARA PDF:", e);
+                console.error("Erro ao adicionar imagem ao PDF diretamente:", e);
+                // Fallback ou ignorar se a imagem não puder ser carregada
+            }
+        }
+    }
+
+
+    if (btnGerarPdf) {
+        btnGerarPdf.addEventListener('click', async function () {
+            // Verifica se há peças no orçamento
+            if (linhasOrcamento.length === 0) {
+                alert('Não é possível gerar PDF de um orçamento vazio. Adicione peças primeiro.');
+                return;
             }
 
-            // Ajuste de espaçamento para os dados do cliente
-            const clientDataY = currentY + 10;
-            const clientDataLineHeight = 5; // Linha de altura para os dados do cliente
+            // Coleta todas as informações necessárias do formulário
+            const orcamento = {
+                id: orcamentoIdInput.value || 'NOVO',
+                dataGeracao: new Date().toLocaleDateString('pt-BR'),
+                clienteInfo: {
+                    cliente: clienteInputPrincipal.value || 'N/A',
+                    codCliente: codClienteInputPrincipal.value || 'N/A',
+                    // Não inclui CPF/CNPJ aqui conforme a solicitação
+                },
+                obraInfo: {
+                    nome: obraInput.value || 'N/A',
+                    numPedido: numPedidoInput.value || 'N/A',
+                    recebeCaminhao: recebeCaminhaoSelect.value || 'N/A',
+                    dataDesejada: dataDesejadaInput.value || 'N/A'
+                },
+                itensPedido: linhasOrcamento,
+                resumoBitolas: resumoBitolasCalculo,
+                custoTotalGeral: parseFloat(custoTotalGeralElement.textContent.replace('R$', '').replace(/\./g, '').replace(',', '.') || '0'),
+                pesoTotalGeral: parseFloat(pesoTotalGeralElement.textContent.replace('Kg', '').replace(/\./g, '').replace(',', '.') || '0')
+            };
 
-            // Nome do Cliente e Código (ajuste de largura para evitar embolamento)
-            let clienteNomeText = String(orcamento.clienteInfo?.cliente || '');
-            let codClienteText = String(orcamento.clienteInfo?.codCliente || '');
-            // Se o nome for muito longo, trunca e adiciona "..."
-            if (doc.getStringUnitWidth(clienteNomeText.toUpperCase()) * doc.internal.getFontSize() / doc.internal.scaleFactor > 60) { // Max 60mm para o nome
-                clienteNomeText = doc.splitTextToSize(clienteNomeText.toUpperCase(), 60)[0] + "...";
-            }
-            addText(clienteNomeText, clientColumnX + 2, clientDataY, { fontSize: 9, textColor: 0, fontStyle: 'bold' });
-            addText(codClienteText, clientColumnX + 70, clientDataY, { fontSize: 9, textColor: 0 });
+            loadJsPDF(async () => {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4'); // 'p' for portrait, 'mm' for millimeters, 'a4' for A4 size
 
-            addText(String(clienteDetalhes.documento || 'N/A'), clientColumnX + 110, clientDataY, { fontSize: 9, textColor: 0 });
-            addText(String(clienteDetalhes.telefone || 'N/A'), clientColumnX + 150, clientDataY, { fontSize: 9, textColor: 0 });
-            addText(String(clienteDetalhes.enderecos?.[0]?.cep || 'N/A'), clientColumnX + 190, clientDataY, { fontSize: 9, textColor: 0 });
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+                let currentY = 10; // Posição Y inicial
 
-            // Endereço Principal do Cliente (ajuste de posição para evitar embolamento)
-            const addressY = clientDataY + clientDataLineHeight * 2; // Pula duas linhas para o endereço
-            addText("ENDEREÇO PRINCIPAL", clientColumnX + 2, addressY, { fontSize: 8, textColor: 0 });
-            addText("S/N", clientColumnX + 70, addressY, { fontSize: 8, textColor: 0 });
-            addText("BAIRRO", clientColumnX + 90, addressY, { fontSize: 8, textColor: 0 });
-            addText("CIDADE", clientColumnX + 130, addressY, { fontSize: 8, textColor: 0 });
-            addText("ESTADO", clientColumnX + 200, addressY, { fontSize: 8, textColor: 0 }); // POSIÇÃO AJUSTADA AINDA MAIS PARA A DIREITA
+                // --- CABEÇALHO ---
+                doc.setFillColor(34, 34, 34); // Cor da tarja escura (um cinza bem escuro)
+                doc.rect(0, 0, pageWidth, 40, 'F'); // Tarja escura no topo
 
-            if (clienteDetalhes.enderecos && clienteDetalhes.enderecos.length > 0) {
-                const principal = clienteDetalhes.enderecos[0];
-                // Ajuste de largura para a rua para evitar embolamento
-                let ruaText = String(principal.rua || '');
-                if (doc.getStringUnitWidth(ruaText.toUpperCase()) * doc.internal.getFontSize() / doc.internal.scaleFactor > 65) { // Largura máxima para a rua
-                    ruaText = doc.splitTextToSize(ruaText.toUpperCase(), 65)[0] + "..."; // Trunca se for muito longo
+                // Título "ORÇAMENTO"
+                doc.setTextColor(255, 255, 255); // Branco
+                doc.setFont('helvetica', 'bold'); // Negrito
+                doc.setFontSize(26); // Tamanho maior
+                doc.text("ORÇAMENTO", pageWidth / 2, 25, { align: 'center' }); // Centraliza o título
+
+                // Volta ao normal para os textos abaixo
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(10);
+
+                // Imagens de acesso e redes sociais (assumindo que são ícones)
+                // Você precisará de variáveis para essas imagens (base64 ou URL)
+                // Exemplo com placeholders para URLs de imagem (PRECISAM SER REAIS E ACESSÍVEIS OU BASE64)
+                // const iconeEstiletes = 'URL_OU_BASE64_ESTILETES';
+                // const iconeSite = 'URL_OU_BASE64_SITE';
+                // const iconeRedesSociais = 'URL_OU_BASE64_REDESSOCIAIS';
+
+                // Posicione os textos abaixo dos ícones. Coordenadas exatas dependem das imagens.
+                doc.setFontSize(8); // Um pouco menor para os links
+                doc.setTextColor(255, 255, 255); // Branco para os links de acesso
+                doc.text("Acesso as Estiletes", pageWidth - 45, 10); // Exemplo de posição
+                doc.text("Acesso no Site", pageWidth - 45, 20);
+                doc.text("Redes Sociais", pageWidth - 45, 30);
+                doc.setTextColor(0, 0, 0); // Volta para preto padrão para o resto do documento
+
+                currentY = 45; // Posição Y após o cabeçalho
+
+                // --- DADOS DO CLIENTE E OBRA ---
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'bold');
+                doc.text("DADOS DO CLIENTE", 10, currentY);
+                currentY += 5;
+                doc.setDrawColor(150, 150, 150); // Cor da linha
+
+                // Cliente
+                doc.setFont('helvetica', 'normal');
+                doc.text(`Cliente: ${orcamento.clienteInfo.cliente}`, 10, currentY + 5);
+                doc.line(10, currentY + 6, pageWidth - 10, currentY + 6); // Linha
+                currentY += 10;
+
+                // Código do Cliente
+                doc.text(`Código do Cliente: ${orcamento.clienteInfo.codCliente}`, 10, currentY + 5);
+                doc.line(10, currentY + 6, pageWidth - 10, currentY + 6); // Linha
+                currentY += 10;
+
+                // Telefone (Se existir no orcamento.clienteInfo, precisa ser passado)
+                // Exemplo: if (orcamento.clienteInfo.telefone) { doc.text(`Telefone: ${orcamento.clienteInfo.telefone}`, 10, currentY + 5); doc.line(10, currentY + 6, pageWidth - 10, currentY + 6); currentY += 10; }
+                // Email (Se existir no orcamento.clienteInfo, precisa ser passado)
+                // Exemplo: if (orcamento.clienteInfo.email) { doc.text(`Email: ${orcamento.clienteInfo.email}`, 10, currentY + 5); doc.line(10, currentY + 6, pageWidth - 10, currentY + 6); currentY += 10; }
+                
+                // Endereços (se houver, adicione linhas para cada parte do endereço)
+                // Para que esta parte funcione, você precisa passar os endereços do cliente para o objeto `orcamento`.
+                // Exemplo de como poderia ser, assumindo que `orcamento.clienteInfo.enderecos` é um array:
+                /*
+                if (orcamento.clienteInfo.enderecos && orcamento.clienteInfo.enderecos.length > 0) {
+                    orcamento.clienteInfo.enderecos.forEach((endereco, idx) => {
+                        doc.text(`Endereço ${idx + 1}: ${endereco.rua}, ${endereco.numero} - ${endereco.bairro}`, 10, currentY + 5);
+                        doc.line(10, currentY + 6, pageWidth - 10, currentY + 6);
+                        currentY += 5;
+                        doc.text(`${endereco.cidade} - ${endereco.estado}, CEP: ${endereco.cep}`, 10, currentY + 5);
+                        doc.line(10, currentY + 6, pageWidth - 10, currentY + 6);
+                        currentY += 10;
+                    });
                 }
-                addText(ruaText, clientColumnX + 2, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
-                addText(`${String(principal.numero || '')}`, clientColumnX + 70, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
-                addText(`${String(principal.bairro || '')}`, clientColumnX + 90, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
-                let cidadeText = String(principal.cidade || '');
-                let estadoText = String(principal.estado || '');
-                addText(cidadeText, clientColumnX + 130, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
-                addText(estadoText, clientColumnX + 200, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 }); // POSIÇÃO AJUSTADA AINDA MAIS PARA A DIREITA
-            } else {
-                addText("NENHUM ENDEREÇO PRINCIPAL.", clientColumnX + 2, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
-            }
-
-            // Data de Impressão (no canto inferior direito do bloco) - MAIOR E MAIS GORDINHA
-            const today = new Date();
-            const formattedDate = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
-            doc.setFontSize(12);
-            doc.setFont('helvetica', 'bold');
-            addText(formattedDate, pageWidth - marginX - 2, currentY + 40, { fontSize: 12, textColor: 0, align: 'right' });
-            doc.setFontSize(10); // Volta ao padrão
-            doc.setFont('helvetica', 'normal'); // Volta ao padrão
+                */
 
 
-            currentY += 50; // Espaço após o bloco de informações
+                doc.setFont('helvetica', 'bold');
+                doc.text("DADOS DA OBRA", 10, currentY + 5);
+                currentY += 5;
+                doc.setDrawColor(150, 150, 150); // Cor da linha
 
-            // --- DETALHES DOS PRODUTOS (TABELA) ---
-            // Cabeçalho da tabela de produtos
-            addRect(marginX, currentY, pageWidth - (2 * marginX), 8, '#ff8c00'); // Fundo laranja
-            doc.setDrawColor(0); // Cor da borda preta
-            doc.rect(marginX, currentY, pageWidth - (2 * marginX), 8, 'S'); // Borda para o cabeçalho
+                doc.setFont('helvetica', 'normal');
+                doc.text(`Obra: ${orcamento.obraInfo.nome}`, 10, currentY + 5);
+                doc.line(10, currentY + 6, pageWidth - 10, currentY + 6);
+                currentY += 10;
 
-            doc.setTextColor(255, 255, 255); // Branco para o cabeçalho da tabela
-            doc.setFont('helvetica', 'bold'); // Negrito
-            addText("PRODUTO", marginX + 2, currentY + 5, { fontSize: 9 });
-            addText("UND", marginX + 90, currentY + 5, { fontSize: 9 }); // UND em branco
-            addText("QTD", marginX + 120, currentY + 5, { fontSize: 9 });
-            addText("PESO (KG)", marginX + 170, currentY + 5, { fontSize: 9, align: 'right' });
-            addText("PREÇO/KG", marginX + 210, currentY + 5, { fontSize: 9, align: 'right' });
-            addText("TOTAL", pageWidth - marginX - 2, currentY + 5, { fontSize: 9, align: 'right' });
-            doc.setTextColor(0, 0, 0); // Volta para preto padrão
-            doc.setFont('helvetica', 'normal'); // Volta ao padrão
+                doc.text(`Número do Pedido: ${orcamento.obraInfo.numPedido}`, 10, currentY + 5);
+                doc.line(10, currentY + 6, pageWidth - 10, currentY + 6);
+                currentY += 10;
+
+                doc.text(`Recebe Caminhão: ${orcamento.obraInfo.recebeCaminhao}`, 10, currentY + 5);
+                doc.line(10, currentY + 6, pageWidth - 10, currentY + 6);
+                currentY += 10;
+
+                doc.text(`Data Desejada: ${orcamento.obraInfo.dataDesejada}`, 10, currentY + 5);
+                doc.line(10, currentY + 6, pageWidth - 10, currentY + 6);
+                currentY += 10;
 
 
-            currentY += 8; // Posição Y após o cabeçalho da tabela
+                currentY += 10; // Espaço antes da tabela de itens
 
-            // Linhas dos itens do pedido
-            doc.setFontSize(8);
-            doc.setTextColor(0, 0, 0); // Texto preto para os itens
+                // --- TABELA DE ITENS DO PEDIDO ---
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'bold');
+                doc.text("ITENS DO PEDIDO", 10, currentY);
+                currentY += 5;
+                doc.setDrawColor(0, 0, 0); // Linha preta
 
-            // Posições das linhas verticais da tabela
-            const col1X = marginX + 85; // Após PRODUTO
-            const col2X = marginX + 115; // Após UND
-            const col3X = marginX + 140; // Após QTD
-            const col4X = marginX + 195; // Após PESO (KG)
-            const col5X = marginX + 235; // Após PREÇO/KG
+                // Cabeçalho da tabela
+                const tableStartY = currentY + 5;
+                const colWidths = [30, 20, 30, 15, 25, 20, 25]; // Ajuste as larguras das colunas
+                const tableHeaders = ["TIPO", "BITOLA", "MEDIDAS", "QTD", "COMPR.", "PESO", "CUSTO"];
+                const startX = 10;
 
-            orcamento.itensPedido.forEach((item, index) => {
-                // Fundo zebrado para as linhas
-                if (index % 2 === 0) {
-                    addRect(marginX, currentY, pageWidth - (2 * marginX), 7, '#F8F8F8'); // Cinza claro
-                } else {
-                    addRect(marginX, currentY, pageWidth - (2 * marginX), 7, '#FFFFFF'); // Branco
+                doc.setFillColor(200, 200, 200); // Cor de fundo do cabeçalho da tabela
+                doc.rect(startX, tableStartY, colWidths.reduce((a, b) => a + b), 7, 'F'); // Fundo
+
+                doc.setTextColor(0, 0, 0); // Texto preto
+                doc.setFont('helvetica', 'bold');
+                let colX = startX;
+                tableHeaders.forEach((header, index) => {
+                    doc.text(header, colX + (colWidths[index] / 2), tableStartY + 5, { align: 'center' });
+                    colX += colWidths[index];
+                });
+                currentY = tableStartY + 7;
+
+                // Dados da tabela
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
+                orcamento.itensPedido.forEach(item => {
+                    // Verifica se a próxima linha excederá a página
+                    if (currentY + 6 > pageHeight - 30) { // Margem inferior
+                        doc.addPage();
+                        currentY = 10; // Volta ao topo da nova página
+                        // Recria o cabeçalho da tabela na nova página
+                        doc.setFillColor(200, 200, 200);
+                        doc.rect(startX, currentY, colWidths.reduce((a, b) => a + b), 7, 'F');
+                        doc.setTextColor(0, 0, 0);
+                        doc.setFont('helvetica', 'bold');
+                        colX = startX;
+                        tableHeaders.forEach((header, index) => {
+                            doc.text(header, colX + (colWidths[index] / 2), currentY + 5, { align: 'center' });
+                            colX += colWidths[index];
+                        });
+                        currentY += 7;
+                        doc.setFont('helvetica', 'normal');
+                        doc.setFontSize(9);
+                    }
+
+                    colX = startX;
+                    
+                    // Ajuste na descrição do produto para adicionar espaços
+                    let tipoDisplay = item.tipo.toUpperCase();
+                    tipoDisplay = tipoDisplay.replace(/VARAL/g, 'VARA L');
+                    tipoDisplay = tipoDisplay.replace(/VARARETA/g, 'VARA RETA');
+                    tipoDisplay = tipoDisplay.replace(/TUBOC/g, 'TUBO C');
+                    tipoDisplay = tipoDisplay.replace(/CHAPADOBRADA/g, 'CHAPA DOBRADA');
+                    // Adicione mais regras de substituição conforme necessário.
+
+                    doc.text(tipoDisplay, colX + (colWidths[0] / 2), currentY + 5, { align: 'center' });
+                    colX += colWidths[0];
+                    doc.text(`${item.bitola} MM`, colX + (colWidths[1] / 2), currentY + 5, { align: 'center' });
+                    colX += colWidths[1];
+                    doc.text(`${item.medidas.a}${item.medidas.b ? '/' + item.medidas.b : ''}${item.medidas.c ? '/' + item.medidas.c : ''}`, colX + (colWidths[2] / 2), currentY + 5, { align: 'center' });
+                    colX += colWidths[2];
+                    doc.text(`${item.quantidade}`, colX + (colWidths[3] / 2), currentY + 5, { align: 'center' });
+                    colX += colWidths[3];
+                    doc.text(`${item.comprimentoCm.toFixed(2)} CM`, colX + (colWidths[4] / 2), currentY + 5, { align: 'center' });
+                    colX += colWidths[4];
+                    doc.text(formatWeight(item.pesoKg), colX + (colWidths[5] / 2), currentY + 5, { align: 'center' });
+                    colX += colWidths[5];
+                    doc.text(formatCurrency(item.custo), colX + (colWidths[6] / 2), currentY + 5, { align: 'center' });
+                    colX += colWidths[6];
+
+                    currentY += 6; // Espaçamento entre as linhas
+                    doc.line(startX, currentY, startX + colWidths.reduce((a, b) => a + b), currentY); // Linha divisória
+                });
+
+                currentY += 10; // Espaço após a tabela
+
+                // --- RESUMO POR BITOLA ---
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'bold');
+                doc.text("RESUMO POR BITOLA", 10, currentY);
+                currentY += 5;
+                doc.setDrawColor(0, 0, 0); // Linha preta
+
+                // Cabeçalho do resumo
+                const resumoTableStartY = currentY + 5;
+                const resumoColWidths = [30, 30, 30];
+                const resumoTableHeaders = ["BITOLA", "PESO", "CUSTO"];
+
+                doc.setFillColor(200, 200, 200);
+                doc.rect(startX, resumoTableStartY, resumoColWidths.reduce((a, b) => a + b), 7, 'F');
+
+                doc.setTextColor(0, 0, 0);
+                colX = startX;
+                resumoTableHeaders.forEach((header, index) => {
+                    doc.text(header, colX + (resumoColWidths[index] / 2), resumoTableStartY + 5, { align: 'center' });
+                    colX += resumoColWidths[index];
+                });
+                currentY = resumoTableStartY + 7;
+
+                // Dados do resumo
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
+                for (const bitola in orcamento.resumoBitolas) {
+                    if (orcamento.resumoBitolas.hasOwnProperty(bitola)) {
+                        const peso = orcamento.resumoBitolas[bitola];
+                        const custo = orcamento.custoTotalGeral * (peso / orcamento.pesoTotalGeral); // Proporcional
+                        // Ou, se você tem resumoCustosCalculo no objeto orcamento:
+                        const custoBitola = orcamento.resumoCustos ? orcamento.resumoCustos[bitola] : 0;
+
+
+                        colX = startX;
+                        doc.text(`${bitola} MM`, colX + (resumoColWidths[0] / 2), currentY + 5, { align: 'center' });
+                        colX += resumoColWidths[0];
+                        doc.text(formatWeight(peso), colX + (resumoColWidths[1] / 2), currentY + 5, { align: 'center' });
+                        colX += resumoColWidths[1];
+                        doc.text(formatCurrency(custoBitola), colX + (resumoColWidths[2] / 2), currentY + 5, { align: 'center' });
+                        colX += resumoColWidths[2];
+
+                        currentY += 6;
+                        doc.line(startX, currentY, startX + resumoColWidths.reduce((a, b) => a + b), currentY);
+                    }
                 }
-                doc.setDrawColor(0); // Cor da borda preta
-                doc.rect(marginX, currentY, pageWidth - (2 * marginX), 7, 'S'); // Borda para a linha do item
 
-                const medidasStr = `${String(item.medidas?.a || '')}${item.medidas?.b ? '/' + String(item.medidas.b) : ''}${item.medidas?.c ? '/' + String(item.medidas.c) : ''}`;
-                const produtoDesc = `${String(item.tipo)} ${String(item.bitola)}MM (${medidasStr} CM)`; // Descrição mais completa
+                currentY += 10; // Espaço antes dos totais
 
-                const precoPorKgItem = (parseFloat(item.pesoKg) > 0) ? (parseFloat(item.custo) / parseFloat(item.pesoKg)) : 0;
+                // --- TOTAIS GERAIS ---
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'bold');
 
-                addText(produtoDesc, marginX + 2, currentY + 4.5);
-                addText("PC", marginX + 90, currentY + 4.5); // Unidade de medida
-                addText(String(item.quantidade || ''), marginX + 120, currentY + 4.5); // Converte para string
-                addText(`${parseFloat(item.pesoKg).toFixed(3)}`, marginX + 170, currentY + 4.5, { align: 'right' }); // Peso
-                addText(`R$ ${precoPorKgItem.toFixed(2)}`, marginX + 210, currentY + 4.5, { align: 'right' }); // Preço/KG
-                addText(`R$ ${parseFloat(item.custo).toFixed(2)}`, pageWidth - marginX - 2, currentY + 4.5, { align: 'right' }); // Total da linha
+                const totalLeftX = pageWidth - 70; // Posição para alinhar os totais à direita
+                doc.text(`TOTAL PESO: ${formatWeight(orcamento.pesoTotalGeral)}`, totalLeftX, currentY);
+                currentY += 7;
+                doc.text(`TOTAL CUSTO: ${formatCurrency(orcamento.custoTotalGeral)}`, totalLeftX, currentY);
+                currentY += 15;
 
-                // Linhas verticais para cada linha de item
-                doc.line(col1X, currentY, col1X, currentY + 7);
-                doc.line(col2X, currentY, col2X, currentY + 7);
-                doc.line(col3X, currentY, col3X, currentY + 7); // LINHA CORRIGIDA AQUI
-                doc.line(col4X, currentY, col4X, currentY + 7);
-                doc.line(col5X, currentY, col5X, currentY + 7);
+                // --- SEÇÃO DE APROVAÇÃO / ASSINATURA ---
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                doc.text("APROVAÇÃO DO CLIENTE", 10, currentY);
+                currentY += 10;
+                doc.line(20, currentY + 10, pageWidth - 20, currentY + 10); // Linha para assinatura
+                doc.text("Nome:________________________________________", 20, currentY + 15);
+                doc.text("Data: ____/____/________", pageWidth - 60, currentY + 15);
+                currentY += 25;
+
+                // --- INFORMAÇÕES ADICIONAIS / Observações ---
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'bold');
+                doc.text("OBSERVAÇÕES:", 10, currentY);
+                currentY += 5;
+                doc.setFont('helvetica', 'normal');
+                // Adicione observações dinâmicas se houver
+                doc.text("Prazo de entrega a combinar.", 10, currentY + 5);
+                doc.text("Orçamento válido por 7 dias.", 10, currentY + 10);
+                currentY += 20;
+
+                // --- INFORMAÇÕES DE CONTATO DA EMPRESA (Inferior) ---
+                doc.setFontSize(8);
+                doc.setTextColor(100, 100, 100); // Um cinza claro para o rodapé
+                doc.text("Telefone: (XX) XXXX-XXXX | Email: contato@suaempresa.com.br", pageWidth / 2, pageHeight - 20, { align: 'center' });
+                doc.text("Site: www.suaempresa.com.br", pageWidth / 2, pageHeight - 15, { align: 'center' });
+                doc.setFontSize(10); // Volta ao padrão para a data
+
+                // Data de Geração (no canto inferior direito)
+                const rightColX = pageWidth - 10; // Margem direita
+                doc.setFontSize(14); // Fonte maior para a data
+                doc.setFont('helvetica', 'bold'); // Negrito
+                doc.setTextColor(255, 165, 0); // Laranja
+                doc.text(orcamento.dataGeracao, rightColX, currentY + 10, { align: 'right' }); // Laranja
+                doc.setTextColor(0, 0, 0); // Volta para preto padrão
+                doc.setFont('helvetica', 'normal'); // Volta ao padrão
+
+                currentY += 55; // Espaço após a seção inferior
+
+                // --- IMAGEM PRINCIPAL NO MEIO (RODAPÉ) ---
+                // Posiciona a imagem principal no centro da página, abaixo das seções principais
+                // Adicione a URL ou Base64 da sua imagem. Ex: const dafelMainLogoPDF = "sua_logo_base64_ou_url";
+                // addImageToPdfDirect(dafelMainLogoPDF, pageWidth / 2 - 50, currentY + 5, 100, 30, 'JPEG'); // Ajuste as dimensões conforme necessário
+
+                currentY += 40; // Espaço após a imagem principal
+
+                // --- RODAPÉ (Exemplo simples) ---
+                doc.setFontSize(7);
+                doc.setTextColor(100, 100, 100);
+                doc.text("DOCUMENTO GERADO POR CORTAFÁCIL - TODOS OS DIREITOS RESERVADOS.", pageWidth / 2, pageHeight - 5, { align: 'center' });
 
 
-                currentY += 7; // Altura da linha
-                if (currentY > pageHeight - 50) { // Nova página se estiver perto do final
-                    doc.addPage('l', 'mm', 'a4'); // Adiciona nova página em paisagem
-                    currentY = 10;
-                    // Recria cabeçalho da tabela
-                    addRect(marginX, currentY, pageWidth - (2 * marginX), 8, '#ff8c00'); // Fundo laranja
-                    doc.setDrawColor(0);
-                    doc.rect(marginX, currentY, pageWidth - (2 * marginX), 8, 'S'); // Borda para o cabeçalho
-
-                    doc.setTextColor(255, 255, 255); // Branco para o cabeçalho da tabela
-                    doc.setFont('helvetica', 'bold'); // Negrito
-                    addText("PRODUTO", marginX + 2, currentY + 5, { fontSize: 9 });
-                    addText("UND", marginX + 90, currentY + 5, { fontSize: 9 });
-                    addText("QTD", marginX + 120, currentY + 5, { fontSize: 9 });
-                    addText("PESO (KG)", marginX + 170, currentY + 5, { fontSize: 9, align: 'right' });
-                    addText("PREÇO/KG", marginX + 210, currentY + 5, { fontSize: 9, align: 'right' });
-                    addText("TOTAL", pageWidth - marginX - 2, currentY + 5, { fontSize: 9, align: 'right' });
-                    doc.setTextColor(0, 0, 0); // Volta para preto padrão
-                    doc.setFont('helvetica', 'normal'); // Volta ao padrão
-                    currentY += 8;
-                }
+                // Salva o PDF
+                doc.save(`ORCAMENTO_${String(orcamento.clienteInfo?.cliente || '').replace(/[^A-Z0-9]/g, '_') || "CLIENTE"}_${String(orcamento.obraInfo?.numPedido || 'SEM_PEDIDO').toUpperCase()}.PDF`);
             });
-
-            currentY += 5; // Espaçamento após a tabela de itens
-
-            // --- TOTAIS DA TABELA (VALOR TOTAL) ---
-            addRect(marginX, currentY, pageWidth - (2 * marginX), 8, '#ff8c00'); // Fundo laranja
-            doc.setDrawColor(0);
-            doc.rect(marginX, currentY, pageWidth - (2 * marginX), 8, 'S'); // Borda para o total
-
-            doc.setTextColor(255, 255, 255); // Branco para o total
-            doc.setFont('helvetica', 'bold'); // Negrito
-            addText(`TOTAL: ${orcamento.resumoGeral.custoTotalGeral}`, pageWidth - marginX - 2, currentY + 5, { fontSize: 12, align: 'right' });
-            doc.setTextColor(0, 0, 0); // Volta para preto padrão
-            doc.setFont('helvetica', 'normal'); // Volta ao padrão
-
-            currentY += 13; // Espaço após os totais da tabela
-
-            // --- SEÇÃO INFERIOR: ENDEREÇO ENTREGA E PREVISÃO ---
-            addRect(marginX, currentY, pageWidth - (2 * marginX), 50, '#F0F0F0'); // Fundo cinza claro
-            doc.setDrawColor(0);
-            doc.rect(marginX, currentY, pageWidth - (2 * marginX), 50, 'S'); // Borda para a seção inferior
-
-            doc.setDrawColor(200); // Cor da linha divisória interna
-            doc.line(marginX + (pageWidth - (2 * marginX)) * 0.45, currentY, marginX + (pageWidth - (2 * marginX)) * 0.45, currentY + 50); // Linha vertical no meio
-
-            // Coluna esquerda da seção inferior
-            const leftColX = marginX;
-
-            addText("ENDEREÇO ENTREGA", leftColX + 2, currentY + 5, { fontSize: 8, textColor: 0 });
-            addText(String(orcamento.obraInfo?.nome || 'N/A'), leftColX + 2, currentY + 10, { fontSize: 9, textColor: 0, fontStyle: 'bold' }); // Converte para string
-            // Endereço de entrega da obra (usando o primeiro endereço do cliente como exemplo, ou da obra se existir)
-            const enderecoEntrega = clienteDetalhes.enderecos?.[0] || {};
-            addText(`${String(enderecoEntrega.rua || '')}, ${String(enderecoEntrega.numero || '')} - ${String(enderecoEntrega.bairro || '')}, ${String(enderecoEntrega.cidade || '')}/${String(enderecoEntrega.estado || '')}`, leftColX + 2, currentY + 15, { fontSize: 8, textColor: 0 });
-
-
-            // Coluna direita da seção inferior
-            const rightColX = marginX + (pageWidth - (2 * marginX)) * 0.45 + 5; // Posição X para a coluna da direita
-
-            // Previsão de Entrega (mock data)
-            const previsaoEntregaData = new Date();
-            previsaoEntregaData.setDate(previsaoEntregaData.getDate() + 7); // Exemplo: 7 dias a partir de hoje
-            addText("PREVISÃO DE ENTREGA", rightColX, currentY + 5, { fontSize: 8, textColor: 0 });
-            doc.setTextColor(255, 255, 255); // Cor branca para a previsão de entrega
-            doc.setFont('helvetica', 'bold'); // Negrito
-            addText(previsaoEntregaData.toLocaleDateString('pt-BR'), rightColX, currentY + 10, { fontSize: 14 }); // Laranja
-            doc.setTextColor(0, 0, 0); // Volta para preto padrão
-            doc.setFont('helvetica', 'normal'); // Volta ao padrão
-
-            currentY += 55; // Espaço após a seção inferior
-
-            // --- IMAGEM PRINCIPAL NO MEIO (RODAPÉ) ---
-            // Posiciona a imagem principal no centro da página, abaixo das seções principais
-            addImageToPdfDirect(dafelMainLogoPDF, pageWidth / 2 - 50, currentY + 5, 100, 30, 'JPEG'); // Ajuste as dimensões conforme necessário
-
-            currentY += 40; // Espaço após a imagem principal
-
-            // --- RODAPÉ (Exemplo simples) ---
-            doc.setFontSize(7);
-            doc.setTextColor(100, 100, 100);
-            doc.text("DOCUMENTO GERADO POR CORTAFÁCIL - TODOS OS DIREITOS RESERVADOS.", pageWidth / 2, pageHeight - 5, { align: 'center' });
-
-
-            // Salva o PDF
-            doc.save(`ORCAMENTO_${String(orcamento.clienteInfo?.cliente || '').replace(/[^A-Z0-9]/g, '_') || "CLIENTE"}_${String(orcamento.obraInfo?.numPedido || 'SEM_PEDIDO').toUpperCase()}.PDF`);
         });
     }
 
     // --- INICIALIZAÇÃO ---
     // Garante que os campos CNPJ/CPF estejam corretos ao carregar a página
-    toggleCpfCnpjFields();
-    // Atualiza o resumo inicial (pode ser 0.00 kg, R$ 0.00)
-    atualizarResumoBitolas();
-
-    // Valida os campos de medida ao carregar a página
     validarCamposMedida();
-}); // FIM DO DOMContentLoaded (ÚNICO FECHAMENTO)
+});

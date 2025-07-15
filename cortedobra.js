@@ -590,7 +590,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (resumoCustosCalculo[bitolaExcluir]) { resumoCustosCalculo[bitolaExcluir] -= custoExcluir; if (resumoCustosCalculo[bitolaExcluir] < 0.001) { delete resumoCustosCalculo[bitolaExcluir]; } }
 
                         const index = linhasOrcamento.findIndex(item =>
-                            item.tipo === novaLinhaTabela.orcamentoData.tipo &&
+                            item.tipo === novaLinhaTabela.orcamentoData.tipo && // Use dadosPeca aqui para se referir à peça original desta linha
                             item.bitola === novaLinhaTabela.orcamentoData.bitola &&
                             item.comprimentoCm === novaLinhaTabela.orcamentoData.comprimentoCm &&
                             item.quantidade === novaLinhaTabela.orcamentoData.quantidade
@@ -909,14 +909,14 @@ document.addEventListener('DOMContentLoaded', function () {
             const linha = document.createElement("tr");
             linha.innerHTML = `
                 <td data-label="Bitola">${bitola.toUpperCase()} MM</td>
-                <td data-label="Peso Total (kg)">${peso.toFixed(3).toUpperCase()} KG</td>
-                <td data-label="Custo Total (R$)">R$ ${custo.toFixed(2).toUpperCase()}</td>
+                <td data-label="Peso Total (kg)">${formatWeight(peso)}</td>
+                <td data-label="Custo Total (R$)">${formatCurrency(custo)}</td>
             `;
             resumoBitolasDisplay.appendChild(linha);
         }
 
-        pesoTotalGeralElement.textContent = pesoTotalGeral.toFixed(3).toUpperCase() + " KG";
-        custoTotalGeralElement.textContent = "R$ " + custoTotalGeral.toFixed(2).toUpperCase();
+        pesoTotalGeralElement.textContent = formatWeight(pesoTotalGeral);
+        custoTotalGeralElement.textContent = formatCurrency(custoTotalGeral);
     }
 
     /**
@@ -932,8 +932,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const recebeCaminhao = recebeCaminhaoSelect?.value || '';
         const dataDesejada = dataDesejadaInput?.value || '';
 
-        const pesoTotalGeralDisplay = pesoTotalGeralElement?.textContent || '0.00 KG';
-        const custoTotalGeralDisplay = custoTotalGeralElement?.textContent || 'R$ 0.00';
+        const pesoTotalGeralDisplay = pesoTotalGeralElement?.textContent || '0,000 Kg'; // Usar o texto formatado
+        const custoTotalGeralDisplay = custoTotalGeralElement?.textContent || 'R$ 0,00'; // Usar o texto formatado
 
         return {
             id: orcamentoId, // Inclui o ID para operações de PUT (edição)
@@ -945,7 +945,9 @@ document.addEventListener('DOMContentLoaded', function () {
             resumoGeral: {
                 pesoTotalGeral: pesoTotalGeralDisplay,
                 custoTotalGeral: custoTotalGeralDisplay,
-                custoTotalGeralNumerico: parseFloat(custoTotalGeralDisplay.replace('R$ ', '').replace(',', '.')) || 0
+                // Converte para numérico para o PDF, removendo a formatação
+                custoTotalGeralNumerico: parseFloat(custoTotalGeralDisplay.replace('R$', '').replace(/\./g, '').replace(',', '.')) || 0,
+                pesoTotalGeralNumerico: parseFloat(pesoTotalGeralDisplay.replace('Kg', '').replace(/\./g, '').replace(',', '.')) || 0
             },
             dataOrcamento: new Date().toLocaleDateString('pt-BR')
         };
@@ -1047,7 +1049,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const marginX = 10; // Margem lateral
             let currentY = 10; // Posição Y atual para desenhar
 
-            // --- FUNÇÕES AUXILIARES PARA DESENHO ---
+            // --- FUNÇÕES AUXILIARES PARA DESENHO NO PDF ---
             const addRect = (x, y, width, height, fillColor, style = 'F') => {
                 doc.setFillColor(fillColor);
                 doc.rect(x, y, width, height, style);
@@ -1060,31 +1062,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 doc.text(String(text).toUpperCase(), x, y, options.align ? { align: options.align } : {}); // CONVERTE PARA MAIÚSCULAS DE FORMA SEGURA
             };
 
-            // --- IMAGENS (PARA PDF - SUBSTITUA COM SUAS URLs PÚBLICAS) ---
-            // IMPORTANTE: As URLs abaixo são de placeholders. Para que suas imagens reais apareçam no PDF,
-            // você deve hospedá-las em um serviço público (Google Drive, Dropbox, Imgur, etc.)
-            // e substituir estas URLs pelas URLs diretas das suas imagens.
+            // --- IMAGENS (PARA PDF - URLs que você já tem) ---
+            // IMPORTANTE: MANTIDAS AS SUAS URLs EXISTENTES.
             const dafelLogoSuperiorPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/client-4.png"
             const dafelSeriedadeNossaMarcaPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/images.png";
             const laranjaDadosClientePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/dafellaranja.png";
             const dafelMainLogoPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/grupodafel.png";
 
-
-
-
-
-            
             // Função para adicionar imagem ao PDF
              const addImageToPdfDirect = (imgUrl, x, y, width, height, format = 'PNG') => {
-                // Tentar adicionar imagem. Se a URL for inválida, a imagem não aparecerá, mas o PDF será gerado.
                 try {
                     doc.addImage(imgUrl, format, x, y, width, height);
                 } catch (e) {
                     console.warn(`Não foi possível adicionar a imagem ${imgUrl} ao PDF. Erro: ${e.message}`);
-                    // Opcional: Adicionar um texto placeholder ou um retângulo para indicar a falha da imagem
-                    // doc.text("IMAGEM INVÁLIDA", x + width / 2, y + height / 2, { align: 'center' });
                 }
             };
+
             // --- CABEÇALHO SUPERIOR ---
             // Fundo azul escuro para o cabeçalho superior
             addRect(0, 0, pageWidth, 20, '#333333'); // Ajustado para a largura da página horizontal
@@ -1108,14 +1101,14 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.setTextColor(255, 255, 255); // Define a cor branca para os textos abaixo
             addText("ACESSE NOSSO SITE", pageWidth - marginX - 70, 7, { fontSize: 7, align: 'right' });
             addText("WWW.DAFEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, align: 'right' });
-            addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, align: 'right' });
+            addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, align: 'right' }); // Ajustado Y para 14
             addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, align: 'right' });
             doc.setTextColor(0, 0, 0); // Volta para preto padrão para o restante do documento
 
             currentY = 25; // Posição Y inicial após o cabeçalho superior
 
 
-                        // --- BLOCO DE DADOS DO CLIENTE ---
+            // --- BLOCO DE DADOS DO CLIENTE ---
             // Retângulo principal que engloba as duas colunas com borda
             doc.setDrawColor(0); // Cor da borda preta
             // currentY é o topo do bloco de dados do cliente
@@ -1153,7 +1146,7 @@ document.addEventListener('DOMContentLoaded', function () {
             addText("TELEFONE", clientColumnX + 130, clientDataYStart, { textColor: 0 }); // Ajustado
 
             doc.setFontSize(9); // Dados maiores
-            doc.setFont('helvetica', 'normal'); // Dados normais (se quiser negrito, mude para 'bold')
+            doc.setFont('helvetica', 'bold'); // Dados em negrito
             let clienteNomeText = String(orcamento.clienteInfo?.cliente || '');
             let codClienteText = String(orcamento.clienteInfo?.codCliente || '');
             // Se o nome for muito longo, trunca e adiciona "..."
@@ -1180,7 +1173,7 @@ document.addEventListener('DOMContentLoaded', function () {
             addText("CEP", clientColumnX + 235, addressY, { textColor: 0 }); // CEP na segunda linha, ajustado
 
             doc.setFontSize(9);
-            doc.setFont('helvetica', 'normal'); // Dados normais (se quiser negrito, mude para 'bold')
+            doc.setFont('helvetica', 'bold'); // Dados em negrito
             if (clienteDetalhes.enderecos && clienteDetalhes.enderecos.length > 0) {
                 const principal = clienteDetalhes.enderecos[0];
                 let ruaText = String(principal.rua || '');
@@ -1212,8 +1205,6 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.setFont('helvetica', 'normal'); // Volta ao padrão
 
             currentY += clientBlockHeight + 5; // Atualiza currentY para após o bloco de dados do cliente (com um pequeno espaçamento)
-
-
 
             // --- DETALHES DOS PRODUTOS (TABELA) ---
             // Cabeçalho da tabela de produtos
@@ -1256,22 +1247,28 @@ document.addEventListener('DOMContentLoaded', function () {
                 doc.setDrawColor(0); // Cor da borda preta
                 doc.rect(marginX, currentY, pageWidth - (2 * marginX), 7, 'S'); // Borda para a linha do item
 
-                const medidasStr = `${String(item.medidas?.a || '')}${item.medidas?.b ? '/' + String(item.medidas.b) : ''}${item.medidas?.c ? '/' + String(item.medidas.c) : ''}`;
-                const produtoDesc = `${String(item.tipo)} ${String(item.bitola)}MM (${medidasStr} CM)`; // Descrição mais completa
+                let produtoDesc = `${String(item.tipo)} ${String(item.bitola)}MM (${String(item.medidas?.a || '')}${item.medidas?.b ? '/' + String(item.medidas.b) : ''}${item.medidas?.c ? '/' + String(item.medidas.c) : ''} CM)`;
 
+                // Adiciona espaço entre palavras específicas na descrição
+                produtoDesc = produtoDesc.replace(/VaraL/g, 'Vara L');
+                produtoDesc = produtoDesc.replace(/VaraReta/g, 'Vara Reta');
+                produtoDesc = produtoDesc.replace(/TuboC/g, 'Tubo C');
+                produtoDesc = produtoDesc.replace(/ChapaDobrada/g, 'Chapa Dobrada');
+                // Adicione mais substituições conforme a necessidade para outros tipos de peça
+                
                 const precoPorKgItem = (parseFloat(item.pesoKg) > 0) ? (parseFloat(item.custo) / parseFloat(item.pesoKg)) : 0;
 
                 addText(produtoDesc, marginX + 2, currentY + 4.5);
                 addText("PC", marginX + 90, currentY + 4.5); // Unidade de medida
                 addText(String(item.quantidade || ''), marginX + 120, currentY + 4.5); // Converte para string
-                addText(`${parseFloat(item.pesoKg).toFixed(3)}`, marginX + 170, currentY + 4.5, { align: 'right' }); // Peso
-                addText(`R$ ${precoPorKgItem.toFixed(2)}`, marginX + 210, currentY + 4.5, { align: 'right' }); // Preço/KG
-                addText(`R$ ${parseFloat(item.custo).toFixed(2)}`, pageWidth - marginX - 2, currentY + 4.5, { align: 'right' }); // Total da linha
+                addText(formatWeight(parseFloat(item.pesoKg)), marginX + 170, currentY + 4.5, { align: 'right' }); // Peso
+                addText(formatCurrency(precoPorKgItem), marginX + 210, currentY + 4.5, { align: 'right' }); // Preço/KG
+                addText(formatCurrency(parseFloat(item.custo)), pageWidth - marginX - 2, currentY + 4.5, { align: 'right' }); // Total da linha
 
                 // Linhas verticais para cada linha de item
                 doc.line(col1X, currentY, col1X, currentY + 7);
                 doc.line(col2X, currentY, col2X, currentY + 7);
-                doc.line(col3X, currentY, col3X, currentY + 7); // LINHA CORRIGIDA AQUI
+                doc.line(col3X, currentY, col3X, currentY + 7);
                 doc.line(col4X, currentY, col4X, currentY + 7);
                 doc.line(col5X, currentY, col5X, currentY + 7);
 
@@ -1308,7 +1305,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             doc.setTextColor(255, 255, 255); // Branco para o total
             doc.setFont('helvetica', 'bold'); // Negrito
-            addText(`TOTAL: ${orcamento.resumoGeral.custoTotalGeral}`, pageWidth - marginX - 2, currentY + 5, { fontSize: 12, align: 'right' });
+            addText(`TOTAL: ${formatCurrency(orcamento.resumoGeral.custoTotalGeralNumerico)}`, pageWidth - marginX - 2, currentY + 5, { fontSize: 12, align: 'right' });
             doc.setTextColor(0, 0, 0); // Volta para preto padrão
             doc.setFont('helvetica', 'normal'); // Volta ao padrão
 
@@ -1339,7 +1336,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const previsaoEntregaData = new Date();
             previsaoEntregaData.setDate(previsaoEntregaData.getDate() + 7); // Exemplo: 7 dias a partir de hoje
             addText("PREVISÃO DE ENTREGA", rightColX, currentY + 5, { fontSize: 8, textColor: 0 });
-            doc.setTextColor(255, 255, 255); // Cor branca para a previsão de entrega
+            doc.setTextColor(255, 165, 0); // Cor laranja para a previsão de entrega
             doc.setFont('helvetica', 'bold'); // Negrito
             addText(previsaoEntregaData.toLocaleDateString('pt-BR'), rightColX, currentY + 10, { fontSize: 14 }); // Laranja
             doc.setTextColor(0, 0, 0); // Volta para preto padrão
@@ -1372,4 +1369,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Valida os campos de medida ao carregar a página
     validarCamposMedida();
+
+    // --- FUNÇÕES DE FORMATAÇÃO ---
+    /**
+     * Formata um valor numérico como moeda brasileira (R$ X.XXX,XX).
+     * @param {number} value - O valor numérico a ser formatado.
+     * @returns {string} O valor formatado como moeda.
+     */
+    function formatCurrency(value) {
+        if (typeof value !== 'number' || isNaN(value)) {
+            return 'R$ 0,00'; // Retorna um valor padrão se não for um número válido
+        }
+        return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    /**
+     * Formata um valor numérico como peso em quilogramas (X.XXX,XX Kg).
+     * @param {number} value - O valor numérico a ser formatado.
+     * @returns {string} O valor formatado como peso.
+     */
+    function formatWeight(value) {
+        if (typeof value !== 'number' || isNaN(value)) {
+            return '0,000 Kg'; // Retorna um valor padrão se não for um número válido
+        }
+        // Garante 3 casas decimais para peso, usando vírgula como separador decimal
+        return value.toLocaleString('pt-BR', {
+            minimumFractionDigits: 3,
+            maximumFractionDigits: 3
+        }) + ' Kg';
+    }
+
 }); // FIM DO DOMContentLoaded (ÚNICO FECHAMENTO)

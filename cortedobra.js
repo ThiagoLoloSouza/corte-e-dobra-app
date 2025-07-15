@@ -1092,12 +1092,12 @@ document.addEventListener('DOMContentLoaded', function () {
             addRect(0, 0, pageWidth, 20, '#333333'); // Ajustado para a largura da página horizontal
 
             // Texto "ORÇAMENTO" - MAIOR E MAIS GORDINHO (BOLD)
-            doc.setFontSize(16);
+            doc.setFontSize(22);
             doc.setTextColor(255, 255, 255); // Branco
             doc.setFont('helvetica', 'bold');
-            doc.text("ORÇAMENTO", marginX, 13);
-            doc.setFontSize(10); // Volta ao padrão
-            doc.setFont('helvetica', 'normal'); // Volta ao padrão
+            doc.text("ORÇAMENTO", marginX, 16);
+            doc.setFontSize(15); // Volta ao padrão
+            doc.setFont('helvetica', 'bold'); // Volta ao padrão
 
             // Imagem "Dafé Seriedade Nossa Marca" no meio do cabeçalho
             // Verifique o formato da imagem (PNG, JPEG, WEBP). O jsPDF precisa do formato correto.
@@ -1114,27 +1114,24 @@ document.addEventListener('DOMContentLoaded', function () {
             addText("WWW.DAFEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, align: 'right' });
             addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, align: 'right' });
             addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, align: 'right' });
-            doc.setTextColor(0, 0, 0); // Volta para preto padrão
+            doc.setTextColor(255, 255, 255); // branco para o texto do cabeçalho
 
             currentY = 25; // Posição Y inicial após o cabeçalho superior
 
-            // --- BLOCO DE DADOS DO CLIENTE ---
+            
+           // --- BLOCO DE DADOS DO CLIENTE ---
             // Retângulo principal que engloba as duas colunas com borda
             doc.setDrawColor(0); // Cor da borda preta
-            addRect(marginX, currentY, pageWidth - (2 * marginX), 45, '#FFFFFF', 'FD'); // Fundo branco e borda
+            // currentY é o topo do bloco de dados do cliente
+            const clientBlockHeight = 45; // Altura do bloco total
+            addRect(marginX, currentY, pageWidth - (2 * marginX), clientBlockHeight, '#FFFFFF', 'FD'); // Fundo branco e borda
 
             // Imagem laranja na seção "Dados do Cliente"
-            addImageToPdfDirect(laranjaDadosClientePDF, marginX + 2, currentY + 2, 20, 20, 'JPEG'); // Use 'JPEG' se o formato for .jpg
+            addImageToPdfDirect(laranjaDadosClientePDF, marginX + 2, currentY + 2, 30, 30, 'JPEG'); // Use 'JPEG' se o formato for .jpg
 
             // Coluna da direita: DADOS DO CLIENTE (Agora com offset para a imagem)
-            const clientColumnXOffset = 25; // Offset para o texto devido à imagem laranja
+            const clientColumnXOffset = 35; // Offset para o texto devido à imagem laranja (Aumentado para mais espaço)
             const clientColumnX = marginX + clientColumnXOffset; // Começa na margem esquerda + offset
-
-            addText("DADOS DO CLIENTE", clientColumnX + 2, currentY + 5, { fontSize: 8, textColor: 0 });
-            addText("CÓDIGO", clientColumnX + 70, currentY + 5, { fontSize: 8, textColor: 0 });
-            addText("CNPJ/CPF", clientColumnX + 110, currentY + 5, { fontSize: 8, textColor: 0 });
-            addText("TELEFONE", clientColumnX + 150, currentY + 5, { fontSize: 8, textColor: 0 });
-            addText("CEP", clientColumnX + 190, currentY + 5, { fontSize: 8, textColor: 0 });
 
             // Buscar documento e endereços do cliente (assíncrono)
             const urlBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : '';
@@ -1149,60 +1146,75 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // Ajuste de espaçamento para os dados do cliente
-            const clientDataY = currentY + 10;
-            const clientDataLineHeight = 5; // Linha de altura para os dados do cliente
+            const clientDataYStart = currentY + 5; // Posição Y para a primeira linha de títulos
+            const clientDataLineHeight = 6; // Altura de cada linha de dados + espaço para a linha divisória
 
-            // Nome do Cliente e Código (ajuste de largura para evitar embolamento)
+            // --- PRIMEIRA LINHA DE TÍTULOS E DADOS ---
+            doc.setFontSize(8); // Títulos menores
+            addText("CLIENTE", clientColumnX + 2, clientDataYStart, { textColor: 0 });
+            addText("CÓDIGO", clientColumnX + 80, clientDataYStart, { textColor: 0 }); // Ajustado
+            addText("TELEFONE", clientColumnX + 130, clientDataYStart, { textColor: 0 }); // Ajustado
+            addText("CEP", clientColumnX + 170, clientDataYStart, { textColor: 0 }); // Ajustado
+
+            doc.setFontSize(11); // Dados maiores
+            doc.setFont('helvetica', 'bold'); // Nome do cliente negrito
             let clienteNomeText = String(orcamento.clienteInfo?.cliente || '');
             let codClienteText = String(orcamento.clienteInfo?.codCliente || '');
             // Se o nome for muito longo, trunca e adiciona "..."
-            if (doc.getStringUnitWidth(clienteNomeText.toUpperCase()) * doc.internal.getFontSize() / doc.internal.scaleFactor > 60) { // Max 60mm para o nome
-                clienteNomeText = doc.splitTextToSize(clienteNomeText.toUpperCase(), 60)[0] + "...";
+            if (doc.getStringUnitWidth(clienteNomeText.toUpperCase()) * doc.internal.getFontSize() / doc.internal.scaleFactor > 70) { // Max 70mm para o nome
+                clienteNomeText = doc.splitTextToSize(clienteNomeText.toUpperCase(), 70)[0] + "...";
             }
-            addText(clienteNomeText, clientColumnX + 2, clientDataY, { fontSize: 9, textColor: 0, fontStyle: 'bold' });
-            addText(codClienteText, clientColumnX + 70, clientDataY, { fontSize: 9, textColor: 0 });
+            addText(clienteNomeText, clientColumnX + 2, clientDataYStart + clientDataLineHeight -2, { textColor: 0 });
+            doc.setFont('helvetica', 'normal'); // Volta ao normal para os outros dados
 
-            addText(String(clienteDetalhes.documento || 'N/A'), clientColumnX + 110, clientDataY, { fontSize: 9, textColor: 0 });
-            addText(String(clienteDetalhes.telefone || 'N/A'), clientColumnX + 150, clientDataY, { fontSize: 9, textColor: 0 });
-            addText(String(clienteDetalhes.enderecos?.[0]?.cep || 'N/A'), clientColumnX + 190, clientDataY, { fontSize: 9, textColor: 0 });
+            addText(codClienteText, clientColumnX + 80, clientDataYStart + clientDataLineHeight -2, { textColor: 0 });
+            addText(String(clienteDetalhes.telefone || 'N/A'), clientColumnX + 130, clientDataYStart + clientDataLineHeight -2, { textColor: 0 });
+            addText(String(clienteDetalhes.enderecos?.[0]?.cep || 'N/A'), clientColumnX + 170, clientDataYStart + clientDataLineHeight -2, { textColor: 0 });
 
-            // Endereço Principal do Cliente (ajuste de posição para evitar embolamento)
-            const addressY = clientDataY + clientDataLineHeight * 2; // Pula duas linhas para o endereço
-            addText("ENDEREÇO PRINCIPAL", clientColumnX + 2, addressY, { fontSize: 8, textColor: 0 });
-            addText("S/N", clientColumnX + 70, addressY, { fontSize: 8, textColor: 0 });
-            addText("BAIRRO", clientColumnX + 90, addressY, { fontSize: 8, textColor: 0 });
-            addText("CIDADE", clientColumnX + 130, addressY, { fontSize: 8, textColor: 0 });
-            addText("ESTADO", clientColumnX + 200, addressY, { fontSize: 8, textColor: 0 }); // POSIÇÃO AJUSTADA AINDA MAIS PARA A DIREITA
+            // Linha divisória após os dados do cliente (horizontal)
+            doc.setDrawColor(150); // Cor mais suave para as linhas internas
+            doc.line(clientColumnX, clientDataYStart + clientDataLineHeight + 1, pageWidth - marginX - 5, clientDataYStart + clientDataLineHeight + 1); // Linha abaixo da primeira linha de dados
 
+            // --- SEGUNDA LINHA DE TÍTULOS E DADOS (ENDEREÇO) ---
+            const addressY = clientDataYStart + clientDataLineHeight * 2; // Posição Y para a linha de endereço
+            doc.setFontSize(8);
+            addText("ENDEREÇO PRINCIPAL", clientColumnX + 2, addressY, { textColor: 0 });
+            addText("NÚMERO", clientColumnX + 75, addressY, { textColor: 0 }); // Ajustado
+            addText("BAIRRO", clientColumnX + 105, addressY, { textColor: 0 }); // Ajustado
+            addText("CIDADE", clientColumnX + 145, addressY, { textColor: 0 }); // Ajustado
+            addText("ESTADO", clientColumnX + 185, addressY, { textColor: 0 }); // Ajustado
+
+            doc.setFontSize(9);
             if (clienteDetalhes.enderecos && clienteDetalhes.enderecos.length > 0) {
                 const principal = clienteDetalhes.enderecos[0];
-                // Ajuste de largura para a rua para evitar embolamento
                 let ruaText = String(principal.rua || '');
-                if (doc.getStringUnitWidth(ruaText.toUpperCase()) * doc.internal.getFontSize() / doc.internal.scaleFactor > 65) { // Largura máxima para a rua
-                    ruaText = doc.splitTextToSize(ruaText.toUpperCase(), 65)[0] + "..."; // Trunca se for muito longo
+                if (doc.getStringUnitWidth(ruaText.toUpperCase()) * doc.internal.getFontSize() / doc.internal.scaleFactor > 70) { // Largura máxima para a rua
+                    ruaText = doc.splitTextToSize(ruaText.toUpperCase(), 70)[0] + "..."; // Trunca se for muito longo
                 }
-                addText(ruaText, clientColumnX + 2, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
-                addText(`${String(principal.numero || '')}`, clientColumnX + 70, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
-                addText(`${String(principal.bairro || '')}`, clientColumnX + 90, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
-                let cidadeText = String(principal.cidade || '');
-                let estadoText = String(principal.estado || '');
-                addText(cidadeText, clientColumnX + 130, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
-                addText(estadoText, clientColumnX + 200, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 }); // POSIÇÃO AJUSTADA AINDA MAIS PARA A DIREITA
+                addText(ruaText, clientColumnX + 2, addressY + clientDataLineHeight - 2, { textColor: 0 });
+                addText(`${String(principal.numero || '')}`, clientColumnX + 75, addressY + clientDataLineHeight - 2, { textColor: 0 });
+                addText(`${String(principal.bairro || '')}`, clientColumnX + 105, addressY + clientDataLineHeight - 2, { textColor: 0 });
+                addText(String(principal.cidade || ''), clientColumnX + 145, addressY + clientDataLineHeight - 2, { textColor: 0 });
+                addText(String(principal.estado || ''), clientColumnX + 185, addressY + clientDataLineHeight - 2, { textColor: 0 });
             } else {
-                addText("NENHUM ENDEREÇO PRINCIPAL.", clientColumnX + 2, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
+                addText("NENHUM ENDEREÇO PRINCIPAL.", clientColumnX + 2, addressY + clientDataLineHeight - 2, { textColor: 0 });
             }
+
+            // Linha divisória após os dados do endereço (horizontal)
+            doc.line(clientColumnX, addressY + clientDataLineHeight + 1, pageWidth - marginX - 5, addressY + clientDataLineHeight + 1); // Linha abaixo da segunda linha de dados
+
 
             // Data de Impressão (no canto inferior direito do bloco) - MAIOR E MAIS GORDINHA
             const today = new Date();
             const formattedDate = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
             doc.setFontSize(12);
             doc.setFont('helvetica', 'bold');
-            addText(formattedDate, pageWidth - marginX - 2, currentY + 40, { fontSize: 12, textColor: 0, align: 'right' });
+            addText(formattedDate, pageWidth - marginX - 2, currentY + clientBlockHeight - 5, { textColor: 0, align: 'right' }); // Posiciona no final do bloco
             doc.setFontSize(10); // Volta ao padrão
             doc.setFont('helvetica', 'normal'); // Volta ao padrão
 
+            currentY += clientBlockHeight + 5; // Atualiza currentY para após o bloco de dados do cliente (com um pequeno espaçamento)
 
-            currentY += 50; // Espaço após o bloco de informações
 
             // --- DETALHES DOS PRODUTOS (TABELA) ---
             // Cabeçalho da tabela de produtos

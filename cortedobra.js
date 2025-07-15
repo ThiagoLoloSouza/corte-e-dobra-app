@@ -1085,23 +1085,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     // doc.text("IMAGEM INVÁLIDA", x + width / 2, y + height / 2, { align: 'center' });
                 }
             };
-
             // --- CABEÇALHO SUPERIOR ---
             // Fundo azul escuro para o cabeçalho superior
             addRect(0, 0, pageWidth, 20, '#333333'); // Ajustado para a largura da página horizontal
 
             // Texto "ORÇAMENTO" - MAIOR E MAIS GORDINHO (BOLD)
-            doc.setFontSize(22);
+            doc.setFontSize(16);
             doc.setTextColor(255, 255, 255); // Branco
             doc.setFont('helvetica', 'bold');
             doc.text("ORÇAMENTO", marginX, 13);
-            doc.setFontSize(12); // Volta ao padrão
+            doc.setFontSize(10); // Volta ao padrão
             doc.setFont('helvetica', 'normal'); // Volta ao padrão
 
             // Imagem "Dafé Seriedade Nossa Marca" no meio do cabeçalho
-            // Verifique o formato da imagem (PNG, JPEG, WEBP). O jsPDF precisa do formato correto.
-            // Para .webp, o jsPDF pode precisar de um polyfill ou conversão.
-            // Se for .webp, considere converter para PNG/JPG ou usar um polyfill.
             addImageToPdfDirect(dafelSeriedadeNossaMarcaPDF, pageWidth / 2 - 30, 3, 60, 15, 'PNG'); 
             
             // Imagem "Grupo Dafé" no canto superior direito
@@ -1109,19 +1105,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Informações do site e redes sociais (lado direito) - TEXTO BRANCO
             // Definindo a cor branca explicitamente para cada chamada de addText
-            addText("ACESSE NOSSO SITE", pageWidth - marginX - 70, 7, { fontSize: 7, align: 'right', textColor: 255 }); // Cor branca
-            addText("WWW.DAFEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, align: 'right', textColor: 255 }); // Cor branca
-            addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, align: 'right', textColor: 255 }); // Cor branca
-            addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, align: 'right', textColor: 255 }); // Cor branca
+            doc.setTextColor(255, 255, 255); // Define a cor branca para os textos abaixo
+            addText("ACESSE NOSSO SITE", pageWidth - marginX - 70, 7, { fontSize: 7, align: 'right' });
+            addText("WWW.DAFEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, align: 'right' });
+            addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, align: 'right' });
+            addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, align: 'right' });
             doc.setTextColor(0, 0, 0); // Volta para preto padrão para o restante do documento
 
             currentY = 25; // Posição Y inicial após o cabeçalho superior
 
-             // --- BLOCO DE DADOS DO CLIENTE ---
+
+                        // --- BLOCO DE DADOS DO CLIENTE ---
             // Retângulo principal que engloba as duas colunas com borda
             doc.setDrawColor(0); // Cor da borda preta
             // currentY é o topo do bloco de dados do cliente
-            const clientBlockHeight = 45; // Altura do bloco total
+            const clientBlockHeight = 38; // Altura do bloco total (DIMINUÍDA para otimizar espaço)
             addRect(marginX, currentY, pageWidth - (2 * marginX), clientBlockHeight, '#FFFFFF', 'FD'); // Fundo branco e borda
 
             // Imagem laranja na seção "Dados do Cliente"
@@ -1149,12 +1147,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // --- PRIMEIRA LINHA DE TÍTULOS E DADOS ---
             doc.setFontSize(8); // Títulos menores
+            doc.setFont('helvetica', 'bold'); // Títulos em negrito
             addText("CLIENTE", clientColumnX + 2, clientDataYStart, { textColor: 0 });
             addText("CÓDIGO", clientColumnX + 80, clientDataYStart, { textColor: 0 }); // Ajustado
             addText("TELEFONE", clientColumnX + 130, clientDataYStart, { textColor: 0 }); // Ajustado
 
             doc.setFontSize(9); // Dados maiores
-            doc.setFont('helvetica', 'bold'); // Todos os dados em negrito
+            doc.setFont('helvetica', 'normal'); // Dados normais (se quiser negrito, mude para 'bold')
             let clienteNomeText = String(orcamento.clienteInfo?.cliente || '');
             let codClienteText = String(orcamento.clienteInfo?.codCliente || '');
             // Se o nome for muito longo, trunca e adiciona "..."
@@ -1172,14 +1171,16 @@ document.addEventListener('DOMContentLoaded', function () {
             // --- SEGUNDA LINHA DE TÍTULOS E DADOS (ENDEREÇO) ---
             const addressY = clientDataYStart + clientDataLineHeight * 2; // Posição Y para a linha de endereço
             doc.setFontSize(8);
+            doc.setFont('helvetica', 'bold'); // Títulos em negrito
             addText("ENDEREÇO PRINCIPAL", clientColumnX + 2, addressY, { textColor: 0 });
             addText("NÚMERO", clientColumnX + 75, addressY, { textColor: 0 }); // Ajustado
             addText("BAIRRO", clientColumnX + 105, addressY, { textColor: 0 }); // Ajustado
-            addText("CIDADE", clientColumnX + 145, addressY, { textColor: 0 }); // Ajustado
-            addText("ESTADO", clientColumnX + 185, addressY, { textColor: 0 }); // Ajustado
-            addText("CEP", clientColumnX + 225, addressY, { textColor: 0 }); // Novo: CEP na segunda linha
+            addText("CIDADE", clientColumnX + 155, addressY, { textColor: 0 }); // Ajustado para mais espaço
+            addText("ESTADO", clientColumnX + 195, addressY, { textColor: 0 }); // Ajustado para mais espaço
+            addText("CEP", clientColumnX + 235, addressY, { textColor: 0 }); // CEP na segunda linha, ajustado
 
             doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal'); // Dados normais (se quiser negrito, mude para 'bold')
             if (clienteDetalhes.enderecos && clienteDetalhes.enderecos.length > 0) {
                 const principal = clienteDetalhes.enderecos[0];
                 let ruaText = String(principal.rua || '');
@@ -1189,9 +1190,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 addText(ruaText, clientColumnX + 2, addressY + clientDataLineHeight - 2, { textColor: 0 });
                 addText(`${String(principal.numero || '')}`, clientColumnX + 75, addressY + clientDataLineHeight - 2, { textColor: 0 });
                 addText(`${String(principal.bairro || '')}`, clientColumnX + 105, addressY + clientDataLineHeight - 2, { textColor: 0 });
-                addText(String(principal.cidade || ''), clientColumnX + 145, addressY + clientDataLineHeight - 2, { textColor: 0 });
-                addText(String(principal.estado || ''), clientColumnX + 185, addressY + clientDataLineHeight - 2, { textColor: 0 });
-                addText(String(principal.cep || 'N/A'), clientColumnX + 225, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Novo: CEP na segunda linha
+                addText(String(principal.cidade || ''), clientColumnX + 155, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
+                addText(String(principal.estado || ''), clientColumnX + 195, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
+                addText(String(principal.cep || 'N/A'), clientColumnX + 235, addressY + clientDataLineHeight - 2, { textColor: 0 }); // CEP na segunda linha, ajustado
             } else {
                 addText("NENHUM ENDEREÇO PRINCIPAL.", clientColumnX + 2, addressY + clientDataLineHeight - 2, { textColor: 0 });
             }
@@ -1203,9 +1204,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Data de Impressão (no canto inferior direito do bloco) - MAIOR E MAIS GORDINHA
             const today = new Date();
             const formattedDate = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
-            doc.setFontSize(12);
+            doc.setFontSize(10); // Tamanho ajustado para caber com o texto
             doc.setFont('helvetica', 'bold');
-            addText(formattedDate, pageWidth - marginX - 2, currentY + clientBlockHeight - 5, { textColor: 0, align: 'right' }); // Posiciona no final do bloco
+            // Adicionando o texto "Data do Orçamento: "
+            addText(`DATA DO ORÇAMENTO: ${formattedDate}`, pageWidth - marginX - 2, currentY + clientBlockHeight - 5, { textColor: 0, align: 'right' }); // Posiciona no final do bloco
             doc.setFontSize(10); // Volta ao padrão
             doc.setFont('helvetica', 'normal'); // Volta ao padrão
 

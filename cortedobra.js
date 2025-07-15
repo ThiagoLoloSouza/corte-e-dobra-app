@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Campos de medida da peça
     const tipoPecaSelect = document.getElementById('tipo');
     const medidaAInput = document.getElementById('a');
-    const medidaBInput = document = document.getElementById('b');
+    const medidaBInput = document.getElementById('b');
     const medidaCInput = document.getElementById('c');
     const bitolaSelect = document.getElementById('bitola'); // Referência para o select da bitola
 
@@ -682,7 +682,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 modalVisualizarOrcamentos.style.display = 'none';
                 filtroOrcamentoInput.value = '';
                 listaOrcamentosDiv.innerHTML = '';
-                visualizarOrcamentoFeedback.textContent = '';
+                addEnderecoField.textContent = '';
             }
         });
     }
@@ -1073,26 +1073,25 @@ document.addEventListener('DOMContentLoaded', function () {
             // --- IMAGENS (PARA PDF - SUBSTITUA COM SUAS URLs PÚBLICAS DO GITHUB RAW) ---
             // ATENÇÃO: As URLs abaixo são **APENAS EXEMPLOS**. VOCÊ DEVE SUBSTITUÍ-LAS PELAS SUAS PRÓPRIAS URLs
             // DE IMAGENS HOSPEDADAS NO SEU GITHUB, OBTIDAS CLICANDO NO ARQUIVO E DEPOIS NO BOTÃO 'RAW'.
-            const dafelLogoSuperiorPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/grupo-dafel-squarelogo-1724229844318.webp"; // COLOQUE SUA URL RAW AQUI
-            const dafelSeriedadeNossaMarcaPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/ve7afy0h8caia2elqjwo.webp"; // COLOQUE SUA URL RAW AQUI
-            const laranjaDadosClientePDF = "https://github.com/ThiagoLoloSouza/corte-e-dobra-app/blob/main/411878334_914510800158541_3475139305395707762_n.jpg"; // COLOQUE SUA URL RAW AQUI
+             const dafelLogoSuperiorPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/client-4.png"
+            const dafelSeriedadeNossaMarcaPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/grupo-dafel-squarelogo-1724229844318.webp";
+            const laranjaDadosClientePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/411878334_914510800158541_3475139305395707762_n.jpg";
             const dafelMainLogoPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/images-1.jpg"; // COLOQUE SUA URL RAW AQUI (AGORA QUE VOCÊ RENOMEU images (1).jpg para images-1.jpg)
-           
+            // const qrCodePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/qrcode.png"; // REMOVIDO: QR Code, conforme sua solicitação
 
 
 
 
+            
 
-
-            // Função para adicionar imagem ao PDF
+            // Função para adicionar imagem ao PDF com tratamento de erro e log
             const addImageToPdfDirect = (imgUrl, x, y, width, height, format = 'PNG') => {
-                // Tentar adicionar imagem. Se a URL for inválida, a imagem não aparecerá, mas o PDF será gerado.
                 try {
                     doc.addImage(imgUrl, format, x, y, width, height);
                 } catch (e) {
-                    console.warn(`Não foi possível adicionar a imagem ${imgUrl} ao PDF. Erro: ${e.message}`);
+                    console.error(`ERRO AO ADICIONAR IMAGEM AO PDF: URL: ${imgUrl}, Erro: ${e.message}`, e);
                     // Opcional: Adicionar um texto placeholder ou um retângulo para indicar a falha da imagem
-                    // doc.text("IMAGEM INVÁLIDA", x + width / 2, y + height / 2, { align: 'center' });
+                    // doc.text("IMAGEM INVÁLIDA", x + width / 2, y + height / 2, { align: 'center', fontSize: 6, textColor: [255,0,0] });
                 }
             };
 

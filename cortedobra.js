@@ -1074,10 +1074,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // ATENÇÃO: As URLs abaixo são APENAS EXEMPLOS. VOCÊ DEVE SUBSTITUÍ-LAS PELAS SUAS PRÓPRIAS URLs
             // DE IMAGENS HOSPEDADAS NO SEU GITHUB, OBTIDAS CLICANDO NO ARQUIVO E DEPOIS NO BOTÃO 'RAW'.
             // CERTIFIQUE-SE DE QUE AS IMAGENS ESTÃO NO FORMATO PNG!
-            const dafelLogoSuperiorPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/grupo-dafel-squarelogo-1724229844318.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
-            const dafelSeriedadeNossaMarcaPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/client-4.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
-            const laranjaDadosClientePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/411878334_914510800158541_3475139305395707762_n.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
-            const dafelMainLogoPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/images-1.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
+            const dafelLogoSuperiorPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/images.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
+            const dafelSeriedadeNossaMarcaPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/client-4.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
+            const laranjaDadosClientePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/dafellaranja.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
+            const dafelMainLogoPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/grupodafel.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
             // const qrCodePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/qrcode.png"; // REMOVIDO: QR Code, conforme sua solicitação
 
             // Função para adicionar imagem ao PDF com tratamento de erro e log

@@ -1060,40 +1060,29 @@ document.addEventListener('DOMContentLoaded', function () {
                 doc.text(String(text).toUpperCase(), x, y, options.align ? { align: options.align } : {}); // CONVERTE PARA MAIÚSCULAS DE FORMA SEGURA
             };
 
-            // Função para formatar números para moeda brasileira
-            const formatCurrency = (value) => {
-                return new Intl.NumberFormat('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL',
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }).format(value);
-            };
+            // --- IMAGENS (PARA PDF - SUBSTITUA COM SUAS URLs PÚBLICAS) ---
+            // IMPORTANTE: As URLs abaixo são de placeholders. Para que suas imagens reais apareçam no PDF,
+            // você deve hospedá-las em um serviço público (Google Drive, Dropbox, Imgur, etc.)
+            // e substituir estas URLs pelas URLs diretas das suas imagens.
+            const dafelLogoSuperiorPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/client-4.png"
+            const dafelSeriedadeNossaMarcaPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/images.png";
+            const laranjaDadosClientePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/dafellaranja.png";
+            const dafelMainLogoPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/grupodafel.png";
 
-            // --- IMAGENS (PARA PDF - SUBSTITUA COM SUAS URLs PÚBLICAS DO GITHUB RAW, AGORA EM PNG) ---
-            // ATENÇÃO: As URLs abaixo são APENAS EXEMPLOS. VOCÊ DEVE SUBSTITUÍ-LAS PELAS SUAS PRÓPRIAS URLs
-            // DE IMAGENS HOSPEDADAS NO SEU GITHUB, OBTIDAS CLICANDO NO ARQUIVO E DEPOIS NO BOTÃO 'RAW'.
-            // CERTIFIQUE-SE DE QUE AS IMAGENS ESTÃO NO FORMATO PNG!
-            const dafelLogoSuperiorPDF = "https://github.com/ThiagoLoloSouza/corte-e-dobra-app/blob/main/images.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
-            const dafelSeriedadeNossaMarcaPDF = "https://github.com/ThiagoLoloSouza/corte-e-dobra-app/blob/main/client-4.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
-            const laranjaDadosClientePDF = "https://github.com/ThiagoLoloSouza/corte-e-dobra-app/blob/main/dafellaranja.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
-            const dafelMainLogoPDF = "https://github.com/ThiagoLoloSouza/corte-e-dobra-app/blob/main/grupodafel.png"; // COLOQUE SUA URL RAW AQUI (DEVE SER PNG)
-       
 
-            // Função para adicionar imagem ao PDF com tratamento de erro e log
-            const addImageToPdfDirect = (imgUrl, x, y, width, height) => { // Removido 'format' do parâmetro, agora é sempre PNG
+
+
+
+            
+            // Função para adicionar imagem ao PDF
+             const addImageToPdfDirect = (imgUrl, x, y, width, height, format = 'PNG') => {
+                // Tentar adicionar imagem. Se a URL for inválida, a imagem não aparecerá, mas o PDF será gerado.
                 try {
-                    doc.addImage(imgUrl, 'PNG', x, y, width, height); // Força o formato para PNG
+                    doc.addImage(imgUrl, format, x, y, width, height);
                 } catch (e) {
-                    console.error(`ERRO AO ADICIONAR IMAGEM AO PDF: URL: ${imgUrl}, Erro: ${e.message}`, e);
-                    // Desenha um retângulo vermelho para indicar a falha da imagem no PDF
-                    doc.setFillColor(255, 0, 0); // Vermelho
-                    doc.rect(x, y, width, height, 'F');
-                    doc.setTextColor(255, 255, 255); // Branco
-                    doc.setFontSize(6);
-                    doc.text("IMAGEM FALHOU", x + width / 2, y + height / 2, { align: 'center' });
-                    doc.setTextColor(0, 0, 0); // Volta para preto padrão
-                    doc.setFontSize(10); // Volta ao padrão
+                    console.warn(`Não foi possível adicionar a imagem ${imgUrl} ao PDF. Erro: ${e.message}`);
+                    // Opcional: Adicionar um texto placeholder ou um retângulo para indicar a falha da imagem
+                    // doc.text("IMAGEM INVÁLIDA", x + width / 2, y + height / 2, { align: 'center' });
                 }
             };
 
@@ -1110,27 +1099,21 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.setFontSize(10); // Volta ao padrão
             doc.setFont('helvetica', 'normal'); // Volta ao padrão
 
-            // AJUSTES DE POSICIONAMENTO DAS IMAGENS DO CABEÇALHO
-            // 1. Logo "Grupo Dafel" (dafelLogoSuperiorPDF) - no centro
-            const dafelLogoSuperiorWidth = 40; 
-            const dafelLogoSuperiorHeight = 15; 
-            const dafelLogoSuperiorX = (pageWidth / 2) - (dafelLogoSuperiorWidth / 2);
-            const dafelLogoSuperiorY = 3; 
-            addImageToPdfDirect(dafelLogoSuperiorPDF, dafelLogoSuperiorX, dafelLogoSuperiorY, dafelLogoSuperiorWidth, dafelLogoSuperiorHeight); 
+            // Imagem "Dafé Seriedade Nossa Marca" no meio do cabeçalho
+            // Verifique o formato da imagem (PNG, JPEG, WEBP). O jsPDF precisa do formato correto.
+            // Para .webp, o jsPDF pode precisar de um polyfill ou conversão.
+            // Se for .webp, considere converter para PNG/JPG ou usar um polyfill.
+            addImageToPdfDirect(dafelSeriedadeNossaMarcaPDF, pageWidth / 2 - 30, 3, 60, 15, 'PNG'); 
             
-            // 2. Logo "Dafé Seriedade Nossa Marca" (dafelSeriedadeNossaMarcaPDF) - na ponta direita, mais quadradinha
-            const dafelSeriedadeWidth = 40; 
-            const dafelSeriedadeHeight = 15; 
-            const dafelSeriedadeX = pageWidth - marginX - dafelSeriedadeWidth;
-            const dafelSeriedadeY = 3; 
-            addImageToPdfDirect(dafelSeriedadeNossaMarcaPDF, dafelSeriedadeX, dafelSeriedadeY, dafelSeriedadeWidth, dafelSeriedadeHeight); 
+            // Imagem "Grupo Dafé" no canto superior direito
+            addImageToPdfDirect(dafelLogoSuperiorPDF, pageWidth - marginX - 45, 3, 40, 15, 'WEBP'); // Use 'WEBP' se o formato for .webp
 
-            // Informações do site e redes sociais (lado esquerdo do cabeçalho) - TEXTO BRANCO
+            // Informações do site e redes sociais (lado direito) - TEXTO BRANCO
             doc.setTextColor(255, 255, 255); // Cor branca para estes textos
-            addText("ACESSE NOSSO SITE", pageWidth - marginX - 100, 7, { fontSize: 7, align: 'right', textColor: [255, 255, 255] }); 
-            addText("WWW.DTEL.COM.BR", pageWidth - marginX - 100, 10, { fontSize: 9, align: 'right', textColor: [255, 255, 255] }); 
-            addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, align: 'right', textColor: [255, 255, 255] }); 
-            addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, align: 'right', textColor: [255, 255, 255] }); 
+            addText("ACESSE NOSSO SITE", pageWidth - marginX - 70, 7, { fontSize: 7, align: 'right' });
+            addText("WWW.DAFEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, align: 'right' });
+            addText("REDES SOCIAIS", pageWidth - marginX - 45, 14, { fontSize: 7, align: 'right' });
+            addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, align: 'right' });
             doc.setTextColor(0, 0, 0); // Volta para preto padrão
 
             currentY = 25; // Posição Y inicial após o cabeçalho superior
@@ -1141,7 +1124,18 @@ document.addEventListener('DOMContentLoaded', function () {
             addRect(marginX, currentY, pageWidth - (2 * marginX), 45, '#FFFFFF', 'FD'); // Fundo branco e borda
 
             // Imagem laranja na seção "Dados do Cliente"
-            addImageToPdfDirect(laranjaDadosClientePDF, marginX + 2, currentY + 2, 20, 20); // Removido 'format'
+            addImageToPdfDirect(laranjaDadosClientePDF, marginX + 2, currentY + 2, 20, 20, 'JPEG'); // Use 'JPEG' se o formato for .jpg
+
+            // Coluna da direita: DADOS DO CLIENTE (Agora com offset para a imagem)
+            const clientColumnXOffset = 25; // Offset para o texto devido à imagem laranja
+            const clientColumnX = marginX + clientColumnXOffset; // Começa na margem esquerda + offset
+
+            addText("DADOS DO CLIENTE", clientColumnX + 2, currentY + 5, { fontSize: 8, textColor: 0 });
+            addText("CÓDIGO", clientColumnX + 70, currentY + 5, { fontSize: 8, textColor: 0 });
+            addText("CNPJ/CPF", clientColumnX + 110, currentY + 5, { fontSize: 8, textColor: 0 });
+            addText("TELEFONE", clientColumnX + 150, currentY + 5, { fontSize: 8, textColor: 0 });
+            addText("CEP", clientColumnX + 190, currentY + 5, { fontSize: 8, textColor: 0 });
+
             // Buscar documento e endereços do cliente (assíncrono)
             const urlBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : '';
             let clienteDetalhes = { documento: 'N/A', telefone: 'N/A', enderecos: [] };
@@ -1154,65 +1148,51 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.error("ERRO AO BUSCAR DETALHES DO CLIENTE PARA PDF:", e);
             }
 
-            // --- DADOS DO CLIENTE (ORGANIZADO COM LINHAS) ---
-            const clientSectionY = currentY + 2;
-            const clientCol1X = marginX + 25; // Após a imagem laranja
-            const clientCol2X = marginX + 90;
-            const clientCol3X = marginX + 155;
-            // A largura das colunas será implicitamente definida pelo espaçamento do texto
+            // Ajuste de espaçamento para os dados do cliente
+            const clientDataY = currentY + 10;
+            const clientDataLineHeight = 5; // Linha de altura para os dados do cliente
 
-            // Cabeçalhos da seção do cliente (laranja)
-            doc.setFillColor(255, 140, 0); // Laranja
-            doc.rect(clientCol1X, clientSectionY, pageWidth - (2 * marginX) - clientCol1X + marginX, 6, 'F'); // Fundo laranja para os cabeçalhos
-            doc.setDrawColor(0); // Borda preta
-            doc.rect(clientCol1X, clientSectionY, pageWidth - (2 * marginX) - clientCol1X + marginX, 6, 'S'); // Borda para o cabeçalho
+            // Nome do Cliente e Código (ajuste de largura para evitar embolamento)
+            let clienteNomeText = String(orcamento.clienteInfo?.cliente || '');
+            let codClienteText = String(orcamento.clienteInfo?.codCliente || '');
+            // Se o nome for muito longo, trunca e adiciona "..."
+            if (doc.getStringUnitWidth(clienteNomeText.toUpperCase()) * doc.internal.getFontSize() / doc.internal.scaleFactor > 60) { // Max 60mm para o nome
+                clienteNomeText = doc.splitTextToSize(clienteNomeText.toUpperCase(), 60)[0] + "...";
+            }
+            addText(clienteNomeText, clientColumnX + 2, clientDataY, { fontSize: 9, textColor: 0, fontStyle: 'bold' });
+            addText(codClienteText, clientColumnX + 70, clientDataY, { fontSize: 9, textColor: 0 });
 
-            doc.setTextColor(255, 255, 255); // Branco
-            doc.setFont('helvetica', 'bold');
-            addText("DADOS DO CLIENTE", clientCol1X + 2, clientSectionY + 4, { fontSize: 8 });
-            addText("CÓDIGO", clientCol2X + 2, clientSectionY + 4, { fontSize: 8 });
-            addText("TELEFONE", clientCol3X + 2, clientSectionY + 4, { fontSize: 8 });
-            doc.setTextColor(0, 0, 0); // Volta para preto padrão
-            doc.setFont('helvetica', 'normal');
+            addText(String(clienteDetalhes.documento || 'N/A'), clientColumnX + 110, clientDataY, { fontSize: 9, textColor: 0 });
+            addText(String(clienteDetalhes.telefone || 'N/A'), clientColumnX + 150, clientDataY, { fontSize: 9, textColor: 0 });
+            addText(String(clienteDetalhes.enderecos?.[0]?.cep || 'N/A'), clientColumnX + 190, clientDataY, { fontSize: 9, textColor: 0 });
 
-            // Linha 1 de dados do cliente
-            const clientDataY1 = clientSectionY + 6;
-            doc.setDrawColor(0);
-            doc.rect(clientCol1X, clientDataY1, pageWidth - (2 * marginX) - clientCol1X + marginX, 7, 'S'); // Borda para a linha de dados
-
-            addText(String(orcamento.clienteInfo?.cliente || 'N/A'), clientCol1X + 2, clientDataY1 + 4.5, { fontSize: 9, fontStyle: 'bold' });
-            addText(String(orcamento.clienteInfo?.codCliente || 'N/A'), clientCol2X + 2, clientDataY1 + 4.5, { fontSize: 9 });
-            addText(String(clienteDetalhes.telefone || 'N/A'), clientCol3X + 2, clientDataY1 + 4.5, { fontSize: 9 });
-
-            // Linha 2 de dados do cliente (Endereço Principal)
-            const clientDataY2 = clientDataY1 + 7;
-            doc.setDrawColor(0);
-            doc.rect(clientCol1X, clientDataY2, pageWidth - (2 * marginX) - clientCol1X + marginX, 7, 'S'); // Borda para a linha de dados
-
-            addText("ENDEREÇO PRINCIPAL", clientCol1X + 2, clientDataY2 + 4.5, { fontSize: 8, textColor: 0 });
-            addText("BAIRRO", clientCol2X + 2, clientDataY2 + 4.5, { fontSize: 8, textColor: 0 });
-            addText("CIDADE/ESTADO", clientCol3X + 2, clientDataY2 + 4.5, { fontSize: 8, textColor: 0 });
-
-            // Linha 3 de dados do cliente (Detalhes do Endereço)
-            const clientDataY3 = clientDataY2 + 7;
-            doc.setDrawColor(0);
-            doc.rect(clientCol1X, clientDataY3, pageWidth - (2 * marginX) - clientCol1X + marginX, 7, 'S'); // Borda para a linha de dados
+            // Endereço Principal do Cliente (ajuste de posição para evitar embolamento)
+            const addressY = clientDataY + clientDataLineHeight * 2; // Pula duas linhas para o endereço
+            addText("ENDEREÇO PRINCIPAL", clientColumnX + 2, addressY, { fontSize: 8, textColor: 0 });
+            addText("S/N", clientColumnX + 70, addressY, { fontSize: 8, textColor: 0 });
+            addText("BAIRRO", clientColumnX + 90, addressY, { fontSize: 8, textColor: 0 });
+            addText("CIDADE", clientColumnX + 130, addressY, { fontSize: 8, textColor: 0 });
+            addText("ESTADO", clientColumnX + 200, addressY, { fontSize: 8, textColor: 0 }); // POSIÇÃO AJUSTADA AINDA MAIS PARA A DIREITA
 
             if (clienteDetalhes.enderecos && clienteDetalhes.enderecos.length > 0) {
                 const principal = clienteDetalhes.enderecos[0];
-                let ruaNumero = `${String(principal.rua || '')}, ${String(principal.numero || '')}`;
-                // Ajustar a largura para o texto do endereço para quebrar a linha se necessário
-                const maxTextWidth = (clientCol2X - clientCol1X) - 4; // Largura da primeira coluna de dados - padding
-                const splitAddress = doc.splitTextToSize(ruaNumero.toUpperCase(), maxTextWidth);
-                doc.text(splitAddress, clientCol1X + 2, clientDataY3 + 4.5, { fontSize: 9 });
-                
-                addText(String(principal.bairro || 'N/A'), clientCol2X + 2, clientDataY3 + 4.5, { fontSize: 9 });
-                addText(`${String(principal.cidade || 'N/A')}/${String(principal.estado || 'N/A')}`, clientCol3X + 2, clientDataY3 + 4.5, { fontSize: 9 });
+                // Ajuste de largura para a rua para evitar embolamento
+                let ruaText = String(principal.rua || '');
+                if (doc.getStringUnitWidth(ruaText.toUpperCase()) * doc.internal.getFontSize() / doc.internal.scaleFactor > 65) { // Largura máxima para a rua
+                    ruaText = doc.splitTextToSize(ruaText.toUpperCase(), 65)[0] + "..."; // Trunca se for muito longo
+                }
+                addText(ruaText, clientColumnX + 2, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
+                addText(`${String(principal.numero || '')}`, clientColumnX + 70, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
+                addText(`${String(principal.bairro || '')}`, clientColumnX + 90, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
+                let cidadeText = String(principal.cidade || '');
+                let estadoText = String(principal.estado || '');
+                addText(cidadeText, clientColumnX + 130, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
+                addText(estadoText, clientColumnX + 200, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 }); // POSIÇÃO AJUSTADA AINDA MAIS PARA A DIREITA
             } else {
-                addText("NENHUM ENDEREÇO PRINCIPAL.", clientCol1X + 2, clientDataY3 + 4.5, { fontSize: 9 });
+                addText("NENHUM ENDEREÇO PRINCIPAL.", clientColumnX + 2, addressY + clientDataLineHeight, { fontSize: 9, textColor: 0 });
             }
 
-            // Data de Impressão (no canto inferior direito do bloco do cliente)
+            // Data de Impressão (no canto inferior direito do bloco) - MAIOR E MAIS GORDINHA
             const today = new Date();
             const formattedDate = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
             doc.setFontSize(12);
@@ -1222,7 +1202,7 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.setFont('helvetica', 'normal'); // Volta ao padrão
 
 
-            currentY += 50; // Espaço após o bloco de informações do cliente
+            currentY += 50; // Espaço após o bloco de informações
 
             // --- DETALHES DOS PRODUTOS (TABELA) ---
             // Cabeçalho da tabela de produtos
@@ -1233,7 +1213,7 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.setTextColor(255, 255, 255); // Branco para o cabeçalho da tabela
             doc.setFont('helvetica', 'bold'); // Negrito
             addText("PRODUTO", marginX + 2, currentY + 5, { fontSize: 9 });
-            addText("UND", marginX + 90, currentY + 5, { fontSize: 9 }); 
+            addText("UND", marginX + 90, currentY + 5, { fontSize: 9 }); // UND em branco
             addText("QTD", marginX + 120, currentY + 5, { fontSize: 9 });
             addText("PESO (KG)", marginX + 170, currentY + 5, { fontSize: 9, align: 'right' });
             addText("PREÇO/KG", marginX + 210, currentY + 5, { fontSize: 9, align: 'right' });
@@ -1265,10 +1245,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 doc.setDrawColor(0); // Cor da borda preta
                 doc.rect(marginX, currentY, pageWidth - (2 * marginX), 7, 'S'); // Borda para a linha do item
 
-                // Formatar o tipo de peça (ex: "varaReta" para "VARA RETA")
-                const formattedTipo = item.tipo.replace(/([A-Z])/g, ' $1').trim().toUpperCase();
                 const medidasStr = `${String(item.medidas?.a || '')}${item.medidas?.b ? '/' + String(item.medidas.b) : ''}${item.medidas?.c ? '/' + String(item.medidas.c) : ''}`;
-                const produtoDesc = `${formattedTipo} ${String(item.bitola)}MM (${medidasStr} CM)`; // Descrição mais completa
+                const produtoDesc = `${String(item.tipo)} ${String(item.bitola)}MM (${medidasStr} CM)`; // Descrição mais completa
 
                 const precoPorKgItem = (parseFloat(item.pesoKg) > 0) ? (parseFloat(item.custo) / parseFloat(item.pesoKg)) : 0;
 
@@ -1276,13 +1254,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 addText("PC", marginX + 90, currentY + 4.5); // Unidade de medida
                 addText(String(item.quantidade || ''), marginX + 120, currentY + 4.5); // Converte para string
                 addText(`${parseFloat(item.pesoKg).toFixed(3)}`, marginX + 170, currentY + 4.5, { align: 'right' }); // Peso
-                addText(formatCurrency(precoPorKgItem), marginX + 210, currentY + 4.5, { align: 'right' }); // Preço/KG formatado
-                addText(formatCurrency(parseFloat(item.custo)), pageWidth - marginX - 2, currentY + 4.5, { align: 'right' }); // Total da linha formatado
+                addText(`R$ ${precoPorKgItem.toFixed(2)}`, marginX + 210, currentY + 4.5, { align: 'right' }); // Preço/KG
+                addText(`R$ ${parseFloat(item.custo).toFixed(2)}`, pageWidth - marginX - 2, currentY + 4.5, { align: 'right' }); // Total da linha
 
                 // Linhas verticais para cada linha de item
                 doc.line(col1X, currentY, col1X, currentY + 7);
                 doc.line(col2X, currentY, col2X, currentY + 7);
-                doc.line(col3X, currentY, col3X, currentY + 7); 
+                doc.line(col3X, currentY, col3X, currentY + 7); // LINHA CORRIGIDA AQUI
                 doc.line(col4X, currentY, col4X, currentY + 7);
                 doc.line(col5X, currentY, col5X, currentY + 7);
 
@@ -1319,21 +1297,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
             doc.setTextColor(255, 255, 255); // Branco para o total
             doc.setFont('helvetica', 'bold'); // Negrito
-            addText(`TOTAL: ${formatCurrency(orcamento.resumoGeral.custoTotalGeralNumerico)}`, pageWidth - marginX - 2, currentY + 5, { fontSize: 12, align: 'right' });
+            addText(`TOTAL: ${orcamento.resumoGeral.custoTotalGeral}`, pageWidth - marginX - 2, currentY + 5, { fontSize: 12, align: 'right' });
             doc.setTextColor(0, 0, 0); // Volta para preto padrão
             doc.setFont('helvetica', 'normal'); // Volta ao padrão
 
             currentY += 13; // Espaço após os totais da tabela
 
             // --- SEÇÃO INFERIOR: ENDEREÇO ENTREGA E PREVISÃO ---
-            // Ajuste da altura do retângulo para ser mais "quadradinho"
-            const deliverySectionHeight = 35; // Altura reduzida
-            addRect(marginX, currentY, pageWidth - (2 * marginX), deliverySectionHeight, '#F0F0F0'); // Fundo cinza claro
+            addRect(marginX, currentY, pageWidth - (2 * marginX), 50, '#F0F0F0'); // Fundo cinza claro
             doc.setDrawColor(0);
-            doc.rect(marginX, currentY, pageWidth - (2 * marginX), deliverySectionHeight, 'S'); // Borda para a seção inferior
+            doc.rect(marginX, currentY, pageWidth - (2 * marginX), 50, 'S'); // Borda para a seção inferior
 
             doc.setDrawColor(200); // Cor da linha divisória interna
-            doc.line(marginX + (pageWidth - (2 * marginX)) * 0.45, currentY, marginX + (pageWidth - (2 * marginX)) * 0.45, currentY + deliverySectionHeight); // Linha vertical no meio
+            doc.line(marginX + (pageWidth - (2 * marginX)) * 0.45, currentY, marginX + (pageWidth - (2 * marginX)) * 0.45, currentY + 50); // Linha vertical no meio
 
             // Coluna esquerda da seção inferior
             const leftColX = marginX;
@@ -1342,10 +1318,7 @@ document.addEventListener('DOMContentLoaded', function () {
             addText(String(orcamento.obraInfo?.nome || 'N/A'), leftColX + 2, currentY + 10, { fontSize: 9, textColor: 0, fontStyle: 'bold' }); // Converte para string
             // Endereço de entrega da obra (usando o primeiro endereço do cliente como exemplo, ou da obra se existir)
             const enderecoEntrega = clienteDetalhes.enderecos?.[0] || {};
-            let fullAddress = `${String(enderecoEntrega.rua || '')}, ${String(enderecoEntrega.numero || '')} - ${String(enderecoEntrega.bairro || '')}, ${String(enderecoEntrega.cidade || '')}/${String(enderecoEntrega.estado || '')}`;
-            // Quebrar a linha do endereço se for muito longo
-            const splitAddress = doc.splitTextToSize(fullAddress.toUpperCase(), (pageWidth - (2 * marginX)) * 0.45 - 5); // Ajusta para a largura da coluna
-            doc.text(splitAddress, leftColX + 2, currentY + 15, { fontSize: 8, textColor: 0 });
+            addText(`${String(enderecoEntrega.rua || '')}, ${String(enderecoEntrega.numero || '')} - ${String(enderecoEntrega.bairro || '')}, ${String(enderecoEntrega.cidade || '')}/${String(enderecoEntrega.estado || '')}`, leftColX + 2, currentY + 15, { fontSize: 8, textColor: 0 });
 
 
             // Coluna direita da seção inferior
@@ -1355,21 +1328,17 @@ document.addEventListener('DOMContentLoaded', function () {
             const previsaoEntregaData = new Date();
             previsaoEntregaData.setDate(previsaoEntregaData.getDate() + 7); // Exemplo: 7 dias a partir de hoje
             addText("PREVISÃO DE ENTREGA", rightColX, currentY + 5, { fontSize: 8, textColor: 0 });
-            doc.setTextColor(255, 140, 0); // Cor laranja para a previsão de entrega
+            doc.setTextColor(255, 255, 255); // Cor branca para a previsão de entrega
             doc.setFont('helvetica', 'bold'); // Negrito
-            addText(previsaoEntregaData.toLocaleDateString('pt-BR'), rightColX, currentY + 10, { fontSize: 14 }); 
+            addText(previsaoEntregaData.toLocaleDateString('pt-BR'), rightColX, currentY + 10, { fontSize: 14 }); // Laranja
             doc.setTextColor(0, 0, 0); // Volta para preto padrão
             doc.setFont('helvetica', 'normal'); // Volta ao padrão
 
-            currentY += deliverySectionHeight + 5; // Espaço após a seção inferior
+            currentY += 55; // Espaço após a seção inferior
 
             // --- IMAGEM PRINCIPAL NO MEIO (RODAPÉ) ---
             // Posiciona a imagem principal no centro da página, abaixo das seções principais
-            // Ajustando largura e altura para tentar melhorar a qualidade e evitar esticamento
-            const dafelMainLogoWidth = 100; // Largura ajustada
-            const dafelMainLogoHeight = 30; // Altura ajustada
-            const dafelMainLogoX = (pageWidth / 2) - (dafelMainLogoWidth / 2);
-            addImageToPdfDirect(dafelMainLogoPDF, dafelMainLogoX, currentY + 5, dafelMainLogoWidth, dafelMainLogoHeight); 
+            addImageToPdfDirect(dafelMainLogoPDF, pageWidth / 2 - 50, currentY + 5, 100, 30, 'JPEG'); // Ajuste as dimensões conforme necessário
 
             currentY += 40; // Espaço após a imagem principal
 
@@ -1377,10 +1346,6 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.setFontSize(7);
             doc.setTextColor(100, 100, 100);
             doc.text("DOCUMENTO GERADO POR CORTAFÁCIL - TODOS OS DIREITOS RESERVADOS.", pageWidth / 2, pageHeight - 5, { align: 'center' });
-
-            // REMOVIDO: QR Code, conforme sua solicitação
-            // const qrCodePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/main/qrcode.png"; 
-            // addImageToPdfDirect(qrCodePDF, qrCodeX, qrCodeY, qrCodeSize, qrCodeSize);
 
 
             // Salva o PDF
@@ -1393,6 +1358,7 @@ document.addEventListener('DOMContentLoaded', function () {
     toggleCpfCnpjFields();
     // Atualiza o resumo inicial (pode ser 0.00 kg, R$ 0.00)
     atualizarResumoBitolas();
+
     // Valida os campos de medida ao carregar a página
     validarCamposMedida();
 }); // FIM DO DOMContentLoaded (ÚNICO FECHAMENTO)

@@ -1098,9 +1098,9 @@ document.addEventListener('DOMContentLoaded', function () {
             // Informações do site e redes sociais (lado direito) - TEXTO BRANCO E GORDINHO
             doc.setTextColor(255, 255, 255); // Define a cor branca
             doc.setFont('helvetica', 'bold'); // Define a fonte como negrito
-            addText("ACESSE NOSSO SITE", pageWidth - marginX - 69, 7, { fontSize: 7, align: 'right' });
+            addText("ACESSE NOSSO SITE", pageWidth - marginX - 72, 7, { fontSize: 7, align: 'right' });
             addText("WWW.DAFEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, align: 'right' });
-            addText("REDES SOCIAIS", pageWidth - marginX - 48, 13, { fontSize: 7, align: 'right' });
+            addText("REDES SOCIAIS", pageWidth - marginX - 52, 13, { fontSize: 7, align: 'right' });
             addText("DAFELOFICIAL", pageWidth - marginX - 50, 16, { fontSize: 9, align: 'right' });
             doc.setTextColor(0, 0, 0); // Volta para preto padrão para o restante do documento
             doc.setFont('helvetica', 'normal'); // Volta ao normal

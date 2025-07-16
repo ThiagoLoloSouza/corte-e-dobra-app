@@ -1080,18 +1080,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // --- CABEÇALHO SUPERIOR ---
             // Fundo azul escuro para o cabeçalho superior
-            addRect(0, 0, pageWidth, 20, '#333333'); // Ajustado para a largura da página horizontal
-
+            addRect(0, 0, pageWidth, 20, '#ff8c00');
             // Texto "ORÇAMENTO" - MAIOR E MAIS GORDINHO (BOLD)
-            doc.setFontSize(20);
-            doc.setTextColor(255, 255, 255); // Branco
+            doc.setFontSize(24);
+            doc.setTextColor(0, 0, 0); // Preto para o texto
             doc.setFont('helvetica', 'bold');
             doc.text("ORÇAMENTO", marginX, 13);
             doc.setFontSize(10); // Volta ao padrão
             doc.setFont('helvetica', 'normal'); // Volta ao padrão
 
             // Imagem "Dafé Seriedade Nossa Marca" no meio do cabeçalho
-            addImageToPdfDirect(dafelSeriedadeNossaMarcaPDF, pageWidth / 2 - 30, 5, 60, 15, 'PNG'); 
+            addImageToPdfDirect(dafelSeriedadeNossaMarcaPDF, pageWidth / 2 - 30, 3, 60, 15, 'PNG'); 
             
             // Imagem "Grupo Dafé" no canto superior direito
             addImageToPdfDirect(dafelLogoSuperiorPDF, pageWidth - marginX - 45, 3, 40, 15, 'WEBP'); // Use 'WEBP' se o formato for .webp
@@ -1101,9 +1100,9 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.setFont('helvetica', 'bold'); // Define a fonte como negrito
             addText("ACESSE NOSSO SITE", pageWidth - marginX - 70, 7, { fontSize: 7, align: 'right' });
             addText("WWW.DAFEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, align: 'right' });
-            addText("REDES SOCIAIS", pageWidth - marginX - 40, 10, { fontSize: 7, align: 'right' });
-            addText("DAFELOFICIAL", pageWidth - marginX - 45, 17, { fontSize: 9, align: 'right' });
-            doc.setTextColor(255); // Volta para preto padrão para o restante do documento
+            addText("REDES SOCIAIS", pageWidth - marginX - 50, 10, { fontSize: 7, align: 'right' });
+            addText("DAFELOFICIAL", pageWidth - marginX - 50, 16, { fontSize: 9, align: 'right' });
+            doc.setTextColor(0, 0, 0); // Volta para preto padrão para o restante do documento
             doc.setFont('helvetica', 'normal'); // Volta ao normal
 
             currentY = 25; // Posição Y inicial após o cabeçalho superior
@@ -1167,11 +1166,11 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.setFontSize(8);
             doc.setFont('helvetica', 'bold'); // Títulos em negrito
             addText("ENDEREÇO PRINCIPAL", clientColumnX + 2, addressY, { textColor: 0 });
-            addText("NÚMERO", clientColumnX + 59, addressY, { textColor: 0 }); // Ajustado para mais perto
-            addText("BAIRRO", clientColumnX + 82, addressY, { textColor: 0 }); // Ajustado para mais perto
-            addText("CIDADE", clientColumnX + 117, addressY, { textColor: 0 }); // Ajustado para mais espaço
-            addText("ESTADO", clientColumnX + 185, addressY, { textColor: 0 }); // Ajustado para mais espaço
-            addText("CEP", clientColumnX + 207, addressY, { textColor: 0 }); // CEP na segunda linha, ajustado para mais à esquerda
+            addText("NÚMERO", clientColumnX + 60, addressY, { textColor: 0 }); // Ajustado para mais perto
+            addText("BAIRRO", clientColumnX + 85, addressY, { textColor: 0 }); // Ajustado para mais perto
+            addText("CIDADE", clientColumnX + 100, addressY, { textColor: 0 }); // Ajustado para mais espaço
+            addText("ESTADO", clientColumnX + 200, addressY, { textColor: 0 }); // Ajustado para mais espaço
+            addText("CEP", clientColumnX + 225, addressY, { textColor: 0 }); // CEP na segunda linha, ajustado para mais à esquerda
 
             doc.setFontSize(9);
             doc.setFont('helvetica', 'bold'); // Dados em negrito
@@ -1182,11 +1181,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     ruaText = doc.splitTextToSize(ruaText.toUpperCase(), 70)[0] + "..."; // Trunca se for muito longo
                 }
                 addText(ruaText, clientColumnX + 2, addressY + clientDataLineHeight - 2, { textColor: 0 });
-                addText(`${String(principal.numero || '')}`, clientColumnX + 59, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
-                addText(`${String(principal.bairro || '')}`, clientColumnX + 82, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
-                addText(String(principal.cidade || ''), clientColumnX + 117, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
-                addText(String(principal.estado || ''), clientColumnX + 185, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
-                addText(String(principal.cep || 'N/A'), clientColumnX + 207, addressY + clientDataLineHeight - 2, { textColor: 0 }); // CEP na segunda linha, ajustado
+                addText(`${String(principal.numero || '')}`, clientColumnX + 60, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
+                addText(`${String(principal.bairro || '')}`, clientColumnX + 85, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
+                addText(String(principal.cidade || ''), clientColumnX + 125, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
+                addText(String(principal.estado || ''), clientColumnX + 180, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
+                addText(String(principal.cep || 'N/A'), clientColumnX + 215, addressY + clientDataLineHeight - 2, { textColor: 0 }); // CEP na segunda linha, ajustado
             } else {
                 addText("NENHUM ENDEREÇO PRINCIPAL.", clientColumnX + 2, addressY + clientDataLineHeight - 2, { textColor: 0 });
             }
@@ -1254,8 +1253,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 produtoDesc = produtoDesc.replace(/VaraReta/g, 'Vara Reta');
                 produtoDesc = produtoDesc.replace(/VaraL/g, 'Vara L');
                 produtoDesc = produtoDesc.replace(/VaraU/g, 'Vara U'); // Adicionado
-                produtoDesc = produtoDesc.replace(/TuboC/g, 'Tubo C');
-                produtoDesc = produtoDesc.replace(/ChapaDobrada/g, 'Chapa Dobrada');
+                produtoDesc = produtoDesc.replace(/Estribo/g, 'Estribo');
                 // Adicione mais substituições conforme a necessidade para outros tipos de peça
                 
                 const precoPorKgItem = (parseFloat(item.pesoKg) > 0) ? (parseFloat(item.custo) / parseFloat(item.pesoKg)) : 0;

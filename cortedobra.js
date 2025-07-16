@@ -1168,9 +1168,9 @@ document.addEventListener('DOMContentLoaded', function () {
             addText("ENDEREÇO PRINCIPAL", clientColumnX + 2, addressY, { textColor: 0 });
             addText("NÚMERO", clientColumnX + 57, addressY, { textColor: 0 }); // Ajustado para mais perto
             addText("BAIRRO", clientColumnX + 82, addressY, { textColor: 0 }); // Ajustado para mais perto
-            addText("CIDADE", clientColumnX + 100, addressY, { textColor: 0 }); // Ajustado para mais espaço
-            addText("ESTADO", clientColumnX + 190, addressY, { textColor: 0 }); // Ajustado para mais espaço
-            addText("CEP", clientColumnX + 225, addressY, { textColor: 0 }); // CEP na segunda linha, ajustado para mais à esquerda
+            addText("CIDADE", clientColumnX + 130, addressY, { textColor: 0 }); // Ajustado para mais espaço
+            addText("ESTADO", clientColumnX + 195, addressY, { textColor: 0 }); // Ajustado para mais espaço
+            addText("CEP", clientColumnX + 215, addressY, { textColor: 0 }); // CEP na segunda linha, ajustado para mais à esquerda
 
             doc.setFontSize(9);
             doc.setFont('helvetica', 'bold'); // Dados em negrito
@@ -1183,9 +1183,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 addText(ruaText, clientColumnX + 2, addressY + clientDataLineHeight - 2, { textColor: 0 });
                 addText(`${String(principal.numero || '')}`, clientColumnX + 57, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
                 addText(`${String(principal.bairro || '')}`, clientColumnX + 82, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
-                addText(String(principal.cidade || ''), clientColumnX + 100, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
-                addText(String(principal.estado || ''), clientColumnX + 190, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
-                addText(String(principal.cep || 'N/A'), clientColumnX + 225, addressY + clientDataLineHeight - 2, { textColor: 0 }); // CEP na segunda linha, ajustado
+                addText(String(principal.cidade || ''), clientColumnX + 130, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
+                addText(String(principal.estado || ''), clientColumnX + 195, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
+                addText(String(principal.cep || 'N/A'), clientColumnX + 215, addressY + clientDataLineHeight - 2, { textColor: 0 }); // CEP na segunda linha, ajustado
             } else {
                 addText("NENHUM ENDEREÇO PRINCIPAL.", clientColumnX + 2, addressY + clientDataLineHeight - 2, { textColor: 0 });
             }

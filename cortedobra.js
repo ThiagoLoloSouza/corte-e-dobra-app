@@ -1098,7 +1098,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Informações do site e redes sociais (lado direito) - TEXTO BRANCO E GORDINHO
             doc.setTextColor(255, 255, 255); // Define a cor branca
             doc.setFont('helvetica', 'bold'); // Define a fonte como negrito
-            addText("ACESSE NOSSO SITE", pageWidth - marginX - 72, 7, { fontSize: 7, align: 'right' });
+            addText("ACESSE NOSSO SITE", pageWidth - marginX - 73, 7, { fontSize: 7, align: 'right' });
             addText("WWW.DAFEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, align: 'right' });
             addText("REDES SOCIAIS", pageWidth - marginX - 52, 13, { fontSize: 7, align: 'right' });
             addText("DAFELOFICIAL", pageWidth - marginX - 50, 16, { fontSize: 9, align: 'right' });
@@ -1216,7 +1216,7 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.setFont('helvetica', 'bold'); // Negrito
             addText("PRODUTO", marginX + 2, currentY + 5, { fontSize: 9 });
             addText("UND", marginX + 90, currentY + 5, { fontSize: 9 }); // UND em branco
-            addText("QTD", marginX + 120, currentY + 5, { fontSize: 9, align: 'center' }); // CENTRALIZADO
+               addText("QTD", marginX + 120, currentY + 5, { fontSize: 9 });
             addText("PESO (KG)", marginX + 170, currentY + 5, { fontSize: 9, align: 'right' });
             addText("PREÇO/KG", marginX + 210, currentY + 5, { fontSize: 9, align: 'right' });
             addText("TOTAL", pageWidth - marginX - 2, currentY + 5, { fontSize: 9, align: 'right' });
@@ -1258,15 +1258,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const precoPorKgItem = (parseFloat(item.pesoKg) > 0) ? (parseFloat(item.custo) / parseFloat(item.pesoKg)) : 0;
 
-                addText(produtoDesc, marginX + 2, currentY + 4.5);
-                // Para centralizar a quantidade, precisamos calcular o centro da coluna QTD
-                const qtdColCenterX = marginX + 120 + (col3X - (marginX + 120)) / 2; // Centro da coluna QTD
+                   addText(produtoDesc, marginX + 2, currentY + 4.5);
                 addText("PC", marginX + 90, currentY + 4.5); // Unidade de medida
-                addText(String(item.quantidade || ''), qtdColCenterX, currentY + 4.5, { align: 'center' }); // CENTRALIZADO
+                addText(String(item.quantidade || ''), marginX + 120, currentY + 4.5); // Converte para string
                 addText(formatWeight(parseFloat(item.pesoKg)), marginX + 170, currentY + 4.5, { align: 'right' }); // Peso
                 addText(formatCurrency(precoPorKgItem), marginX + 210, currentY + 4.5, { align: 'right' }); // Preço/KG
                 addText(formatCurrency(parseFloat(item.custo)), pageWidth - marginX - 2, currentY + 4.5, { align: 'right' }); // Total da linha
 
+                
                 // Linhas verticais para cada linha de item
                 doc.line(col1X, currentY, col1X, currentY + 7);
                 doc.line(col2X, currentY, col2X, currentY + 7);

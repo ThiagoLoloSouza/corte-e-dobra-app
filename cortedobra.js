@@ -1167,11 +1167,11 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.setFontSize(8);
             doc.setFont('helvetica', 'bold'); // Títulos em negrito
             addText("ENDEREÇO PRINCIPAL", clientColumnX + 2, addressY, { textColor: 0 });
-            addText("NÚMERO", clientColumnX + 70, addressY, { textColor: 0 }); // Ajustado para mais perto
-            addText("BAIRRO", clientColumnX + 95, addressY, { textColor: 0 }); // Ajustado para mais perto
-            addText("CIDADE", clientColumnX + 140, addressY, { textColor: 0 }); // Ajustado para mais espaço
-            addText("ESTADO", clientColumnX + 185, addressY, { textColor: 0 }); // Ajustado para mais espaço
-            addText("CEP", clientColumnX + 225, addressY, { textColor: 0 }); // CEP na segunda linha, ajustado
+            addText("NÚMERO", clientColumnX + 60, addressY, { textColor: 0 }); // Ajustado para mais perto
+            addText("BAIRRO", clientColumnX + 85, addressY, { textColor: 0 }); // Ajustado para mais perto
+            addText("CIDADE", clientColumnX + 125, addressY, { textColor: 0 }); // Ajustado para mais espaço
+            addText("ESTADO", clientColumnX + 180, addressY, { textColor: 0 }); // Ajustado para mais espaço
+            addText("CEP", clientColumnX + 215, addressY, { textColor: 0 }); // CEP na segunda linha, ajustado para mais à esquerda
 
             doc.setFontSize(9);
             doc.setFont('helvetica', 'bold'); // Dados em negrito
@@ -1182,11 +1182,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     ruaText = doc.splitTextToSize(ruaText.toUpperCase(), 70)[0] + "..."; // Trunca se for muito longo
                 }
                 addText(ruaText, clientColumnX + 2, addressY + clientDataLineHeight - 2, { textColor: 0 });
-                addText(`${String(principal.numero || '')}`, clientColumnX + 70, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
-                addText(`${String(principal.bairro || '')}`, clientColumnX + 95, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
-                addText(String(principal.cidade || ''), clientColumnX + 140, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
-                addText(String(principal.estado || ''), clientColumnX + 185, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
-                addText(String(principal.cep || 'N/A'), clientColumnX + 225, addressY + clientDataLineHeight - 2, { textColor: 0 }); // CEP na segunda linha, ajustado
+                addText(`${String(principal.numero || '')}`, clientColumnX + 60, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
+                addText(`${String(principal.bairro || '')}`, clientColumnX + 85, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
+                addText(String(principal.cidade || ''), clientColumnX + 125, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
+                addText(String(principal.estado || ''), clientColumnX + 180, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
+                addText(String(principal.cep || 'N/A'), clientColumnX + 215, addressY + clientDataLineHeight - 2, { textColor: 0 }); // CEP na segunda linha, ajustado
             } else {
                 addText("NENHUM ENDEREÇO PRINCIPAL.", clientColumnX + 2, addressY + clientDataLineHeight - 2, { textColor: 0 });
             }
@@ -1251,10 +1251,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 let produtoDesc = `${String(item.tipo)} ${String(item.bitola)}MM (${String(item.medidas?.a || '')}${item.medidas?.b ? '/' + String(item.medidas.b) : ''}${item.medidas?.c ? '/' + String(item.medidas.c) : ''} CM)`;
 
                 // Adiciona espaço entre palavras específicas na descrição
-                produtoDesc = produtoDesc.replace(/VaraReta/g, 'Vara Reta'); // Adicionado
+                produtoDesc = produtoDesc.replace(/VaraReta/g, 'Vara Reta');
                 produtoDesc = produtoDesc.replace(/VaraL/g, 'Vara L');
-                produtoDesc = produtoDesc.replace(/varaemU/g, 'Vara em U');
-                produtoDesc = produtoDesc.replace(/Estribo/g, 'Estribo');
+                produtoDesc = produtoDesc.replace(/VaraU/g, 'Vara U'); // Adicionado
+                produtoDesc = produtoDesc.replace(/TuboC/g, 'Tubo C');
+                produtoDesc = produtoDesc.replace(/ChapaDobrada/g, 'Chapa Dobrada');
                 // Adicione mais substituições conforme a necessidade para outros tipos de peça
                 
                 const precoPorKgItem = (parseFloat(item.pesoKg) > 0) ? (parseFloat(item.custo) / parseFloat(item.pesoKg)) : 0;
@@ -1347,7 +1348,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // --- IMAGEM PRINCIPAL NO MEIO (RODAPÉ) ---
             // Posiciona a imagem principal no centro da página, abaixo das seções principais
-            addImageToPdfDirect(dafelMainLogoPDF, pageWidth / 2 - 50, currentY + 5, 100, 30, 'JPEG'); // Ajuste as dimensões conforme necessário
+            // Diminuído o width para 70 e ajustado o height para 25 para ficar mais "quadradinha"
+            addImageToPdfDirect(dafelMainLogoPDF, pageWidth / 2 - 35, currentY + 5, 70, 25, 'JPEG'); // Ajuste as dimensões conforme necessário
 
             currentY += 40; // Espaço após a imagem principal
 

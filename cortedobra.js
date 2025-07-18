@@ -1090,7 +1090,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const laranjaDadosClientePDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/dafellaranja.png";
             const dafelMainLogoPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/grupodafel.png";
 
-            // Função para adicionar imagem ao PDF
+
+  // Função para adicionar imagem ao PDF
              const addImageToPdfDirect = (imgUrl, x, y, width, height, format = 'PNG') => {
                 try {
                     doc.addImage(imgUrl, format, x, y, width, height);
@@ -1101,11 +1102,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // --- CABEÇALHO SUPERIOR ---
             // Fundo azul escuro para o cabeçalho superior
-            addRect(0, 0, pageWidth, 20, '#333333'); // Fundo azul escuro
-
+            addRect(0, 0, pageWidth, 20, '#ff8c00');
             // Texto "ORÇAMENTO" - MAIOR E MAIS GORDINHO (BOLD)
-            doc.setFontSize(16);
-            doc.setTextColor(255, 255, 255); // Branco
+            doc.setFontSize(24);
+            doc.setTextColor(0, 0, 0); // Preto para o texto
             doc.setFont('helvetica', 'bold');
             doc.text("ORÇAMENTO", marginX, 13);
             doc.setFontSize(10); // Volta ao padrão
@@ -1120,29 +1120,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Informações do site e redes sociais (lado direito) - TEXTO BRANCO E GORDINHO
             doc.setTextColor(255, 255, 255); // Define a cor branca
             doc.setFont('helvetica', 'bold'); // Define a fonte como negrito
-
-            // Ajuste de alinhamento para as linhas do site e redes sociais
-            const siteText = "ACESSE NOSSO SITE";
-            const siteUrl = "WWW.DAFEL.COM.BR";
-            const redesSociaisText = "REDES SOCIAIS";
-            const redesSociaisHandle = "DAFELOFICIAL";
-
-            // Calcula a largura dos textos para centralizar a linha de cima sobre a de baixo
-            const siteTextWidth = doc.getStringUnitWidth(siteText) * 7; // fontSize 7
-            const siteUrlWidth = doc.getStringUnitWidth(siteUrl) * 9; // fontSize 9
-            const redesSociaisTextWidth = doc.getStringUnitWidth(redesSociaisText) * 7; // fontSize 7
-            const redesSociaisHandleWidth = doc.getStringUnitWidth(redesSociaisHandle) * 9; // fontSize 9
-
-            // Posição para o grupo do site/url
-            let siteGroupRightX = pageWidth - marginX - 70; // Ponto de referência à direita
-            addText(siteText, siteGroupRightX - siteTextWidth, 7, { fontSize: 7, align: 'left' }); // Alinhado à esquerda do ponto de referência
-            addText(siteUrl, siteGroupRightX - siteUrlWidth, 10, { fontSize: 9, align: 'left' });
-
-            // Posição para o grupo de redes sociais
-            let redesSociaisGroupRightX = pageWidth - marginX - 45; // Ponto de referência à direita
-            addText(redesSociaisText, redesSociaisGroupRightX - redesSociaisTextWidth, 14, { fontSize: 7, align: 'left' });
-            addText(redesSociaisHandle, redesSociaisGroupRightX - redesSociaisHandleWidth, 17, { fontSize: 9, align: 'left' });
-
+            addText("ACESSE NOSSO SITE", pageWidth - marginX - 70, 7, { fontSize: 7, align: 'right' });
+            addText("WWW.DAFEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, align: 'right' });
+            addText("REDES SOCIAIS", pageWidth - marginX - 50, 13, { fontSize: 7, align: 'right' });
+            addText("DAFELOFICIAL", pageWidth - marginX - 50, 16, { fontSize: 9, align: 'right' });
             doc.setTextColor(0, 0, 0); // Volta para preto padrão para o restante do documento
             doc.setFont('helvetica', 'normal'); // Volta ao normal
 
@@ -1207,11 +1188,11 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.setFontSize(8);
             doc.setFont('helvetica', 'bold'); // Títulos em negrito
             addText("ENDEREÇO PRINCIPAL", clientColumnX + 2, addressY, { textColor: 0 });
-            addText("NÚMERO", clientColumnX + 50, addressY, { textColor: 0 }); // Ajustado
-            addText("BAIRRO", clientColumnX + 75, addressY, { textColor: 0 }); // Ajustado
-            addText("CIDADE", clientColumnX + 120, addressY, { textColor: 0 }); // Ajustado
-            addText("ESTADO", clientColumnX + 175, addressY, { textColor: 0 }); // Ajustado
-            addText("CEP", clientColumnX + 210, addressY, { textColor: 0 }); // Ajustado
+            addText("NÚMERO", clientColumnX + 57, addressY, { textColor: 0 }); // Ajustado para mais perto
+            addText("BAIRRO", clientColumnX + 82, addressY, { textColor: 0 }); // Ajustado para mais perto
+            addText("CIDADE", clientColumnX + 130, addressY, { textColor: 0 }); // Ajustado para mais espaço
+            addText("ESTADO", clientColumnX + 195, addressY, { textColor: 0 }); // Ajustado para mais espaço
+            addText("CEP", clientColumnX + 215, addressY, { textColor: 0 }); // CEP na segunda linha, ajustado para mais à esquerda
 
             doc.setFontSize(9);
             doc.setFont('helvetica', 'bold'); // Dados em negrito
@@ -1222,11 +1203,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     ruaText = doc.splitTextToSize(ruaText.toUpperCase(), 70)[0] + "..."; // Trunca se for muito longo
                 }
                 addText(ruaText, clientColumnX + 2, addressY + clientDataLineHeight - 2, { textColor: 0 });
-                addText(`${String(principal.numero || '')}`, clientColumnX + 50, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
-                addText(`${String(principal.bairro || '')}`, clientColumnX + 75, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
-                addText(String(principal.cidade || ''), clientColumnX + 120, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
-                addText(String(principal.estado || ''), clientColumnX + 175, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
-                addText(String(principal.cep || 'N/A'), clientColumnX + 210, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
+                addText(`${String(principal.numero || '')}`, clientColumnX + 57, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
+                addText(`${String(principal.bairro || '')}`, clientColumnX + 82, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
+                addText(String(principal.cidade || ''), clientColumnX + 130, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
+                addText(String(principal.estado || ''), clientColumnX + 195, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
+                addText(String(principal.cep || 'N/A'), clientColumnX + 215, addressY + clientDataLineHeight - 2, { textColor: 0 }); // CEP na segunda linha, ajustado
             } else {
                 addText("NENHUM ENDEREÇO PRINCIPAL.", clientColumnX + 2, addressY + clientDataLineHeight - 2, { textColor: 0 });
             }
@@ -1246,6 +1227,7 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.setFont('helvetica', 'normal'); // Volta ao padrão
 
             currentY += clientBlockHeight + 5; // Atualiza currentY para após o bloco de dados do cliente (com um pequeno espaçamento)
+
 
             // --- DETALHES DOS PRODUTOS (TABELA) ---
             // Cabeçalho da tabela de produtos

@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Adiciona listener para o botão de remover
         if (!isPrimary) {
-            addressDiv.querySelector('.btn-remove-endereco').addEventListener('click', function () {
+            addressDiv.querySelector('.btn-remove-endereco').addEventListener('click', function() {
                 addressDiv.remove();
                 updateEnderecoTitles(); // Atualiza os títulos após remover
             });
@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Event listeners para abrir/fechar a modal de cadastro de cliente
     if (btnAbrirModalCadastroCliente && modalCadastroCliente) {
-        btnAbrirModalCadastroCliente.addEventListener('click', function () {
+        btnAbrirModalCadastroCliente.addEventListener('click', function() {
             modalCadastroCliente.style.display = 'flex';
             modalClienteTitle.textContent = 'Cadastrar Novo Cliente';
             formCadastroCliente.reset(); // Limpa o formulário ao abrir
@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (closeModalCadastroCliente && formCadastroCliente && cadastroClienteFeedback && modalCadastroCliente) {
-        closeModalCadastroCliente.addEventListener('click', function () {
+        closeModalCadastroCliente.addEventListener('click', function() {
             modalCadastroCliente.style.display = 'none';
             formCadastroCliente.reset();
             clienteIdParaEdicaoInput.value = '';
@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (modalCadastroCliente && formCadastroCliente && cadastroClienteFeedback) {
-        window.addEventListener('click', function (event) {
+        window.addEventListener('click', function(event) {
             if (event.target === modalCadastroCliente) {
                 modalCadastroCliente.style.display = 'none';
                 formCadastroCliente.reset();
@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function () {
      * Envia os dados do novo/editado cliente para o backend.
      */
     if (formCadastroCliente && cadastroClienteFeedback && clienteInputPrincipal && codClienteInputPrincipal) {
-        formCadastroCliente.addEventListener('submit', async function (event) {
+        formCadastroCliente.addEventListener('submit', async function(event) {
             event.preventDefault();
 
             cadastroClienteFeedback.textContent = 'Salvando cliente...';
@@ -303,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // NOVO: Lógica para carregar cliente para edição
     if (btnEditarCliente) {
-        btnEditarCliente.addEventListener('click', async function () {
+        btnEditarCliente.addEventListener('click', async function() {
             const currentClientId = codClienteInputPrincipal.value;
             if (!currentClientId) {
                 alert('Por favor, selecione ou cadastre um cliente primeiro para poder editá-lo.');
@@ -424,7 +424,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             if (orcamentoIdInput) orcamentoIdInput.value = ''; // Limpa o ID do orçamento atual
                             if (recebeCaminhaoSelect) recebeCaminhaoSelect.value = 'Sim';
                             if (dataDesejadaInput) dataDesejadaInput.value = '';
-
+                            
                             // Limpa a tabela de peças e resumo para um novo orçamento
                             tabelaResultados.innerHTML = '';
                             Object.keys(resumoBitolasCalculo).forEach(key => delete resumoBitolasCalculo[key]);
@@ -461,7 +461,7 @@ document.addEventListener('DOMContentLoaded', function () {
     async function carregarOrcamentos(filtro = '') {
         if (!listaOrcamentosDiv) return;
         listaOrcamentosDiv.innerHTML = '<p class="loading-message">Carregando orçamentos...</p>';
-        if (visualizarOrcamentoFeedback) visualizarOrcamentoFeedback.textContent = '';
+        if(visualizarOrcamentoFeedback) visualizarOrcamentoFeedback.textContent = '';
 
         try {
             const queryParam = filtro ? `?q=${encodeURIComponent(filtro)}` : '';
@@ -477,52 +477,52 @@ document.addEventListener('DOMContentLoaded', function () {
             listaOrcamentosDiv.innerHTML = '';
             if (orcamentos.length === 0) {
                 listaOrcamentosDiv.innerHTML = '<p class="loading-message" style="color: orange; font-weight: bold;">Nenhum orçamento encontrado.</p>';
-            } else {
-                orcamentos.forEach(orcamento => {
-                    // Crie uma div para cada item do orçamento para melhor controle de layout
-                    const divItem = document.createElement('div');
-                    divItem.classList.add('orcamento-item'); // Classe para estilização
-                    divItem.dataset.orcamentoId = orcamento.id; // Armazena o ID do orçamento
+                } else {
+                    orcamentos.forEach(orcamento => {
+                        // Crie uma div para cada item do orçamento para melhor controle de layout
+                        const divItem = document.createElement('div');
+                        divItem.classList.add('orcamento-item'); // Classe para estilização
+                        divItem.dataset.orcamentoId = orcamento.id; // Armazena o ID do orçamento
 
-                    const clienteNome = orcamento.clienteInfo?.cliente || 'Cliente Desconhecido';
-                    const obraNome = orcamento.obraInfo?.nome || 'Obra Desconhecida';
-                    const numPedidoDisplay = orcamento.numPedido || orcamento.id || 'N/A';
-                    const dataDisplay = orcamento.dataOrcamento || 'Data Desconhecida';
+                        const clienteNome = orcamento.clienteInfo?.cliente || 'Cliente Desconhecido';
+                        const obraNome = orcamento.obraInfo?.nome || 'Obra Desconhecida';
+                        const numPedidoDisplay = orcamento.numPedido || orcamento.id || 'N/A';
+                        const dataDisplay = orcamento.dataOrcamento || 'Data Desconhecida';
 
-                    // Crie um span para o texto clicável
-                    const spanText = document.createElement('span');
-                    spanText.classList.add('orcamento-text-clickable');
-                    spanText.textContent = `PEDIDO Nº: ${String(numPedidoDisplay).toUpperCase()} - CLIENTE: ${String(clienteNome).toUpperCase()} - OBRA: ${String(obraNome).toUpperCase()} - DATA: ${String(dataDisplay).toUpperCase()}`;
+                        // Crie um span para o texto clicável
+                        const spanText = document.createElement('span');
+                        spanText.classList.add('orcamento-text-clickable');
+                        spanText.textContent = `PEDIDO Nº: ${String(numPedidoDisplay).toUpperCase()} - CLIENTE: ${String(clienteNome).toUpperCase()} - OBRA: ${String(obraNome).toUpperCase()} - DATA: ${String(dataDisplay).toUpperCase()}`;
+                        
+                        // Crie o botão de excluir
+                        const btnExcluir = document.createElement('button');
+                        btnExcluir.classList.add('btn', 'btn-danger', 'btn-excluir-orcamento');
+                        btnExcluir.dataset.orcamentoId = orcamento.id;
+                        btnExcluir.innerHTML = '<i class="fas fa-trash-alt"></i> EXCLUIR';
 
-                    // Crie o botão de excluir
-                    const btnExcluir = document.createElement('button');
-                    btnExcluir.classList.add('btn', 'btn-danger', 'btn-excluir-orcamento');
-                    btnExcluir.dataset.orcamentoId = orcamento.id;
-                    btnExcluir.innerHTML = '<i class="fas fa-trash-alt"></i> EXCLUIR';
+                        // Anexe os event listeners
+                        spanText.addEventListener('click', () => carregarOrcamentoNaTela(orcamento.id));
+                        btnExcluir.addEventListener('click', (e) => {
+                            e.stopPropagation(); // Impede que o clique no botão ative o clique no item pai
+                            if (confirm(`TEM CERTEZA QUE DESEJA EXCLUIR O ORÇAMENTO PEDIDO Nº: ${String(numPedidoDisplay).toUpperCase()}?`)) {
+                                const idParaExcluir = e.target.dataset.orcamentoId || e.target.closest('button').dataset.orcamentoId; // Pega o ID do botão ou do pai
+                                excluirOrcamento(idParaExcluir);
+                            }
+                        });
 
-                    // Anexe os event listeners
-                    spanText.addEventListener('click', () => carregarOrcamentoNaTela(orcamento.id));
-                    btnExcluir.addEventListener('click', (e) => {
-                        e.stopPropagation(); // Impede que o clique no botão ative o clique no item pai
-                        if (confirm(`TEM CERTEZA QUE DESEJA EXCLUIR O ORÇAMENTO PEDIDO Nº: ${String(numPedidoDisplay).toUpperCase()}?`)) {
-                            const idParaExcluir = e.target.dataset.orcamentoId || e.target.closest('button').dataset.orcamentoId; // Pega o ID do botão ou do pai
-                            excluirOrcamento(idParaExcluir);
-                        }
+                        // Adicione o texto e o botão à div do item
+                        divItem.appendChild(spanText);
+                        divItem.appendChild(btnExcluir);
+                        
+                        // Adicione a div do item à lista de orçamentos
+                        listaOrcamentosDiv.appendChild(divItem);
                     });
-
-                    // Adicione o texto e o botão à div do item
-                    divItem.appendChild(spanText);
-                    divItem.appendChild(btnExcluir);
-
-                    // Adicione a div do item à lista de orçamentos
-                    listaOrcamentosDiv.appendChild(divItem);
-                });
+                }
+            } catch (error) {
+                console.error('Erro ao carregar orçamentos:', error);
+                listaOrcamentosDiv.innerHTML = `<p class="loading-message" style="color: red; text-align: center;">ERRO AO CARREGAR ORÇAMENTOS: ${String(error.message).toUpperCase()}</p>`;
             }
-        } catch (error) {
-            console.error('Erro ao carregar orçamentos:', error);
-            listaOrcamentosDiv.innerHTML = `<p class="loading-message" style="color: red; text-align: center;">ERRO AO CARREGAR ORÇAMENTOS: ${String(error.message).toUpperCase()}</p>`;
         }
-    }
 
     /**
      * Carrega um orçamento específico na tela principal para visualização/edição.
@@ -530,7 +530,7 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     async function carregarOrcamentoNaTela(orcamentoId) {
         console.log(`CARREGANDO ORÇAMENTO ID: ${orcamentoId}`);
-        if (visualizarOrcamentoFeedback) {
+        if(visualizarOrcamentoFeedback) {
             visualizarOrcamentoFeedback.textContent = 'CARREGANDO DETALHES DO ORÇAMENTO...';
             visualizarOrcamentoFeedback.style.color = 'blue';
         }
@@ -565,9 +565,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (orcamentoDetalhes.itensPedido && orcamentoDetalhes.itensPedido.length > 0) {
                 orcamentoDetalhes.itensPedido.forEach(item => {
+                    // --- INÍCIO DA ALTERAÇÃO PARA CARREGAMENTO DE ORÇAMENTOS ---
+                    let tipoFormatado = item.tipo; // Pega o tipo do item carregado
+                    tipoFormatado = tipoFormatado.replace(/varaReta/gi, 'VARA RETA');
+                    tipoFormatado = tipoFormatado.replace(/varaL/gi, 'VARA L');
+                    tipoFormatado = tipoFormatado.replace(/varaU/gi, 'VARA U');
+                    tipoFormatado = tipoFormatado.replace(/estribo/gi, 'ESTRIBO');
+                    tipoFormatado = tipoFormatado.replace(/tuboC/gi, 'TUBO C');
+                    tipoFormatado = tipoFormatado.replace(/chapaDobrada/gi, 'CHAPA DOBRADA');
+                    // --- FIM DA ALTERAÇÃO PARA CARREGAMENTO DE ORÇAMENTOS ---
+
                     const novaLinhaTabela = document.createElement('tr');
                     novaLinhaTabela.innerHTML = `
-                        <td data-label="Tipo">${(String(item.tipo || '')).toUpperCase()}</td>
+                        <td data-label="Tipo">${tipoFormatado.toUpperCase()}</td> <!-- Usar tipoFormatado aqui -->
                         <td data-label="Bitola">${(String(item.bitola || '')).toUpperCase()} MM</td>
                         <td data-label="Medidas">${(String(item.medidas?.a || '')).toUpperCase()}${(item.medidas?.b ? '/' + String(item.medidas.b) : '').toUpperCase()}${(item.medidas?.c ? '/' + String(item.medidas.c) : '').toUpperCase()}</td>
                         <td data-label="Qtd">${(String(item.quantidade || '')).toUpperCase()}</td>
@@ -611,14 +621,14 @@ document.addEventListener('DOMContentLoaded', function () {
             atualizarResumoBitolas();
 
             if (modalVisualizarOrcamentos) modalVisualizarOrcamentos.style.display = 'none';
-            if (visualizarOrcamentoFeedback) {
+            if(visualizarOrcamentoFeedback) {
                 visualizarOrcamentoFeedback.textContent = 'ORÇAMENTO CARREGADO COM SUCESSO!';
                 visualizarOrcamentoFeedback.style.color = 'green';
                 setTimeout(() => visualizarOrcamentoFeedback.textContent = '', 2000);
             }
         } catch (error) {
             console.error('ERRO AO CARREGAR ORÇAMENTO NA TELA:', error);
-            if (visualizarOrcamentoFeedback) {
+            if(visualizarOrcamentoFeedback) {
                 visualizarOrcamentoFeedback.textContent = `ERRO AO CARREGAR ORÇAMENTO: ${String(error.message).toUpperCase()}`;
                 visualizarOrcamentoFeedback.style.color = 'red';
             }
@@ -647,28 +657,28 @@ document.addEventListener('DOMContentLoaded', function () {
             carregarOrcamentos(); // Recarrega a lista de orçamentos após a exclusão
             iniciarNovoOrcamento(); // Limpa o formulário principal caso o orçamento excluído estivesse carregado
         } catch (error) {
-            console.error('ERRO AO EXCLUIR ORÇAMENTO:', error);
-            // Usar uma modal customizada em vez de alert
-            const feedbackDiv = document.getElementById('visualizarOrcamentoFeedback');
-            if (feedbackDiv) {
-                feedbackDiv.textContent = `ERRO AO EXCLUIR ORÇAMENTO: ${String(error.message).toUpperCase()}`;
-                feedbackDiv.style.color = 'red';
-                setTimeout(() => feedbackDiv.textContent = '', 5000);
+                console.error('ERRO AO EXCLUIR ORÇAMENTO:', error);
+                // Usar uma modal customizada em vez de alert
+                const feedbackDiv = document.getElementById('visualizarOrcamentoFeedback');
+                if (feedbackDiv) {
+                    feedbackDiv.textContent = `ERRO AO EXCLUIR ORÇAMENTO: ${String(error.message).toUpperCase()}`;
+                    feedbackDiv.style.color = 'red';
+                    setTimeout(() => feedbackDiv.textContent = '', 5000);
+                }
             }
         }
-    }
 
 
     // Event listeners para abrir/fechar a modal de visualização de orçamentos
     if (btnAbrirModalVisualizarOrcamentos && modalVisualizarOrcamentos) {
-        btnAbrirModalVisualizarOrcamentos.addEventListener('click', function () {
+        btnAbrirModalVisualizarOrcamentos.addEventListener('click', function() {
             modalVisualizarOrcamentos.style.display = 'flex';
             carregarOrcamentos();
         });
     }
 
     if (closeModalVisualizarOrcamentos && modalVisualizarOrcamentos && filtroOrcamentoInput && listaOrcamentosDiv && visualizarOrcamentoFeedback) {
-        closeModalVisualizarOrcamentos.addEventListener('click', function () {
+        closeModalVisualizarOrcamentos.addEventListener('click', function() {
             modalVisualizarOrcamentos.style.display = 'none';
             filtroOrcamentoInput.value = '';
             listaOrcamentosDiv.innerHTML = '';
@@ -677,7 +687,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (modalVisualizarOrcamentos && filtroOrcamentoInput && listaOrcamentosDiv && visualizarOrcamentoFeedback) {
-        window.addEventListener('click', function (event) {
+        window.addEventListener('click', function(event) {
             if (event.target === modalVisualizarOrcamentos) {
                 modalVisualizarOrcamentos.style.display = 'none';
                 filtroOrcamentoInput.value = '';
@@ -722,7 +732,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Garante que os campos de medida estejam corretos para o tipo padrão (Vara em U)
         if (tipoPecaSelect) tipoPecaSelect.value = 'varaU';
         validarCamposMedida(); // Chama a validação para resetar os campos b e c
-
+        
         // Opcional: Focar no primeiro campo para nova entrada
         if (clienteInputPrincipal) clienteInputPrincipal.focus();
     }
@@ -789,8 +799,8 @@ document.addEventListener('DOMContentLoaded', function () {
         formPeca.addEventListener('submit', function (event) {
             event.preventDefault();
 
-            const tipo = tipoPecaSelect.value;
-            const bitola = bitolaSelect.value; // Usar a referência direta
+            let tipo = tipoPecaSelect.value; // Use 'let' para poder reatribuir
+            const bitola = bitolaSelect.value;
             const a = parseFloat(medidaAInput.value) || 0;
             const b = parseFloat(medidaBInput.value) || 0;
             const c = parseFloat(medidaCInput.value) || 0;
@@ -833,9 +843,20 @@ document.addEventListener('DOMContentLoaded', function () {
             const precoPorKgDaBitola = precosPorKg[bitola] || 0;
             const custoTotalPecas = pesoTotalPecas * precoPorKgDaBitola;
 
+            // --- INÍCIO DA ALTERAÇÃO PARA ADICIONAR NOVA PEÇA ---
+            let tipoFormatado = tipo; // Cria uma nova variável para a versão formatada
+            tipoFormatado = tipoFormatado.replace(/varaReta/gi, 'VARA RETA'); // 'gi' para global e case-insensitive
+            tipoFormatado = tipoFormatado.replace(/varaL/gi, 'VARA L');
+            tipoFormatado = tipoFormatado.replace(/varaU/gi, 'VARA U');
+            tipoFormatado = tipoFormatado.replace(/estribo/gi, 'ESTRIBO');
+            tipoFormatado = tipoFormatado.replace(/tuboC/gi, 'TUBO C');
+            tipoFormatado = tipoFormatado.replace(/chapaDobrada/gi, 'CHAPA DOBRADA');
+            // --- FIM DA ALTERAÇÃO PARA ADICIONAR NOVA PEÇA ---
+
+
             const novaLinhaTabela = document.createElement('tr');
             novaLinhaTabela.innerHTML = `
-                <td data-label="Tipo">${tipo.toUpperCase()}</td>
+                <td data-label="Tipo">${tipoFormatado.toUpperCase()}</td> <!-- Usar tipoFormatado aqui -->
                 <td data-label="Bitola">${bitola.toUpperCase()} MM</td>
                 <td data-label="Medidas">${String(a).toUpperCase()}${b ? '/' + String(b).toUpperCase() : ''}${c ? '/' + String(c).toUpperCase() : ''}</td>
                 <td data-label="Qtd">${String(quantidade).toUpperCase()}</td>
@@ -1070,7 +1091,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const dafelMainLogoPDF = "https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/grupodafel.png";
 
             // Função para adicionar imagem ao PDF
-            const addImageToPdfDirect = (imgUrl, x, y, width, height, format = 'PNG') => {
+             const addImageToPdfDirect = (imgUrl, x, y, width, height, format = 'PNG') => {
                 try {
                     doc.addImage(imgUrl, format, x, y, width, height);
                 } catch (e) {
@@ -1080,28 +1101,48 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // --- CABEÇALHO SUPERIOR ---
             // Fundo azul escuro para o cabeçalho superior
-            addRect(0, 0, pageWidth, 20, '#ff8c00');
+            addRect(0, 0, pageWidth, 20, '#333333'); // Fundo azul escuro
+
             // Texto "ORÇAMENTO" - MAIOR E MAIS GORDINHO (BOLD)
-            doc.setFontSize(24);
-            doc.setTextColor(0, 0, 0); // Preto para o texto
+            doc.setFontSize(16);
+            doc.setTextColor(255, 255, 255); // Branco
             doc.setFont('helvetica', 'bold');
             doc.text("ORÇAMENTO", marginX, 13);
             doc.setFontSize(10); // Volta ao padrão
             doc.setFont('helvetica', 'normal'); // Volta ao padrão
 
             // Imagem "Dafé Seriedade Nossa Marca" no meio do cabeçalho
-            addImageToPdfDirect(dafelSeriedadeNossaMarcaPDF, pageWidth / 2 - 30, 3, 60, 15, 'PNG');
-
+            addImageToPdfDirect(dafelSeriedadeNossaMarcaPDF, pageWidth / 2 - 30, 3, 60, 15, 'PNG'); 
+            
             // Imagem "Grupo Dafé" no canto superior direito
             addImageToPdfDirect(dafelLogoSuperiorPDF, pageWidth - marginX - 45, 3, 40, 15, 'WEBP'); // Use 'WEBP' se o formato for .webp
 
             // Informações do site e redes sociais (lado direito) - TEXTO BRANCO E GORDINHO
             doc.setTextColor(255, 255, 255); // Define a cor branca
             doc.setFont('helvetica', 'bold'); // Define a fonte como negrito
-            addText("ACESSE NOSSO SITE", pageWidth - marginX - 73, 7, { fontSize: 7, align: 'right' });
-            addText("WWW.DAFEL.COM.BR", pageWidth - marginX - 70, 10, { fontSize: 9, align: 'right' });
-            addText("REDES SOCIAIS", pageWidth - marginX - 52, 13, { fontSize: 7, align: 'right' });
-            addText("DAFELOFICIAL", pageWidth - marginX - 50, 16, { fontSize: 9, align: 'right' });
+
+            // Ajuste de alinhamento para as linhas do site e redes sociais
+            const siteText = "ACESSE NOSSO SITE";
+            const siteUrl = "WWW.DAFEL.COM.BR";
+            const redesSociaisText = "REDES SOCIAIS";
+            const redesSociaisHandle = "DAFELOFICIAL";
+
+            // Calcula a largura dos textos para centralizar a linha de cima sobre a de baixo
+            const siteTextWidth = doc.getStringUnitWidth(siteText) * 7; // fontSize 7
+            const siteUrlWidth = doc.getStringUnitWidth(siteUrl) * 9; // fontSize 9
+            const redesSociaisTextWidth = doc.getStringUnitWidth(redesSociaisText) * 7; // fontSize 7
+            const redesSociaisHandleWidth = doc.getStringUnitWidth(redesSociaisHandle) * 9; // fontSize 9
+
+            // Posição para o grupo do site/url
+            let siteGroupRightX = pageWidth - marginX - 70; // Ponto de referência à direita
+            addText(siteText, siteGroupRightX - siteTextWidth, 7, { fontSize: 7, align: 'left' }); // Alinhado à esquerda do ponto de referência
+            addText(siteUrl, siteGroupRightX - siteUrlWidth, 10, { fontSize: 9, align: 'left' });
+
+            // Posição para o grupo de redes sociais
+            let redesSociaisGroupRightX = pageWidth - marginX - 45; // Ponto de referência à direita
+            addText(redesSociaisText, redesSociaisGroupRightX - redesSociaisTextWidth, 14, { fontSize: 7, align: 'left' });
+            addText(redesSociaisHandle, redesSociaisGroupRightX - redesSociaisHandleWidth, 17, { fontSize: 9, align: 'left' });
+
             doc.setTextColor(0, 0, 0); // Volta para preto padrão para o restante do documento
             doc.setFont('helvetica', 'normal'); // Volta ao normal
 
@@ -1166,11 +1207,11 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.setFontSize(8);
             doc.setFont('helvetica', 'bold'); // Títulos em negrito
             addText("ENDEREÇO PRINCIPAL", clientColumnX + 2, addressY, { textColor: 0 });
-            addText("NÚMERO", clientColumnX + 57, addressY, { textColor: 0 }); // Ajustado para mais perto
-            addText("BAIRRO", clientColumnX + 82, addressY, { textColor: 0 }); // Ajustado para mais perto
-            addText("CIDADE", clientColumnX + 112, addressY, { textColor: 0 }); // Ajustado para mais espaço
-            addText("ESTADO", clientColumnX + 190, addressY, { textColor: 0 }); // Ajustado para mais espaço
-            addText("CEP", clientColumnX + 215, addressY, { textColor: 0 }); // CEP na segunda linha, ajustado para mais à esquerda
+            addText("NÚMERO", clientColumnX + 50, addressY, { textColor: 0 }); // Ajustado
+            addText("BAIRRO", clientColumnX + 75, addressY, { textColor: 0 }); // Ajustado
+            addText("CIDADE", clientColumnX + 120, addressY, { textColor: 0 }); // Ajustado
+            addText("ESTADO", clientColumnX + 175, addressY, { textColor: 0 }); // Ajustado
+            addText("CEP", clientColumnX + 210, addressY, { textColor: 0 }); // Ajustado
 
             doc.setFontSize(9);
             doc.setFont('helvetica', 'bold'); // Dados em negrito
@@ -1181,11 +1222,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     ruaText = doc.splitTextToSize(ruaText.toUpperCase(), 70)[0] + "..."; // Trunca se for muito longo
                 }
                 addText(ruaText, clientColumnX + 2, addressY + clientDataLineHeight - 2, { textColor: 0 });
-                addText(`${String(principal.numero || '')}`, clientColumnX + 57, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
-                addText(`${String(principal.bairro || '')}`, clientColumnX + 82, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
-                addText(String(principal.cidade || ''), clientColumnX + 112, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
-                addText(String(principal.estado || ''), clientColumnX + 190, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
-                addText(String(principal.cep || 'N/A'), clientColumnX + 215, addressY + clientDataLineHeight - 2, { textColor: 0 }); // CEP na segunda linha, ajustado
+                addText(`${String(principal.numero || '')}`, clientColumnX + 50, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
+                addText(`${String(principal.bairro || '')}`, clientColumnX + 75, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
+                addText(String(principal.cidade || ''), clientColumnX + 120, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
+                addText(String(principal.estado || ''), clientColumnX + 175, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
+                addText(String(principal.cep || 'N/A'), clientColumnX + 210, addressY + clientDataLineHeight - 2, { textColor: 0 }); // Ajustado
             } else {
                 addText("NENHUM ENDEREÇO PRINCIPAL.", clientColumnX + 2, addressY + clientDataLineHeight - 2, { textColor: 0 });
             }
@@ -1216,7 +1257,7 @@ document.addEventListener('DOMContentLoaded', function () {
             doc.setFont('helvetica', 'bold'); // Negrito
             addText("PRODUTO", marginX + 2, currentY + 5, { fontSize: 9 });
             addText("UND", marginX + 90, currentY + 5, { fontSize: 9 }); // UND em branco
-               addText("QTD", marginX + 120, currentY + 5, { fontSize: 9 });
+            addText("QTD", marginX + 120, currentY + 5, { fontSize: 9, align: 'center' }); // CENTRALIZADO
             addText("PESO (KG)", marginX + 170, currentY + 5, { fontSize: 9, align: 'right' });
             addText("PREÇO/KG", marginX + 210, currentY + 5, { fontSize: 9, align: 'right' });
             addText("TOTAL", pageWidth - marginX - 2, currentY + 5, { fontSize: 9, align: 'right' });
@@ -1247,25 +1288,30 @@ document.addEventListener('DOMContentLoaded', function () {
                 doc.setDrawColor(0); // Cor da borda preta
                 doc.rect(marginX, currentY, pageWidth - (2 * marginX), 7, 'S'); // Borda para a linha do item
 
-                let produtoDesc = `${String(item.tipo)} ${String(item.bitola)}MM (${String(item.medidas?.a || '')}${item.medidas?.b ? '/' + String(item.medidas.b) : ''}${item.medidas?.c ? '/' + String(item.medidas.c) : ''} CM)`;
-
-                // Adiciona espaço entre palavras específicas na descrição
-                produtoDesc = produtoDesc.replace(/VaraReta/g, 'Vara Reta');
-                produtoDesc = produtoDesc.replace(/VaraL/g, 'Vara L');
-                produtoDesc = produtoDesc.replace(/VaraU/g, 'Vara U');
-                produtoDesc = produtoDesc.replace(/Estribo/g, 'Estribo'); // Adicionado para garantir
-                // Adicione mais substituições conforme a necessidade para outros tipos de peça
+                // --- INÍCIO DA CORREÇÃO DE FORMATAÇÃO PARA PDF ---
+                let produtoDesc = String(item.tipo); // Pega o tipo original
+                produtoDesc = produtoDesc.replace(/varaReta/gi, 'VARA RETA');
+                produtoDesc = produtoDesc.replace(/varaL/gi, 'VARA L');
+                produtoDesc = produtoDesc.replace(/varaU/gi, 'VARA U');
+                produtoDesc = produtoDesc.replace(/estribo/gi, 'ESTRIBO');
+                produtoDesc = produtoDesc.replace(/tuboC/gi, 'TUBO C');
+                produtoDesc = produtoDesc.replace(/chapaDobrada/gi, 'CHAPA DOBRADA');
+                
+                // Adiciona bitola e medidas APÓS a formatação do tipo
+                produtoDesc += ` ${String(item.bitola)}MM (${String(item.medidas?.a || '')}${item.medidas?.b ? '/' + String(item.medidas.b) : ''}${item.medidas?.c ? '/' + String(item.medidas.c) : ''} CM)`;
+                // --- FIM DA CORREÇÃO DE FORMATAÇÃO PARA PDF ---
 
                 const precoPorKgItem = (parseFloat(item.pesoKg) > 0) ? (parseFloat(item.custo) / parseFloat(item.pesoKg)) : 0;
 
-                   addText(produtoDesc, marginX + 2, currentY + 4.5);
+                addText(produtoDesc, marginX + 2, currentY + 4.5);
+                // Para centralizar a quantidade, precisamos calcular o centro da coluna QTD
+                const qtdColCenterX = marginX + 120 + (col3X - (marginX + 120)) / 2; // Centro da coluna QTD
                 addText("PC", marginX + 90, currentY + 4.5); // Unidade de medida
-                addText(String(item.quantidade || ''), marginX + 120, currentY + 4.5); // Converte para string
+                addText(String(item.quantidade || ''), qtdColCenterX, currentY + 4.5, { align: 'center' }); // CENTRALIZADO
                 addText(formatWeight(parseFloat(item.pesoKg)), marginX + 170, currentY + 4.5, { align: 'right' }); // Peso
                 addText(formatCurrency(precoPorKgItem), marginX + 210, currentY + 4.5, { align: 'right' }); // Preço/KG
                 addText(formatCurrency(parseFloat(item.custo)), pageWidth - marginX - 2, currentY + 4.5, { align: 'right' }); // Total da linha
 
-                
                 // Linhas verticais para cada linha de item
                 doc.line(col1X, currentY, col1X, currentY + 7);
                 doc.line(col2X, currentY, col2X, currentY + 7);
@@ -1287,7 +1333,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     doc.setFont('helvetica', 'bold'); // Negrito
                     addText("PRODUTO", marginX + 2, currentY + 5, { fontSize: 9 });
                     addText("UND", marginX + 90, currentY + 5, { fontSize: 9 });
-                    addText("QTD", marginX + 120, currentY + 5, { fontSize: 9 });
+                    addText("QTD", marginX + 120, currentY + 5, { fontSize: 9, align: 'center' }); // CENTRALIZADO
                     addText("PESO (KG)", marginX + 170, currentY + 5, { fontSize: 9, align: 'right' });
                     addText("PREÇO/KG", marginX + 210, currentY + 5, { fontSize: 9, align: 'right' });
                     addText("TOTAL", pageWidth - marginX - 2, currentY + 5, { fontSize: 9, align: 'right' });

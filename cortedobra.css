@@ -1,8 +1,14 @@
+/* Global Reset - MUITO IMPORTANTE para remover espaços padrão do navegador */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%; /* Garante que html e body ocupem a altura total */
+    box-sizing: border-box; /* Inclui padding e borda na largura/altura total do elemento */
+}
+
 /* Estilos Gerais */
 body {
     font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
     background-color: #1a1a1a; /* Fundo escuro */
     color: #e0e0e0; /* Texto claro */
     line-height: 1.6;
@@ -11,25 +17,72 @@ body {
     min-height: 100vh;
 }
 
-header {
-    background-color: #333; /* Um pouco mais claro que o fundo */
-    color: #ffc107; /* Amarelo/Laranja para destaque */
-    padding: 20px;
+/* --- NOVOS ESTILOS PARA O CABEÇALHO (SUBSTITUINDO TAILWIND) --- */
+.header-main {
+    background-color: #252422; /* Fundo laranja vibrante */
+    padding: 0; /* Removido todo o padding vertical e horizontal */
+    display: flex;
+    align-items: flex-end; /* Alterado: Alinha itens à parte INFERIOR verticalmente */
+    justify-content: space-between;
+    border-bottom: 6px solid #899192; /* Borda inferior um pouco mais escura que o fundo */
+    gap: 10px; /* Espaçamento entre as seções do cabeçalho */
+    /* A altura será definida pelo conteúdo (imagens) */
+}
+
+.header-left,
+.header-right {
+    display: flex;
+    align-items: flex-end; /* Alterado: Alinha itens à parte INFERIOR verticalmente */
+    flex-shrink: 0; /* Impede que essas seções encolham */
+    padding: 0 0rem; /* Adicionado padding lateral para as seções esquerda e direita */
+}
+
+.header-left {
+    margin-right: 1rem; /* Espaçamento entre a logo principal e o texto */
+}
+
+.header-center {
+    flex-grow: 1;
     text-align: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-    border-bottom: 3px solid #ffc107; /* Linha de destaque */
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0; /* NENHUM padding aqui */
+    display: flex; /* Torna-o um contêiner flex */
+    flex-direction: column; /* Empilha os filhos verticalmente */
+    justify-content: flex-end; /* Alterado: Centraliza os filhos à parte INFERIOR verticalmente */
 }
 
-header h1 {
-    margin-bottom: 5px;
-    font-size: 2.8em;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+.logo-main {
+    height: 150px; /* Definindo altura fixa para a logo principal */
+    width: auto; /* Mantém a proporção */
+    display: block; /* Remove espaço extra abaixo da imagem */
 }
 
-header p {
-    font-size: 1.2em;
+.logo-small {
+    height: 65px; /* Definindo altura fixa para as logos da direita */
+    width: auto; /* Mantém a proporção */
+    display: block; /* Remove espaço extra abaixo da imagem */
+}
+
+.header-title {
+    font-size: 2.8rem; /* Ajustado para um tamanho bom */
+    font-weight: 700;
+    color: #ffffff; /* Cor para branco para contraste com o fundo laranja */
+    margin: 0; /* Remover margens padrão */
+    padding: 10px; /* Remover paddings padrão */
+    line-height: 1.2; /* Ajustar line-height para controlar espaço do texto */
+}
+
+.header-subtitle {
+    font-size: 1.2rem; /* Ajustado para um tamanho bom */
+    color: #ffffff; /* Cor para branco para contraste com o fundo laranja */
     opacity: 0.8;
+    margin: 0; /* Remover margens padrão */
+    padding: 15px; /* Remover paddings padrão */
+    line-height: 1.2; /* Ajustar line-height para controlar espaço do texto */
 }
+/* --- FIM DOS NOVOS ESTILOS PARA O CABEÇALHO --- */
+
 
 main {
     flex-grow: 1; /* Ocupa o espaço restante */
@@ -591,21 +644,66 @@ tr:hover {
     }
 
     header {
-        padding: 15px;
+        flex-direction: column; /* Alterado: Empilha os itens do cabeçalho em telas pequenas */
+        text-align: center; /* Centraliza o texto */
+        padding: 0.25rem; /* Padding menor para mobile */
+        gap: 5px; /* Espaçamento menor entre os itens */
+        /* Removido flex-wrap pois não é necessário com column */
+        justify-content: center; /* Centraliza verticalmente */
+        align-items: center; /* Centraliza horizontalmente */
+        min-height: auto; /* Deixa a altura se ajustar ao conteúdo */
+    }
+
+    .header-left,
+    .header-right,
+    .header-center {
+        margin: 0; /* Remove margens extras */
+        flex-basis: auto; /* Permite que os itens se ajustem ao conteúdo */
+        width: 100%; /* Garante que ocupem a largura total disponível */
+        justify-content: center; /* Centraliza o conteúdo dentro de cada seção */
+        align-items: center; /* Centraliza o conteúdo dentro de cada seção */
+    }
+
+    .header-center {
+        order: 1; /* Ordem para aparecer primeiro no fluxo */
+        padding-bottom: 10px; /* Adiciona um pequeno espaço abaixo do texto */
+    }
+
+    .header-left {
+        order: 2; /* Ordem para a logo laranja */
+        margin-right: 0; /* Remove margem extra */
+        padding-bottom: 10px; /* Adiciona um pequeno espaço abaixo da logo */
+    }
+
+    .header-right {
+        order: 3; /* Ordem para as logos da direita */
+        gap: 5px; /* Espaçamento menor entre as logos da direita */
+        flex-direction: row; /* Mantém as logos da direita lado a lado */
+        flex-wrap: wrap; /* Permite que as logos da direita quebrem linha se necessário */
+    }
+
+    .logo-main {
+        height: 60px; /* Aumentado: Reduz o tamanho da logo principal em mobile */
+    }
+
+    .logo-small {
+        height: 40px; /* Aumentado: Reduz o tamanho das logos pequenas em mobile */
     }
 
     header h1 {
-        font-size: 2.2em;
+        font-size: 1.8em; /* Ajusta o tamanho da fonte do h1 em mobile */
     }
 
     header p {
-        font-size: 0.9em;
+        font-size: 0.8em; /* Ajusta o tamanho da fonte do p em mobile */
     }
 
     main {
         margin: 20px auto;
         padding: 15px;
         gap: 20px;
+        width: calc(100% - 30px); /* 100% menos o padding do body */
+        box-sizing: border-box; /* Inclui padding na largura */
     }
 
     section.panel {

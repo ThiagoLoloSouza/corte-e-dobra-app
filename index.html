@@ -11,15 +11,35 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Adiciona um favicon para evitar o erro 404 no console -->
     <link rel="icon" href="https://placehold.co/32x32/007bff/ffffff?text=CF" type="image/x-icon">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 </head>
 
 <body>
-    <header>
-        <h1>Corte Dobra</h1>
-        <p>Calculadora de Corte, Dobra e Peso de Vergalhões</p>
+    <header class="header-main">
+        <!-- Lado esquerdo: Logo laranja e título principal -->
+        <div class="header-left">
+            <!-- Logo laranja: Usando classe customizada -->
+            <img src="https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/dafellaranja.png" alt="Logo Dafél Laranja" class="logo-main">
+        </div>
+
+        <!-- Centro: Título e subtítulo centralizados -->
+        <div class="header-center">
+            <h1 class="header-title">Corte Dobra</h1>
+            <p class="header-subtitle">Calculadora de Corte, Dobra e Peso de Vergalhões</p>
+        </div>
+
+        <!-- Lado direito: Logos "Grupo Dafél" e "www.dafel.com.br" (menores e agrupadas) -->
+        <div class="header-right">
+            <!-- Logo "Grupo Dafél": Usando classe customizada -->
+            <img src="https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/grupodafel.png" alt="Grupo Dafél" class="logo-small">
+            <!-- Logo "www.dafel.com.br": Usando classe customizada -->
+            <img src="https://raw.githubusercontent.com/ThiagoLoloSouza/corte-e-dobra-app/refs/heads/main/client-4.png" alt="www.dafel.com.br" class="logo-small">
+        </div>
     </header>
 
-    <main>
+
+     <main>
         <section class="cliente-info panel">
             <div class="panel-header">
                 <h2>Dados do Cliente</h2>
